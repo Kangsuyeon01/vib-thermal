@@ -25,6 +25,7 @@
     }
     function n() {
         I.default.render(I.default.createElement(o, null), document.getElementById("app"))
+
     }
     var r = t(2)
       , I = e(r)
@@ -19338,6 +19339,7 @@
         store: k
     }
 }
+// examples 
 , function(A, i, t) {
     "use strict";
     function e(A) {
@@ -21101,6 +21103,7 @@
                 width: "100%"
             }
         },
+        // #### example rendering (deleted wiht line )
         render: function() {
             var A = {
                 marginLeft: "auto",
@@ -21466,7 +21469,7 @@
         }
     });
     A.exports = I
-}
+}//ui
 , function(A, i, t) {
     "use strict";
     function e(A) {
@@ -21577,6 +21580,7 @@
             default: A
         }
     }
+    
     var n = t(2)
       , r = e(n)
       , I = t(1)
@@ -21621,6 +21625,7 @@
             i.files.length > 0 && C.actions.loadMacaronFile(i.files[0]),
             i.value = []
         },
+        // UI components
         render: function() {
             var A = {}
               , i = this.state.animation.animationOptions
@@ -21666,7 +21671,7 @@
                 onClick: this._onSaveClick
             }, r.default.createElement("i", {
                 className: "fa fa-download"
-            }), "Save"));
+            }), "Save")); // ### Wave, Json Download DialogBtn
             var q = r.default.createElement("span", null);
             return this.props.displaySaveButton && (q = r.default.createElement("span", null, r.default.createElement("input", {
                 type: "file",
@@ -21692,6 +21697,7 @@
     });
     A.exports = Q
 }
+// UI ?
 , function(A, i, t) {
     "use strict";
     function e(A) {
@@ -21714,6 +21720,7 @@
             exampleName: r.default.PropTypes.string.isRequired,
             exampleicon: r.default.PropTypes.object.isRequired
         },
+        
         getDefaultProps: function() {
             return {
                 width: 100,
@@ -21768,6 +21775,7 @@
             default: A
         }
     }
+    // ##### example gallery (deleted)
     var n = t(2)
       , r = e(n)
       , I = t(1)
@@ -21775,17 +21783,18 @@
       , E = t(14)
       , a = t(30)
       , C = r.default.createClass({
-        displayName: "Gallery",
-        mixins: [o.default.connect(E.store, "examples")],
+        // displayName: "Gallery",
+        // mixins: [o.default.connect(E.store, "examples")],
         render: function() {
-            var A = this.state.examples.examples;
+            // var A = this.state.examples.examples;
             return r.default.createElement("div", {
                 className: "example-gallery"
             }, Object.keys(A).map(function(i) {
-                return r.default.createElement(a, {
-                    exampleName: i,
-                    exampleicon: A[i]
-                })
+                // return r.default.createElement(a, {
+                    // exampleName: i,
+                    // exampleicon: A[i]/
+                // }
+            // )
             }))
         }
     });
@@ -21820,12 +21829,13 @@
             name: r.default.PropTypes.string.isRequired,
             selection: r.default.PropTypes.object.isRequired
         },
+        // ######## Wave color (CSS Style) ###########
         getDefaultProps: function() {
             return {
                 height: 50,
                 width: "100%",
-                visColor: "#FFDDAD",
-                background: "#FAFAFA",
+                visColor: "rgb(169, 231, 255)", // wave color
+                background: "#FAFAFA", // wave form background color
                 resolution: 3e3,
                 maxFrequencyRendered: 125,
                 limitFrequencies: !0,
@@ -21934,8 +21944,8 @@
             return {
                 height: 190,
                 width: "100%",
-                circleColor: "#FF8400",
-                selectedCircleColor: "#B05B00",
+                circleColor: "rgb(74, 91, 238)",  // ### CSS dot defalut Color
+                selectedCircleColor: "rgb(0, 13, 122)", // ### CSS selected dot Color
                 selectionColor: "#676767",
                 selectionOpacity: .2,
                 doubleClickTime: 500,
@@ -22033,8 +22043,8 @@
               , G = r.default.createElement("path", null);
             f && (G = r.default.createElement("path", {
                 d: s,
-                fill: "#FFDDAD",
-                stroke: "#FFDDAD",
+                fill: "rgb(169, 231, 255)", // ### CSS filled graph color
+                stroke: "rgb(169, 231, 255)", // ### CSS graph line color
                 onMouseDown: this._onMouseDown
             }));
             var Y = r.default.createElement("text", null)
@@ -22404,7 +22414,7 @@
         store: C
     }
 }
-, function(A, i, t) {
+, function(A, i, t) { // ### save & load File scripts
     "use strict";
     function e(A) {
         return A && A.__esModule ? A : {
@@ -22693,6 +22703,7 @@
         store: a
     }
 }
+// ### [Deleted User Agreement Contents on menu bar]
 , function(A, i, t) {
     "use strict";
     function e(A) {
@@ -22700,57 +22711,58 @@
             default: A
         }
     }
-    var n = t(1)
-      , r = e(n)
-      , I = r.default.createActions(["showText"])
-      , o = r.default.createStore({
-        listenables: [I],
-        onShowText: function() {
-            document.getElementById("userAgreement") && document.body.removeChild(userAgreement);
-            var A = document.createElement("a");
-            A.href = "#userAgreement";
-            var i = document.createElement("div");
-            i.id = "userAgreement",
-            i.className = "modalDialog",
-            document.body.appendChild(A),
-            document.body.appendChild(i),
-            A.click();
-            var e = document.createElement("div");
-            e.id = "inner",
-            document.getElementById("userAgreement").appendChild(e),
-            A.href = "#close",
-            A.title = "Close",
-            A.className = "close",
-            A.innerHTML = "X",
-            document.getElementById("inner").appendChild(A);
-            var n = new Image;
-            n.src = t(70),
-            n.style.width = "40px",
-            n.style.height = "51px",
-            n.alt = "Example Image Location";
-            var r = document.createElement("userAgreementHeaderElement");
-            r.innerHTML = "<h2 class='userAgreementHeader'> <img src='" + n.src + "' alt='Example Image' style='width:40px;height:50px;'>Privacy policy statement </h2>",
-            document.getElementById("inner").appendChild(r);
-            var I = document.createElement("userAgreementTextElement");
-            I.id = "macaronText",
-            I.innerHTML = "<p>Macaron is research software developed by the SPIN research group at the University of British Columbia (UBC). As part of our commitment to improving our tools and conducting user interface research, we collect <b>anonymous</b> information about your interactions with Macaron, similar to other online tools. This includes data like: </p>",
-            document.getElementById("inner").appendChild(I);
-            var o = document.createElement("userAgreementListElement");
-            o.innerHTML = "<ul><li>Usage statistics (or telemetry). This includes time spent using the tool or interacting with various elements, and interaction patterns (eg. clicks, mouse movements, key presses, commands)</li><li>Software environment to understand performance, compatibility, and demographics (eg. browser or operating system version).</li><li>Your IP address is used for recording general location (i.e., region: state or country), but not stored directly and never linked to any personal information.</li><li>Information you supply to us directly, for example, through questionnaires, feedback forms, or crash reports.</li></ul>",
-            document.getElementById("inner").appendChild(o);
-            var E = document.createElement("userAgreementTextElementCont");
-            E.innerHTML = "<p>The data we collect will be used to help us further develop Macaron and similar tools. This data may be published as part of our academic research, eg., at conferences, talks, or as video, articles, or online posts.</p>",
-            document.getElementById("inner").appendChild(E);
-            var a = document.createElement("userAgreementTextElementFinalSeg");
-            a.innerHTML = "<p><b>We do not collect, store, or report personal or identifiable information about you or your account.</b> The research project associated with this tool has been approved by UBC's Behavioural Ethics Research Board (#H13-01620). If you have any questions, please contact us at tmp@ubc.com.</p>",
-            document.getElementById("inner").appendChild(a)
-        }
-    });
-    A.exports = {
-        actions: I,
-        store: o
-    }
+    // var n = t(1)
+    //   , r = e(n)
+    //   , I = r.default.createActions(["showText"])
+    //   , o = r.default.createStore({
+    //     listenables: [I],
+    //     onShowText: function() {
+    //         document.getElementById("userAgreement") && document.body.removeChild(userAgreement);
+    //         var A = document.createElement("a");
+    //         A.href = "#userAgreement";
+    //         var i = document.createElement("div");
+    //         i.id = "userAgreement",
+    //         i.className = "modalDialog",
+    //         document.body.appendChild(A),
+    //         document.body.appendChild(i),
+    //         A.click();
+    //         var e = document.createElement("div");
+    //         e.id = "inner",
+    //         document.getElementById("userAgreement").appendChild(e),
+    //         A.href = "#close",
+    //         A.title = "Close",
+    //         A.className = "close",
+    //         A.innerHTML = "X",
+    //         document.getElementById("inner").appendChild(A);
+    //         var n = new Image;
+    //         n.src = t(70),
+    //         n.style.width = "40px",
+    //         n.style.height = "51px",
+    //         n.alt = "Example Image Location";
+    //         var r = document.createElement("userAgreementHeaderElement");
+    //         r.innerHTML = "<h2 class='userAgreementHeader'> <img src='" + n.src + "' alt='Example Image' style='width:40px;height:50px;'>Privacy policy statement </h2>",
+    //         document.getElementById("inner").appendChild(r);
+    //         var I = document.createElement("userAgreementTextElement");
+    //         I.id = "macaronText",
+    //         I.innerHTML = "<p>Macaron is research software developed by the SPIN research group at the University of British Columbia (UBC). As part of our commitment to improving our tools and conducting user interface research, we collect <b>anonymous</b> information about your interactions with Macaron, similar to other online tools. This includes data like: </p>",
+    //         document.getElementById("inner").appendChild(I);
+    //         var o = document.createElement("userAgreementListElement");
+    //         o.innerHTML = "<ul><li>Usage statistics (or telemetry). This includes time spent using the tool or interacting with various elements, and interaction patterns (eg. clicks, mouse movements, key presses, commands)</li><li>Software environment to understand performance, compatibility, and demographics (eg. browser or operating system version).</li><li>Your IP address is used for recording general location (i.e., region: state or country), but not stored directly and never linked to any personal information.</li><li>Information you supply to us directly, for example, through questionnaires, feedback forms, or crash reports.</li></ul>",
+    //         document.getElementById("inner").appendChild(o);
+    //         var E = document.createElement("userAgreementTextElementCont");
+    //         E.innerHTML = "<p>The data we collect will be used to help us further develop Macaron and similar tools. This data may be published as part of our academic research, eg., at conferences, talks, or as video, articles, or online posts.</p>",
+    //         document.getElementById("inner").appendChild(E);
+    //         var a = document.createElement("userAgreementTextElementFinalSeg");
+    //         a.innerHTML = "<p><b>We do not collect, store, or report personal or identifiable information about you or your account.</b> The research project associated with this tool has been approved by UBC's Behavioural Ethics Research Board (#H13-01620). If you have any questions, please contact us at tmp@ubc.com.</p>",
+    //         document.getElementById("inner").appendChild(a)
+    //     }
+    // });
+    // A.exports = {
+    //     actions: I,
+    //     store: o
+    // }
 }
+// ### [Deleted Instrictions Contents on menu bar]
 , function(A, i, t) {
     "use strict";
     function e(A) {
@@ -22758,102 +22770,102 @@
             default: A
         }
     }
-    var n = t(1)
-      , r = e(n)
-      , I = r.default.createActions(["showInstructions"])
-      , o = r.default.createStore({
-        listenables: [I],
-        onShowInstructions: function() {
-            document.getElementById("page1") && document.body.removeChild(page1);
-            var A = document.createElement("a");
-            A.href = "#page1";
-            var i = document.createElement("div");
-            i.id = "page1",
-            i.className = "modalDialogInstructions",
-            document.body.appendChild(A),
-            document.body.appendChild(i),
-            A.click();
-            var e = document.createElement("div");
-            e.id = "inner1",
-            e.className = "instructionsContainer",
-            document.getElementById("page1").appendChild(e),
-            A.href = "#close",
-            A.title = "Close",
-            A.className = "close",
-            A.innerHTML = "X",
-            document.getElementById("inner1").appendChild(A);
-            var n = document.createElement("userInstructionsHeaderElement");
-            n.innerHTML = "<h2 class='pageHeader'>Instructions (1 of 2) </h2>",
-            document.getElementById("inner1").appendChild(n);
-            var r = document.createElement("div");
-            r.style.textAlign = "center",
-            r.id = "centre",
-            document.getElementById("inner1").appendChild(r);
-            var I = new Image;
-            I.src = t(68),
-            I.alt = "Example Image Location";
-            var o = document.createElement("userInstructionsImageLocation");
-            o.id = "macaronText",
-            o.innerHTML = "<p><img width='60%' src='" + I.src + "' alt='Example Image'></p>",
-            document.getElementById("centre").appendChild(o);
-            var E = document.createElement("userAgreementTextElement");
-            E.id = "macaronInstruction",
-            E.innerHTML = "<p>Thank you for using Macaron! Please make sure to plug in an actuator to the headphone jack of your computer to feel the vibrations. <b>Please remember to unmute the button when editing or playing back any vibrations.</b></p>",
-            document.getElementById("inner1").appendChild(E);
-            var a = document.createElement("userInstructionsListElement");
-            a.innerHTML = "<ul> \t            <li><b>Double clicking</b> will create a new keyframe; <b> backspace or delete</b> will delete the selected keyframes.</li> \t            <li><b>Spacebar</b> will toggle playback.</li> \t            <li><b>Ctrl- or Cmd-C</b> will copy the selected keyframes; <b>Ctrl- or Cmd-P</b> will paste copied keyframes at the red playhead.</li> \t            <li><b>Ctrl- or Cmd-Z</b> will undo the last change; <b>Shift+Ctrl- or Shift+Cmd-Z</b> will redo the last undone change.</li> \t            </ul>",
-            document.getElementById("inner1").appendChild(a);
-            var A = document.createElement("a");
-            A.href = "#page2",
-            A.title = "page2",
-            A.className = "nextPageButton",
-            A.innerHTML = "Next",
-            document.getElementById("inner1").appendChild(A),
-            document.getElementById("page2") && document.body.removeChild(page2);
-            var A = document.createElement("a");
-            A.href = "#page2";
-            var i = document.createElement("div");
-            i.id = "page2",
-            i.className = "modalDialogInstructions",
-            document.body.appendChild(A),
-            document.body.appendChild(i);
-            var C = document.createElement("div");
-            C.id = "inner2",
-            document.getElementById("page2").appendChild(C),
-            A.href = "#close",
-            A.title = "Close",
-            A.className = "close",
-            A.innerHTML = "X",
-            document.getElementById("inner2").appendChild(A);
-            var u = document.createElement("userInstructionsHeaderElement");
-            u.innerHTML = "<h2 class='pageHeader'>Instructions (2 of 2) </h2>",
-            document.getElementById("inner2").appendChild(u);
-            var h = document.createElement("div");
-            h.style.textAlign = "center",
-            h.id = "centre2",
-            document.getElementById("inner2").appendChild(h);
-            var g = new Image;
-            g.src = t(69),
-            g.alt = "Example Image Location";
-            var s = document.createElement("userInstructionsImageLocation2");
-            s.innerHTML = "<p><img width='60%' src='" + g.src + "' alt='Example Image'></p>",
-            document.getElementById("centre2").appendChild(s);
-            var Q = document.createElement("userAgreementTextElement2");
-            Q.id = "macaronInstruction2",
-            Q.innerHTML = "<p>The examples on the right are a <b>design gallery</b>. You can look at these examples, select, copy and paste them into your editor on the left. Note that examples are currently not editable.</p>",
-            document.getElementById("inner2").appendChild(Q);
-            var A = document.createElement("a");
-            A.href = "#page1",
-            A.title = "page1",
-            A.className = "prevPageButton",
-            A.innerHTML = "Prev",
-            document.getElementById("inner2").appendChild(A)
-        }
-    });
-    A.exports = {
-        actions: I,
-        store: o
-    }
+    // var n = t(1)
+    //   , r = e(n)
+    //   , I = r.default.createActions(["showInstructions"])
+    //   , o = r.default.createStore({
+    //     listenables: [I],
+    //     onShowInstructions: function() {
+    //         document.getElementById("page1") && document.body.removeChild(page1);
+    //         var A = document.createElement("a");
+    //         A.href = "#page1";
+    //         var i = document.createElement("div");
+    //         i.id = "page1",
+    //         i.className = "modalDialogInstructions",
+    //         document.body.appendChild(A),
+    //         document.body.appendChild(i),
+    //         A.click();
+    //         var e = document.createElement("div");
+    //         e.id = "inner1",
+    //         e.className = "instructionsContainer",
+    //         document.getElementById("page1").appendChild(e),
+    //         A.href = "#close",
+    //         A.title = "Close",
+    //         A.className = "close",
+    //         A.innerHTML = "X",
+    //         document.getElementById("inner1").appendChild(A);
+    //         var n = document.createElement("userInstructionsHeaderElement");
+    //         n.innerHTML = "<h2 class='pageHeader'>Instructions (1 of 2) </h2>",
+    //         document.getElementById("inner1").appendChild(n);
+    //         var r = document.createElement("div");
+    //         r.style.textAlign = "center",
+    //         r.id = "centre",
+    //         document.getElementById("inner1").appendChild(r);
+    //         var I = new Image;
+    //         I.src = t(68),
+    //         I.alt = "Example Image Location";
+    //         var o = document.createElement("userInstructionsImageLocation");
+    //         o.id = "macaronText",
+    //         o.innerHTML = "<p><img width='60%' src='" + I.src + "' alt='Example Image'></p>",
+    //         document.getElementById("centre").appendChild(o);
+    //         var E = document.createElement("userAgreementTextElement");
+    //         E.id = "macaronInstruction",
+    //         E.innerHTML = "<p>Thank you for using Macaron! Please make sure to plug in an actuator to the headphone jack of your computer to feel the vibrations. <b>Please remember to unmute the button when editing or playing back any vibrations.</b></p>",
+    //         document.getElementById("inner1").appendChild(E);
+    //         var a = document.createElement("userInstructionsListElement");
+    //         a.innerHTML = "<ul> \t            <li><b>Double clicking</b> will create a new keyframe; <b> backspace or delete</b> will delete the selected keyframes.</li> \t            <li><b>Spacebar</b> will toggle playback.</li> \t            <li><b>Ctrl- or Cmd-C</b> will copy the selected keyframes; <b>Ctrl- or Cmd-P</b> will paste copied keyframes at the red playhead.</li> \t            <li><b>Ctrl- or Cmd-Z</b> will undo the last change; <b>Shift+Ctrl- or Shift+Cmd-Z</b> will redo the last undone change.</li> \t            </ul>",
+    //         document.getElementById("inner1").appendChild(a);
+    //         var A = document.createElement("a");
+    //         A.href = "#page2",
+    //         A.title = "page2",
+    //         A.className = "nextPageButton",
+    //         A.innerHTML = "Next",
+    //         document.getElementById("inner1").appendChild(A),
+    //         document.getElementById("page2") && document.body.removeChild(page2);
+    //         var A = document.createElement("a");
+    //         A.href = "#page2";
+    //         var i = document.createElement("div");
+    //         i.id = "page2",
+    //         i.className = "modalDialogInstructions",
+    //         document.body.appendChild(A),
+    //         document.body.appendChild(i);
+    //         var C = document.createElement("div");
+    //         C.id = "inner2",
+    //         document.getElementById("page2").appendChild(C),
+    //         A.href = "#close",
+    //         A.title = "Close",
+    //         A.className = "close",
+    //         A.innerHTML = "X",
+    //         document.getElementById("inner2").appendChild(A);
+    //         var u = document.createElement("userInstructionsHeaderElement");
+    //         u.innerHTML = "<h2 class='pageHeader'>Instructions (2 of 2) </h2>",
+    //         document.getElementById("inner2").appendChild(u);
+    //         var h = document.createElement("div");
+    //         h.style.textAlign = "center",
+    //         h.id = "centre2",
+    //         document.getElementById("inner2").appendChild(h);
+    //         var g = new Image;
+    //         g.src = t(69),
+    //         g.alt = "Example Image Location";
+    //         var s = document.createElement("userInstructionsImageLocation2");
+    //         s.innerHTML = "<p><img width='60%' src='" + g.src + "' alt='Example Image'></p>",
+    //         document.getElementById("centre2").appendChild(s);
+    //         var Q = document.createElement("userAgreementTextElement2");
+    //         Q.id = "macaronInstruction2",
+    //         Q.innerHTML = "<p>The examples on the right are a <b>design gallery</b>. You can look at these examples, select, copy and paste them into your editor on the left. Note that examples are currently not editable.</p>",
+    //         document.getElementById("inner2").appendChild(Q);
+    //         var A = document.createElement("a");
+    //         A.href = "#page1",
+    //         A.title = "page1",
+    //         A.className = "prevPageButton",
+    //         A.innerHTML = "Prev",
+    //         document.getElementById("inner2").appendChild(A)
+    //     }
+    // });
+    // A.exports = {
+    //     actions: I,
+    //     store: o
+    // }
 }
 , function(A, i, t) {
     "use strict";
@@ -23158,12 +23170,15 @@
                   , c = this.state.study.currentMode == this.state.study.modes.HIGHVIS_HIGHSELECT || this.state.study.currentMode == this.state.study.modes.HIGHVIS_LOWSELECT
                   , v = l
                   , S = this.props.examplesModifiable;
-                M = r.default.createElement("div", {
+                 
+                M = r.default.createElement("div", { // ### right side waveform maker
                     name: "example",
                     id: "exampleeditor",
                     ref: "exampleEditorRef",
-                    style: B
-                }, r.default.createElement(C, {
+                    style: {B, display:"none"},
+
+                }
+                , r.default.createElement(C, {
                     name: "example",
                     playing: this.state.playback.playing,
                     mute: this.state.playback.mute
@@ -23867,21 +23882,28 @@
     };
     i.transform = I
 }
+
+// ### CSS Style load
+
+
 , function(A, i, t) {
     i = A.exports = t(11)(),
-    i.push([A.id, "body{margin:0;font-family:Helvetica Nueue,sans-serif}*{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}.hidden{visibility:hidden;display:none}.controlbutton{padding:5px}.mute{font-size:18pt}.playhead{height:20px;background:blue}.iconvis{height:20px;background:purple}a:link,a:visited{text-decoration:none;color:#000}a:active,a:hover{text-decoration:underline;color:#000}a:active.no-underline,a:hover.no-underline{text-decoration:none}.header{width:100%;height:55px;font-size:3pc;box-shadow:0 2px 10px #bababa;background:#ffc170;background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#ffc170),color-stop(100%,#ffcc8e));background:-webkit-linear-gradient(top,#ffc170 0%,#ffcc8e 100%);background:linear-gradient(to bottom,#ffc170 0%,#ffcc8e 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffc170',endColorstr='#ffcc8e',GradientType=0)}.header .menu{float:right;text-align:right;margin-right:.5em}.header .title{margin-left:.5em}.example-square{float:left;border:solid;border-width:1px;margin:10px}.example-square.selected{border-width:3px}.example-galley{width:10%;height:100%;float:left}.animationoptions{margin-right:auto;margin-left:auto}.unselectable,text{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}", ""])
+    i.push([A.id, "body{margin:0;font-family:Helvetica Nueue,sans-serif}*{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}.hidden{visibility:hidden;display:none}.controlbutton{padding:5px}.mute{font-size:18pt}.playhead{height:20px;background:blue}.iconvis{height:20px;background:purple}a:link,a:visited{text-decoration:none;color:#000}a:active,a:hover{text-decoration:underline;color:#000}a:active.no-underline,a:hover.no-underline{text-decoration:none}.header{width:100%;height:55px;font-size:3pc;box-shadow:0 2px 10px #bababa;background:rgb(0, 183, 255);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,rgb(0, 183, 255)),color-stop(100%,rgb(0, 183, 255)));background:-webkit-linear-gradient(top,rgb(0, 183, 255) 0%,rgb(0, 183, 255) 100%);background:linear-gradient(to bottom,rgb(0, 183, 255) 0%,rgb(0, 183, 255) 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='rgb(0, 183, 255)',endColorstr='rgb(0, 183, 255)',GradientType=0)}.header .menu{float:right;text-align:right;margin-right:.5em}.header .title{margin-left:.5em}.example-square{float:left;border:solid;border-width:1px;margin:10px}.example-square.selected{border-width:3px}.example-galley{width:10%;height:100%;float:left}.animationoptions{margin-right:auto;margin-left:auto}.unselectable,text{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}", ""])
+}
+
+, function(A, i, t) {
+    i = A.exports = t(11)(),
+    i.push([A.id, ".modalDialogInstructions{position:fixed;font-family:Arial,Helvetica,sans-serif;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.8);z-index:99999;opacity:0;-webkit-transition:opacity .4s ease-in;transition:opacity .4s ease-in;pointer-events:none}.modalDialogInstructions:target{opacity:1;pointer-events:auto}.modalDialogInstructions>div{width:auto;position:relative;margin:1% auto;padding:5px 20px 40px;border-radius:10px;background:#f2f2f2}.pageHeader{position:relative;box-shadow:0 2px 2px #bababa;background:rgb(0, 183, 255);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,rgb(0, 183, 255)),color-stop(100%,rgb(0, 183, 255)));background:-webkit-linear-gradient(top,rgb(0, 183, 255) 0%,rgb(0, 183, 255) 100%);background:linear-gradient(to bottom,rgb(0, 183, 255) 0%,rgb(0, 183, 255) 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='rgb(0, 183, 255)',endColorstr='rgb(0, 183, 255)',GradientType=0);border-top-left-radius:9pt;border-top-right-radius:9pt;top:-25px;right:10px;left:-20px;width:100%;padding:10px 20px 5px;font-weight:700}.prevPageButton{right:90pt}.nextPageButton,.prevPageButton{padding:5px 10px;background:#4479ba;color:#fff;text-decoration:none;line-height:25px;position:absolute;text-align:center;border-radius:4px;border:1px solid #20538d;text-shadow:0 -1px 0 rgba(0,0,0,.4);box-shadow:inset 0 1px 0 hsla(0,0%,100%,.4),0 1px 1p}.nextPageButton{right:50px}", ""])
+}
+// User Agreements Dialog CSS & HTML style
+, function(A, i, t) {
+    i = A.exports = t(11)(),
+    i.push([A.id, ".modalDialog{position:fixed;font-family:Arial,Helvetica,sans-serif;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.8);z-index:99999;opacity:0;-webkit-transition:opacity .4s ease-in;transition:opacity .4s ease-in;pointer-events:none}.modalDialog:target{opacity:1;pointer-events:auto}.modalDialog>div{width:50pc;position:relative;margin:10% auto;padding:5px 20px 13px;border-radius:10px;background:#f2f2f2}.close{background:#606061;color:#fff;line-height:25px;position:absolute;right:-4px;text-align:center;top:-10px;width:24px;text-decoration:none;font-weight:700;border-radius:9pt;box-shadow:1px 1px 3px #000;z-index:99999}.close:hover{background:#00d9ff}.userAgreementHeader{position:relative;box-shadow:0 2px 2px #bababa;background:rgb(0, 183, 255);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,rgb(0, 183, 255)),color-stop(100%,rgb(0, 183, 255)));background:-webkit-linear-gradient(top,rgb(0, 183, 255) 0%,rgb(0, 183, 255) 100%);background:linear-gradient(to bottom,rgb(0, 183, 255) 0%,rgb(0, 183, 255) 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='rgb(0, 183, 255)',endColorstr='rgb(0, 183, 255)',GradientType=0);border-top-left-radius:9pt;border-top-right-radius:9pt;top:-25px;right:20px;width:50pc;height:50px;padding:10px 20px 25px}.userAgreementHeader>img{margin-top:10px;margin-right:30px}", ""])
+    i.push([A.id, "", ""])
 }
 , function(A, i, t) {
     i = A.exports = t(11)(),
-    i.push([A.id, ".modalDialogInstructions{position:fixed;font-family:Arial,Helvetica,sans-serif;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.8);z-index:99999;opacity:0;-webkit-transition:opacity .4s ease-in;transition:opacity .4s ease-in;pointer-events:none}.modalDialogInstructions:target{opacity:1;pointer-events:auto}.modalDialogInstructions>div{width:auto;position:relative;margin:1% auto;padding:5px 20px 40px;border-radius:10px;background:#f2f2f2}.pageHeader{position:relative;box-shadow:0 2px 2px #bababa;background:#ffc170;background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#ffc170),color-stop(100%,#ffcc8e));background:-webkit-linear-gradient(top,#ffc170 0%,#ffcc8e 100%);background:linear-gradient(to bottom,#ffc170 0%,#ffcc8e 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffc170',endColorstr='#ffcc8e',GradientType=0);border-top-left-radius:9pt;border-top-right-radius:9pt;top:-25px;right:10px;left:-20px;width:100%;padding:10px 20px 5px;font-weight:700}.prevPageButton{right:90pt}.nextPageButton,.prevPageButton{padding:5px 10px;background:#4479ba;color:#fff;text-decoration:none;line-height:25px;position:absolute;text-align:center;border-radius:4px;border:1px solid #20538d;text-shadow:0 -1px 0 rgba(0,0,0,.4);box-shadow:inset 0 1px 0 hsla(0,0%,100%,.4),0 1px 1p}.nextPageButton{right:50px}", ""])
-}
-, function(A, i, t) {
-    i = A.exports = t(11)(),
-    i.push([A.id, ".modalDialog{position:fixed;font-family:Arial,Helvetica,sans-serif;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.8);z-index:99999;opacity:0;-webkit-transition:opacity .4s ease-in;transition:opacity .4s ease-in;pointer-events:none}.modalDialog:target{opacity:1;pointer-events:auto}.modalDialog>div{width:50pc;position:relative;margin:10% auto;padding:5px 20px 13px;border-radius:10px;background:#f2f2f2}.close{background:#606061;color:#fff;line-height:25px;position:absolute;right:-4px;text-align:center;top:-10px;width:24px;text-decoration:none;font-weight:700;border-radius:9pt;box-shadow:1px 1px 3px #000;z-index:99999}.close:hover{background:#00d9ff}.userAgreementHeader{position:relative;box-shadow:0 2px 2px #bababa;background:#ffc170;background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#ffc170),color-stop(100%,#ffcc8e));background:-webkit-linear-gradient(top,#ffc170 0%,#ffcc8e 100%);background:linear-gradient(to bottom,#ffc170 0%,#ffcc8e 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffc170',endColorstr='#ffcc8e',GradientType=0);border-top-left-radius:9pt;border-top-right-radius:9pt;top:-25px;right:20px;width:50pc;height:50px;padding:10px 20px 25px}.userAgreementHeader>img{margin-top:10px;margin-right:30px}", ""])
-}
-, function(A, i, t) {
-    i = A.exports = t(11)(),
-    i.push([A.id, ".save-link-container{display:block;position:absolute;width:25pc;height:250px;margin-left:40%;margin-right:auto;margin-top:50px;font-family:Arial,Helvetica,sans-serif;background:#eee;z-index:99999;opacity:1;border-radius:10px;box-shadow:5px 5px 30px #000}@media screen and (max-width:700px){.save-link-container{margin-left:50px}}.links-header{width:100%;margin:0;padding-top:15px;background:#ffc170;text-align:center;border-top-left-radius:10px}.download-link,.links-header{position:relative;height:40px}.download-link{width:85%;margin-left:50px;margin-top:20px}.link-box-shadow{position:absolute;top:0;bottom:0;right:0;left:0;background:rgba(0,0,0,.5);z-index:500}", ""])
+    i.push([A.id, ".save-link-container{display:block;position:absolute;width:25pc;height:250px;margin-left:40%;margin-right:auto;margin-top:50px;font-family:Arial,Helvetica,sans-serif;background:#eee;z-index:99999;opacity:1;border-radius:10px;box-shadow:5px 5px 30px #000}@media screen and (max-width:700px){.save-link-container{margin-left:50px}}.links-header{width:100%;margin:0;padding-top:15px;background:rgb(0, 183, 255);text-align:center;border-top-left-radius:10px}.download-link,.links-header{position:relative;height:40px}.download-link{width:85%;margin-left:50px;margin-top:20px}.link-box-shadow{position:absolute;top:0;bottom:0;right:0;left:0;background:rgba(0,0,0,.5);z-index:500}", ""])
 }
 , function(module, exports) {
     /*! @license Firebase v2.4.2
@@ -31456,6 +31478,8 @@
         ,
         Z.forceRestClient = Z.ze,
         ka(X, Y);
+
+        // fire base code
         var fj = X
           , gj = ["Firebase"]
           , hj = n;
