@@ -7947,7 +7947,7 @@
       , E = r.default.createStore({
         listenables: [o],
         init: function() {
-            // ##### Wave Interface Value #####
+            // ##### Wave Interface Value (JSON save format)#####
             this._data = {
                 main: {
                     duration: 10e3, // ### duration
@@ -7968,14 +7968,23 @@
                             }]
                         },
                         frequency: {
-                            valueScale: [30, 300], // ## Frequency Min-Max scale
+                            valueScale: [50, 500], // ## Frequency Min-Max scale
                             data: [{
                                 id: 1,
                                 t: 5000,
-                                value: 100,
+                                value: 250,
                                 selected: !1
-                            }]
-                        }
+                            }]},
+                        thermal: {
+                                valueScale: [-8, 8], // ##  Min-Max scale
+                                data: [{
+                                    id: 2,
+                                    t: 5000,
+                                    value: 0,
+                                    selected: !1
+                                }]
+                            }
+                        
                     }
                 },
                 example: {
@@ -8022,6 +8031,15 @@
                                 id: 11,
                                 t: 1800,
                                 value: 500,
+                                selected: !1
+                            }]
+                        },
+                        thermal: {
+                            valueScale: [-8, 8], // ## Frequency Min-Max scale
+                            data: [{
+                                id: 12,
+                                t: 5000,
+                                value: 0,
                                 selected: !1
                             }]
                         }
@@ -19403,6 +19421,10 @@
             frequency: {
                 valueScale: [50, 500],
                 data: []
+            },
+            thermal: {
+                valueScale: [-8, 8],
+                data: []
             }
         };
         for (var e = 0; e < A; e += i)
@@ -19411,6 +19433,10 @@
                 value: Math.random() * (t.parameters.frequency.valueScale[1] - t.parameters.frequency.valueScale[0]) + t.parameters.frequency.valueScale[0]
             }),
             t.parameters.amplitude.data.push({
+                t: e,
+                value: Math.random()
+            }),
+            t.parameters.thermal.data.push({
                 t: e,
                 value: Math.random()
             });
@@ -19478,12 +19504,14 @@
                     scaleTimeline: A,
                     scaleParameter: {
                         amplitude: A,
-                        frequency: A
+                        frequency: A,
+                        thermal:A
                     },
                     leftOffset: 0,
                     topOffsetParameter: {
                         amplitude: 0,
-                        frequency: 0
+                        frequency: 0,
+                        thermal:0
                     }
                 },
                 this._parameterValues[this._names[i]] = {},
@@ -19794,6 +19822,10 @@
                         value2: 0
                     },
                     amplitude: {
+                        value1: 0,
+                        value2: 0
+                    },
+                    thermal: {
                         value1: 0,
                         value2: 0
                     }
@@ -20909,6 +20941,7 @@
         propTypes: {
             frequency: r.default.PropTypes.number.isRequired,
             amplitude: r.default.PropTypes.number.isRequired,
+            thermal: r.default.PropTypes.number.isRequired,
             mute: r.default.PropTypes.bool
         },
         getInitialState: function() {
@@ -21347,9 +21380,12 @@
                   , g = r.slice(C, u)
                   , s = Math.max.apply(null, g)
                   , q = Q(g, i);
+                var thermal = (Math.random() * 16) - 8;
                 o.actions.newKeyframe("amplitude", h, s, !1, "main"),
-                o.actions.newKeyframe("frequency", h, q, !1, "main")
-                o.actions.newKeyframe("temperature", h, q, !1, "main")
+                o.actions.newKeyframe("frequency", h, q, !1, "main"),
+                o.actions.newKeyframe("thermal", h, thermal, !1, "main"); // Thermal key frame
+                // console.log(`Keyframe added - Time: ${h}ms, Amplitude: ${s}, Frequency: ${q}, Thermal: ${thermal}`);
+
             }
             o.actions.unselectKeyframes("main"),
             o.actions.addSelectedKeyframes([0, 1], "main"),
@@ -21660,22 +21696,24 @@
             var A = this
               , i = this.interpolateParameter("frequency", this.state.playback.currentTime, this.state.playback.playingIcon)
               , t = this.interpolateParameter("amplitude", this.state.playback.currentTime, this.state.playback.playingIcon)
+              , thm = this.interpolateParameter("thermal", this.state.playback.currentTime, this.state.playback.playingIcon) // thermal parameter
               , e = 0;
             this.props.playbackAtEndOfVTIcon && (e = t);
             var n = this.state.scales.main.scaleTimeline
-              , I = this.state.scales.example.scaleTimeline
+            //   , I = this.state.scales.example.scaleTimeline
               , o = this.state.vticons.main
-              , E = this.state.vticons.example
+            //   , E = this.state.vticons.example
               , K = {
-                width: "44%",
+                width: "50%",
                 marginLeft: "auto",
                 marginRight: "auto",
                 display: "block",
                 borderStyle: "solid",
                 borderWidth: 0
             }
+            // example ui (will be deleted)
               , B = {
-                width: "44%",
+                width: "50%",
                 marginLeft: "auto",
                 marginRight: "auto",
                 display: "block",
@@ -21696,55 +21734,8 @@
                   , l = this.state.study.currentMode == this.state.study.modes.HIGHVIS_HIGHSELECT
                   , c = this.state.study.currentMode == this.state.study.modes.HIGHVIS_HIGHSELECT || this.state.study.currentMode == this.state.study.modes.HIGHVIS_LOWSELECT
                   , v = l
-                  , S = this.props.examplesModifiable;
                  
-                M = r.default.createElement("div", { // ### right side waveform maker
-                    name: "example",
-                    id: "exampleeditor",
-                    ref: "exampleEditorRef",
-                    style: {B, display:"none"},
 
-                }
-                , r.default.createElement(C, {
-                    name: "example",
-                    playing: this.state.playback.playing,
-                    mute: this.state.playback.mute
-                }), r.default.createElement(h, {
-                    name: "example",
-                    displayPlayhead: this.state.vticons.example.selected,
-                    scaleX: I,
-                    currentTime: this.state.playback.currentTime,
-                    duration: E.duration,
-                    keyframeCircleRadius: this.props.keyframeCircleRadius,
-                    playheadFill: this.props.playheadFill
-                }), r.default.createElement(g, {
-                    name: "example",
-                    scaleX: I,
-                    vticon: E,
-                    currentTime: this.state.playback.currentTime,
-                    keyframeCircleRadius: this.props.keyframeCircleRadius,
-                    playheadFill: this.props.playheadFill,
-                    interpolateParameters: this.interpolateParameters,
-                    interpolateParameter: this.interpolateParameter,
-                    selection: this.state.selection,
-                    selectable: m
-                }), Object.keys(E.parameters).map(function(i) {
-                    return r.default.createElement(Q, {
-                        name: "example",
-                        scaleX: I,
-                        currentTime: A.state.playback.currentTime,
-                        parameter: i,
-                        vticon: E,
-                        keyframeCircleRadius: A.props.keyframeCircleRadius,
-                        playheadFill: A.props.playheadFill,
-                        selection: A.state.selection,
-                        selectable: l,
-                        visualization: c,
-                        visualizeTicks: v,
-                        modifiable: S
-                    })
-                })),
-                p = r.default.createElement(q, null)
             }
             return r.default.createElement("div", {
                 id: "app",
@@ -21752,6 +21743,7 @@
             }, r.default.createElement(a, null), r.default.createElement(u, {
                 frequency: i,
                 amplitude: e,
+                thermal: thm,
                 mute: this.state.playback.mute
             }), r.default.createElement(s, {
                 name: "main",
@@ -21810,12 +21802,12 @@
         _updateScales: function() {
             for (var A in this.state.scales) {
                 p.actions.setTimelineRange(A, this._calculateTimelineRange(A));
-                var i = this.refs[A + "EditorRef"].getDOMNode().offsetLeft;
+                var i = this.refs["mainEditorRef"].getDOMNode().offsetLeft;
                 p.actions.setLeftOffset(A, i)
             }
         },
         _calculateTimelineRange: function(A) {
-            var i = this.refs[A + "EditorRef"].getDOMNode().clientWidth;
+            var i = this.refs["mainEditorRef"].getDOMNode().clientWidth;
             return [this.props.timelineLeftOffset + this.props.keyframeCircleRadius, i - this.props.keyframeCircleRadius - this.props.timelineRightOffset]
         }
     });
