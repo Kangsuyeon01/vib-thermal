@@ -22404,7 +22404,7 @@
 
 // ### CSS Style load
 
-// Header CSS
+// Header CSS (### TODO @)
 , function(A, i, t) {
     i = A.exports = t(11)(),
     i.push([A.id, "body{margin:0;font-family:Helvetica Nueue,sans-serif}*{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}.hidden{visibility:hidden;display:none}.controlbutton{padding:5px}.mute{font-size:18pt}.playhead{height:20px;background:blue}.iconvis{height:20px;background:purple}a:link,a:visited{text-decoration:none;color:#000}a:active,a:hover{text-decoration:underline;color:#000}a:active.no-underline,a:hover.no-underline{text-decoration:none}.header{width:100%;height:55px;font-size:3pc;box-shadow:0 2px 10px #bababa;background:rgb(0, 183, 255);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,rgb(0, 183, 255)),color-stop(100%,rgb(0, 183, 255)));background:-webkit-linear-gradient(top,rgb(0, 183, 255) 0%,rgb(0, 183, 255) 100%);background:linear-gradient(to bottom,rgb(0, 183, 255) 0%,rgb(0, 183, 255) 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='rgb(0, 183, 255)',endColorstr='rgb(0, 183, 255)',GradientType=0)}.header .menu{float:right;text-align:right;margin-right:.5em}.header .title{margin-left:.5em}.example-square{float:left;border:solid;border-width:1px;margin:10px}.example-square.selected{border-width:3px}.example-galley{width:10%;height:100%;float:left}.animationoptions{margin-right:auto;margin-left:auto}.unselectable,text{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none}", ""])

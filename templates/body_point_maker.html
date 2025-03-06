@@ -105,6 +105,24 @@
     <h2>Setup & Load Points</h2>
     <input type="file" id="fileInput">
     
+<h2>Click to Add Points (Manual Front/Back Selection & Auto Right Hand)</h2>
+
+<div id="wrapper">
+
+    <div class="container" id="leftContainer">
+        <img id="leftHandImage" class="handImage" src="static/src/left_hand.jpg" alt="Left Hand">
+        <div id="cursorPreviewLeft" class="cursor-point"></div>
+    </div>
+
+    <div class="container" id="rightContainer">
+        <img id="rightHandImage" class="handImage" src="static/src/right_hand.jpg" alt="Right Hand">
+    </div>
+</div>
+
+<button onclick="saveData()">💾 Save JSON</button>
+<pre id="output"></pre>
+
+<div class="tooltip" id="tooltip"></div>
     <!-- Responsive Layout: Guide and Code Table -->
     <div id="contentWrapper">
         <div class="info-box">
@@ -140,7 +158,7 @@
                 <tr>
                     <td>3rd digit</td>
                     <td>Body Part</td>
-                    <td>0 = Palm, 1 = Thumb, 2 = Index, 3 = Middle, 4 = Ring, 5 = Pinky, 6 = Wrist, 7 = Forearm, 8 = Elbow</td>
+                    <td>0 = Palm, 1 = Thumb, 2 = Index, 3 = Middle, 4 = Ring, 5 = Pinky, 6 = Wrist, 7 = Forearm, 8 = Upper arm</td>
                 </tr>
                 <tr>
                     <td>4th digit</td>
@@ -150,26 +168,6 @@
             </table>
         </div>
     </div>
-    
-<h2>Click to Add Points (Manual Front/Back Selection & Auto Right Hand)</h2>
-
-<div id="wrapper">
-
-    <div class="container" id="leftContainer">
-        <img id="leftHandImage" class="handImage" src="static/src/left_hand.jpg" alt="Left Hand">
-        <div id="cursorPreviewLeft" class="cursor-point"></div>
-    </div>
-
-    <div class="container" id="rightContainer">
-        <img id="rightHandImage" class="handImage" src="static/src/right_hand.jpg" alt="Right Hand">
-    </div>
-</div>
-
-<button onclick="saveData()">💾 Save JSON</button>
-<pre id="output"></pre>
-
-<div class="tooltip" id="tooltip"></div>
-
 <script>
     const leftContainer = document.getElementById("leftContainer");
     const rightContainer = document.getElementById("rightContainer");
@@ -180,7 +178,7 @@
 
     const partNames = {
         "1": "Thumb", "2": "Index", "3": "Middle", "4": "Ring", "5": "Pinky",
-        "0": "Palm", "6": "Wrist", "7": "Forearm", "8": "Elbow"
+        "0": "Palm", "6": "Wrist", "7": "Forearm", "8": "Upper arm"
     };
 
     function interpretCode(code) {
@@ -212,7 +210,7 @@
         let side = prompt("2nd digit: Enter side (Front=1, Back=2):");
         if (side !== "1" && side !== "2") return;
 
-        let part = prompt("3rd digit: Enter part (Thumb=1, Index=2, Middle=3, Ring=4, Pinky=5, Palm=0, Wrist=6, Forearm=7, Elbow=8):");
+        let part = prompt("3rd digit: Enter part (Thumb=1, Index=2, Middle=3, Ring=4, Pinky=5, Palm=0, Wrist=6, Forearm=7, Upper arm=8):");
         if (!part) return;
 
         let segment = prompt("4th digit: Enter segment number (1-9):");
