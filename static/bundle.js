@@ -19387,7 +19387,7 @@
                 data: []
             },
             frequency: {
-                valueScale: [50, 500],
+                valueScale: [30, 300],
                 data: [{
                     t: 1025.1572327044023,
                     value: 312.50000000000057
@@ -19419,7 +19419,7 @@
                 data: []
             },
             frequency: {
-                valueScale: [50, 500],
+                valueScale: [30, 300],
                 data: []
             },
             thermal: {
