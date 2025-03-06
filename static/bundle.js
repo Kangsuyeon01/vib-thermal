@@ -18742,7 +18742,7 @@
       , o = t(6)
       , E = 60
       , a = 100
-      , C = r.default.createActions(["setTime", "play", "pause", "togglePlaying", "setPlaying", "stepBackward", "stepForward", "skipBackward", "skipForward", "toggleMute"])
+      , C = r.default.createActions(["setTime", "play", "pause", "togglePlaying", "setPlaying"])
       , u = r.default.createStore({
         listenables: [C],
         init: function() {
@@ -18780,18 +18780,6 @@
             A > this._vtduration && (A = this._vtduration),
             this._data.currentTime = A,
             this.trigger(this._data)
-        },
-        onStepBackward: function() {
-            this.onSetTime(this._data.currentTime - a)
-        },
-        onStepForward: function() {
-            this.onSetTime(this._data.currentTime + a)
-        },
-        onSkipBackward: function() {
-            this.onSetTime(0)
-        },
-        onSkipForward: function() {
-            this.onSetTime(this._vtduration)
         },
         onPlay: function() {
             this.onSetPlaying(!0)
@@ -20200,20 +20188,9 @@
                 fontSize: "28pt"
             }
         },
-        _onMuteClick: function(A) {
-            o.actions.toggleMute()
-        },
         _onPlayClick: function(A) {
             E.actions.selectVTIcon(this.props.name),
             o.actions.togglePlaying()
-        },
-        _onSkipBackwardClick: function(A) {
-            E.actions.selectVTIcon(this.props.name),
-            o.actions.skipBackward()
-        },
-        _onSkipForwardClick: function(A) {
-            E.actions.selectVTIcon(this.props.name),
-            o.actions.skipForward()
         },
         render: function() {
             var A = {
@@ -20245,33 +20222,10 @@
                 class: "btn",
                 href: "#"
             }, r.default.createElement("i", {
-                onClick: this._onSkipBackwardClick,
-                className: "fa fa-step-backward",
-                style: t
-            })), r.default.createElement("a", {
-                class: "btn",
-                href: "#"
-            }, r.default.createElement("i", {
                 onClick: this._onPlayClick,
                 className: e,
                 style: t
-            })), r.default.createElement("a", {
-                class: "btn",
-                href: "#"
-            }, r.default.createElement("i", {
-                onClick: this._onSkipForwardClick,
-                className: "fa fa-step-forward",
-                style: t
-            })), r.default.createElement("a", {
-                class: "btn",
-                href: "#"
-            }, r.default.createElement("span", {
-                onClick: this._onMuteClick,
-                className: "unselectable mute"
-            }, r.default.createElement("input", {
-                type: "checkbox",
-                checked: this.props.mute
-            }), "Mute"))))
+            }))))
         }
     });
     A.exports = a
