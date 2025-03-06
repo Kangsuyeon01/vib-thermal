@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Thermal & Vibration</title>
+    <title>Mark a point as Vibration or Thermal.</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         #wrapper { display: flex; justify-content: center; gap: 20px; margin-bottom: 10px; }
@@ -13,7 +13,8 @@
             width: 12px; height: 12px; border-radius: 50%;
             position: absolute; cursor: pointer;
             transform: translate(-50%, -50%);
-            background-color: grey;
+            background-color: rgba(128, 128, 128, 0.3)
+
         }
         .tooltip {
             position: absolute; display: none; background: black;
@@ -26,26 +27,26 @@
         }
         #vibrationMode { background-color: blue; }
         #thermalMode { background-color: red; }
-        #clearMode { background-color: gray; }
+        #clearMode { background-color: rgb(128, 128, 128); }
         .active { border: 3px solid yellow; }
     </style>
 </head>
 <body>
 
-<h2>Edit Thermal & Vibration</h2>
+<h2>Mark a point as Vibration or Thermal.</h2>
 
 <!-- Mode selection buttons -->
 <div class="buttons">
-    <button id="vibrationMode" onclick="setMode('vibration')">Vibration Mode</button>
-    <button id="thermalMode" onclick="setMode('thermal')">Thermal Mode</button>
-    <button id="clearMode" onclick="setMode('none')">Clear Selection</button>
+    <button id="vibrationMode" onclick="setMode('vibration')">Vibration</button>
+    <button id="thermalMode" onclick="setMode('thermal')">Thermal</button>
+    <button id="clearMode" onclick="setMode('none')">Clear</button>
 </div>
 
 <!-- Display selected Thermal & Vibration information -->
-<p><strong>Current Thermal:</strong> <span id="thermalInfo">None</span></p>
-<p><strong>Current Vibration:</strong> <span id="vibrationInfo">None</span></p>
+<p>
+<strong>Current Vibration:</strong> <span id="vibrationInfo">None</span>
+<strong>Current Thermal:</strong> <span id="thermalInfo">None</span></p>
 
-<button onclick="sendData()">🚀 Send to Flask</button>
 
 <div id="wrapper">
     <!-- Left hand -->
@@ -58,7 +59,7 @@
         <img id="rightHandImage" class="handImage" src="static/src/right_hand.jpg" alt="Right Hand">
     </div>
 </div>
-
+<button onclick="sendData()">Save</button>
 <div class="tooltip" id="tooltip"></div>
 
 <script>
@@ -120,25 +121,40 @@
     }
 
     function setMode(mode) {
-        currentMode = mode;
+    currentMode = mode;
 
-        document.getElementById("vibrationMode").classList.remove("active");
-        document.getElementById("thermalMode").classList.remove("active");
-        document.getElementById("clearMode").classList.remove("active");
+    document.getElementById("vibrationMode").classList.remove("active");
+    document.getElementById("thermalMode").classList.remove("active");
+    document.getElementById("clearMode").classList.remove("active");
 
-        if (mode === "vibration") {
-            document.getElementById("vibrationMode").classList.add("active");
-        } else if (mode === "thermal") {
-            document.getElementById("thermalMode").classList.add("active");
-        } else {
-            document.getElementById("clearMode").classList.add("active");
+    if (mode === "vibration") {
+        document.getElementById("vibrationMode").classList.add("active");
+    } else if (mode === "thermal") {
+        document.getElementById("thermalMode").classList.add("active");
+    } else {
+        document.getElementById("clearMode").classList.add("active");
+
+            //  Reset selected points
+            if (currentVibrationIndex !== null) {
+                fixedPoints[currentVibrationIndex].mode = "none";
+            }
+            if (currentThermalIndex !== null) {
+                fixedPoints[currentThermalIndex].mode = "none";
+            }
+
+            // Clear selection
+            currentVibrationIndex = null;
+            currentThermalIndex = null;
+            
+            //Update UI to reflect cleared points
+            updateAllPointColors();
+            updateInfo();
         }
     }
 
-    function applyMode(index) {
-        if (currentMode === "none") return; // Do nothing if no mode is selected
 
-        let point = fixedPoints[index];
+    function applyMode(index) {
+    let point = fixedPoints[index];
 
         if (currentMode === "thermal") {
             if (currentThermalIndex !== null) {
@@ -146,17 +162,32 @@
             }
             point.mode = "thermal";
             currentThermalIndex = index;
-        } else if (currentMode === "vibration") {
+        } 
+        else if (currentMode === "vibration") {
             if (currentVibrationIndex !== null) {
                 fixedPoints[currentVibrationIndex].mode = "none"; // Reset previous vibration selection
             }
             point.mode = "vibration";
             currentVibrationIndex = index;
         }
+        else if (currentMode === "none") {
+            //  Clear the previously selected points only if they exist
+            if (currentVibrationIndex !== null) {
+                fixedPoints[currentVibrationIndex].mode = "none";
+            }
+            if (currentThermalIndex !== null) {
+                fixedPoints[currentThermalIndex].mode = "none";
+            }
+
+            //  Reset indices
+            currentVibrationIndex = null;
+            currentThermalIndex = null;
+        }
 
         updateAllPointColors();
         updateInfo();
     }
+
 
     function updateAllPointColors() {
         document.querySelectorAll(".point").forEach((div) => {
@@ -171,7 +202,7 @@
         } else if (point.mode === "vibration") {
             div.style.backgroundColor = "blue";
         } else {
-            div.style.backgroundColor = "grey";
+            div.style.backgroundColor = "rgba(128, 128, 128, 0.5)";
         }
     }
 

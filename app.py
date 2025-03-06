@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index.html", load_content=render_template("body_point_load.html"))
 
 @app.route("/body_point_maker")
 def body_site_point_maker():

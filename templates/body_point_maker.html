@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -154,13 +154,12 @@
 <h2>Click to Add Points (Manual Front/Back Selection & Auto Right Hand)</h2>
 
 <div id="wrapper">
-    <!-- 왼손 -->
+
     <div class="container" id="leftContainer">
         <img id="leftHandImage" class="handImage" src="static/src/left_hand.jpg" alt="Left Hand">
         <div id="cursorPreviewLeft" class="cursor-point"></div>
     </div>
 
-    <!-- 오른손 -->
     <div class="container" id="rightContainer">
         <img id="rightHandImage" class="handImage" src="static/src/right_hand.jpg" alt="Right Hand">
     </div>
@@ -192,7 +191,7 @@
         return `${hand} - ${side} - ${part} - ${position}`;
     }
 
-    // 마우스 커서 미리보기 (왼손)
+    // mouse point
     leftContainer.addEventListener("mousemove", function(event) {
         const rect = leftContainer.getBoundingClientRect();
         let x = event.clientX - rect.left;
@@ -201,7 +200,7 @@
         cursorPreviewLeft.style.top = `${y}px`;
     });
 
-    // 클릭하면 좌표 생성 (왼손 + 오른손 자동 반전)
+    // create point
     leftContainer.addEventListener("click", function(event) {
         if (event.shiftKey) return;
 
@@ -297,7 +296,7 @@
             try {
                 fixedPoints = JSON.parse(event.target.result); // Parse JSON
                 document.getElementById("output").textContent = JSON.stringify(fixedPoints, null, 2);
-                loadPoints(); // 🚀 Load the points onto the image
+                loadPoints(); // Load the points onto the image
             } catch (error) {
                 console.error("Error parsing JSON:", error);
                 alert("Invalid JSON file format!");
