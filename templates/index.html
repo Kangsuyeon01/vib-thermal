@@ -13,21 +13,89 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 	 <script type="text/css" src="css/macaron.css"></script>
 
-
-  	<!-- Libraries-->
-	<script type="module" src="thirdparty/audiolet /Audiolet.js"></script>
-	
 </head>
 
 
 <body>
+
+  <!-- <div id="app"></div> -->
+  <!-- <script src="http://localhost:8080/webpack-dev-server.js"></script> -->
+	<!-- <script src="static/bundle.js"></script> -->
+
+	<div class="container vibthermal">
+		<div class="container vibration">
+			<h1>Vibrotactile Feedback</h1>
+			<div class="envelope">
+				<h2>Temporal Envelope:</h2>
+				<draw-canvas stroke-color="blue"></draw-canvas>
+			</div>
+			<div class="envelope">
+				<h2>Frequency Envelope:</h2>
+				<draw-canvas stroke-color="red"></draw-canvas>
+			</div>
+			<div class="envelope">
+				<h2><label for="vibduration">Duration:</label></h2>
+				<input type="range" min="0" max="10" value="5" id="vibduration">
+			</div>
+		</div>
+		<div class="container thermal">
+			<h1>Thermal Feedback</h1>
+			<div class="envelope">
+				<h2><label for="tempamp">Amplitude of Change:</label></h2>
+				<input type="range" min="-8" max="8" value="0" id="tempamp">
+			</div>
+			<div class="envelope">
+				<h2><label for="tempduration">Duration:</label></h2>
+				<input type="range" min="0" max="10" value="5" id="tempduration">
+			</div>
+		</div>
+		<button class="play">PLAY</button>
+		<form class="ratings">
+			<div class="envelope">
+				<h2><label for="roughness">Roughness:</label></h2>
+				<input type="range" min="0" max="100" value="50" id="roughness">
+			</div>
+			<div class="envelope">
+				<h2><label for="valence">Valence:</label></h2>
+				<input type="range" min="0" max="100" value="50" id="valence">
+			</div>
+			<div class="envelope">
+				<h2><label for="warmness">Warmness:</label></h2>
+				<input type="range" min="0" max="100" value="50" id="warmness">
+			</div>
+			<div class="envelope">
+				<h2><label for="arousal">Arousal:</label></h2>
+				<input type="range" min="0" max="100" value="50" id="arousal">
+			</div>
+			<div class="envelope" style="grid-column: 1 / -1;">
+				<h2><label for="referral">Referral:</label></h2>
+				<div>
+					<div class="radio">
+						<input type="radio" id="none" name="referral" value="none">
+						<label for="none">None</label>
+					</div>
+					<div class="radio">
+						<input type="radio" id="referral" name="referral" value="referral">
+						<label for="referral">Referral</label>
+					</div>
+					<div class="radio">
+						<input type="radio" id="masking" name="referral" value="masking">
+						<label for="masking">Masking</label>
+					</div>
+				</div>
+			</div>
+			<input type="reset" value="Reset">
+			<input type="submit" value="Submit">
+		</form>
+	</div>
+	{% include 'body_point_load.html' %}
+
   <div id="app"></div>
   <!-- <script src="http://localhost:8080/webpack-dev-server.js"></script> -->
 	<script src="static/bundle.js"></script>
 	{% include 'body_point_load.html' %}
 
 
-	
 </body>
 
 </html>

@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, jsonify
+import mimetypes
+mimetypes.add_type('application/javascript', '.mjs')
 
 app = Flask(__name__)
 
