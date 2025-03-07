@@ -1,0 +1,730 @@
+[
+  {
+    "x": 41,
+    "y": 68.16666412353516,
+    "code": "1111",
+    "desc": "Left Hand - Front - Thumb - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 259,
+    "y": 68.16666412353516,
+    "code": "2111",
+    "desc": "Right Hand - Front - Thumb - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 52,
+    "y": 85.16666412353516,
+    "code": "1112",
+    "desc": "Left Hand - Front - Thumb - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 248,
+    "y": 85.16666412353516,
+    "code": "2112",
+    "desc": "Right Hand - Front - Thumb - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 80,
+    "y": 19.166664123535156,
+    "code": "1121",
+    "desc": "Left Hand - Front - Index - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 220,
+    "y": 19.166664123535156,
+    "code": "2121",
+    "desc": "Right Hand - Front - Index - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 80,
+    "y": 37.166664123535156,
+    "code": "1122",
+    "desc": "Left Hand - Front - Index - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 220,
+    "y": 37.166664123535156,
+    "code": "2122",
+    "desc": "Right Hand - Front - Index - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 80,
+    "y": 56.166664123535156,
+    "code": "1123",
+    "desc": "Left Hand - Front - Index - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 220,
+    "y": 56.166664123535156,
+    "code": "2123",
+    "desc": "Right Hand - Front - Index - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 101,
+    "y": 16.166664123535156,
+    "code": "1131",
+    "desc": "Left Hand - Front - Middle - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 199,
+    "y": 16.166664123535156,
+    "code": "2131",
+    "desc": "Right Hand - Front - Middle - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 99,
+    "y": 33.166664123535156,
+    "code": "1132",
+    "desc": "Left Hand - Front - Middle - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 201,
+    "y": 33.166664123535156,
+    "code": "2132",
+    "desc": "Right Hand - Front - Middle - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 98,
+    "y": 57.166664123535156,
+    "code": "1133",
+    "desc": "Left Hand - Front - Middle - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 202,
+    "y": 57.166664123535156,
+    "code": "2133",
+    "desc": "Right Hand - Front - Middle - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 122,
+    "y": 22.166664123535156,
+    "code": "1141",
+    "desc": "Left Hand - Front - Ring - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 178,
+    "y": 22.166664123535156,
+    "code": "2141",
+    "desc": "Right Hand - Front - Ring - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 118,
+    "y": 42.166664123535156,
+    "code": "1142",
+    "desc": "Left Hand - Front - Ring - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 182,
+    "y": 42.166664123535156,
+    "code": "2142",
+    "desc": "Right Hand - Front - Ring - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 114,
+    "y": 62.166664123535156,
+    "code": "1143",
+    "desc": "Left Hand - Front - Ring - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 186,
+    "y": 62.166664123535156,
+    "code": "2143",
+    "desc": "Right Hand - Front - Ring - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 138,
+    "y": 45.166664123535156,
+    "code": "1151",
+    "desc": "Left Hand - Front - Pinky - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 162,
+    "y": 45.166664123535156,
+    "code": "2151",
+    "desc": "Right Hand - Front - Pinky - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 134,
+    "y": 58.166664123535156,
+    "code": "1152",
+    "desc": "Left Hand - Front - Pinky - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 166,
+    "y": 58.166664123535156,
+    "code": "2152",
+    "desc": "Right Hand - Front - Pinky - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 126,
+    "y": 71.16666412353516,
+    "code": "1153",
+    "desc": "Left Hand - Front - Pinky - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 174,
+    "y": 71.16666412353516,
+    "code": "2153",
+    "desc": "Right Hand - Front - Pinky - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 82,
+    "y": 76.16666412353516,
+    "code": "1101",
+    "desc": "Left Hand - Front - Palm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 218,
+    "y": 76.16666412353516,
+    "code": "2101",
+    "desc": "Right Hand - Front - Palm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 98,
+    "y": 80.16666412353516,
+    "code": "1102",
+    "desc": "Left Hand - Front - Palm - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 202,
+    "y": 80.16666412353516,
+    "code": "2102",
+    "desc": "Right Hand - Front - Palm - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 116,
+    "y": 88.16666412353516,
+    "code": "1103",
+    "desc": "Left Hand - Front - Palm - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 184,
+    "y": 88.16666412353516,
+    "code": "2103",
+    "desc": "Right Hand - Front - Palm - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 73,
+    "y": 99.16666412353516,
+    "code": "1104",
+    "desc": "Left Hand - Front - Palm - Position 4",
+    "mode": "none"
+  },
+  {
+    "x": 227,
+    "y": 99.16666412353516,
+    "code": "2104",
+    "desc": "Right Hand - Front - Palm - Position 4",
+    "mode": "none"
+  },
+  {
+    "x": 93,
+    "y": 98.16666412353516,
+    "code": "1105",
+    "desc": "Left Hand - Front - Palm - Position 5",
+    "mode": "none"
+  },
+  {
+    "x": 207,
+    "y": 98.16666412353516,
+    "code": "2105",
+    "desc": "Right Hand - Front - Palm - Position 5",
+    "mode": "none"
+  },
+  {
+    "x": 112,
+    "y": 104.16666412353516,
+    "code": "1106",
+    "desc": "Left Hand - Front - Palm - Position 6",
+    "mode": "none"
+  },
+  {
+    "x": 188,
+    "y": 104.16666412353516,
+    "code": "2106",
+    "desc": "Right Hand - Front - Palm - Position 6",
+    "mode": "none"
+  },
+  {
+    "x": 80,
+    "y": 116.16666412353516,
+    "code": "1107",
+    "desc": "Left Hand - Front - Palm - Position 7",
+    "mode": "none"
+  },
+  {
+    "x": 220,
+    "y": 116.16666412353516,
+    "code": "2107",
+    "desc": "Right Hand - Front - Palm - Position 7",
+    "mode": "none"
+  },
+  {
+    "x": 103,
+    "y": 118.16666412353516,
+    "code": "1108",
+    "desc": "Left Hand - Front - Palm - Position 8",
+    "mode": "none"
+  },
+  {
+    "x": 197,
+    "y": 118.16666412353516,
+    "code": "2108",
+    "desc": "Right Hand - Front - Palm - Position 8",
+    "mode": "none"
+  },
+  {
+    "x": 267.28570556640625,
+    "y": 68.73213958740234,
+    "code": "1211",
+    "desc": "Left Hand - Back - Thumb - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 32.71429443359375,
+    "y": 68.73213958740234,
+    "code": "2211",
+    "desc": "Right Hand - Back - Thumb - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 257.28570556640625,
+    "y": 87.73213958740234,
+    "code": "1212",
+    "desc": "Left Hand - Back - Thumb - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 42.71429443359375,
+    "y": 87.73213958740234,
+    "code": "2212",
+    "desc": "Right Hand - Back - Thumb - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 230.28570556640625,
+    "y": 16.732139587402344,
+    "code": "1221",
+    "desc": "Left Hand - Back - Index - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 69.71429443359375,
+    "y": 16.732139587402344,
+    "code": "2221",
+    "desc": "Right Hand - Back - Index - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 230.28570556640625,
+    "y": 32.732139587402344,
+    "code": "1222",
+    "desc": "Left Hand - Back - Index - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 69.71429443359375,
+    "y": 32.732139587402344,
+    "code": "2222",
+    "desc": "Right Hand - Back - Index - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 231.14285278320312,
+    "y": 53.732139587402344,
+    "code": "1223",
+    "desc": "Left Hand - Back - Index - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 68.85714721679688,
+    "y": 53.732139587402344,
+    "code": "2223",
+    "desc": "Right Hand - Back - Index - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 208.42855834960938,
+    "y": 11.732139587402344,
+    "code": "1231",
+    "desc": "Left Hand - Back - Middle - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 91.57144165039062,
+    "y": 11.732139587402344,
+    "code": "2231",
+    "desc": "Right Hand - Back - Middle - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 210.42855834960938,
+    "y": 32.732139587402344,
+    "code": "1232",
+    "desc": "Left Hand - Back - Middle - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 89.57144165039062,
+    "y": 32.732139587402344,
+    "code": "2232",
+    "desc": "Right Hand - Back - Middle - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 212.42855834960938,
+    "y": 53.732139587402344,
+    "code": "1233",
+    "desc": "Left Hand - Back - Middle - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 87.57144165039062,
+    "y": 53.732139587402344,
+    "code": "2233",
+    "desc": "Right Hand - Back - Middle - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 187.42855834960938,
+    "y": 21.732139587402344,
+    "code": "1241",
+    "desc": "Left Hand - Back - Ring - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 112.57144165039062,
+    "y": 21.732139587402344,
+    "code": "2241",
+    "desc": "Right Hand - Back - Ring - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 191.42855834960938,
+    "y": 36.732139587402344,
+    "code": "1242",
+    "desc": "Left Hand - Back - Ring - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 108.57144165039062,
+    "y": 36.732139587402344,
+    "code": "2242",
+    "desc": "Right Hand - Back - Ring - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 196.42855834960938,
+    "y": 56.732139587402344,
+    "code": "1243",
+    "desc": "Left Hand - Back - Ring - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 103.57144165039062,
+    "y": 56.732139587402344,
+    "code": "2243",
+    "desc": "Right Hand - Back - Ring - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 171.42855834960938,
+    "y": 41.732139587402344,
+    "code": "1251",
+    "desc": "Left Hand - Back - Pinky - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 128.57144165039062,
+    "y": 41.732139587402344,
+    "code": "2251",
+    "desc": "Right Hand - Back - Pinky - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 176.42855834960938,
+    "y": 52.732139587402344,
+    "code": "1252",
+    "desc": "Left Hand - Back - Pinky - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 123.57144165039062,
+    "y": 52.732139587402344,
+    "code": "2252",
+    "desc": "Right Hand - Back - Pinky - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 183.42855834960938,
+    "y": 69.73213958740234,
+    "code": "1253",
+    "desc": "Left Hand - Back - Pinky - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 116.57144165039062,
+    "y": 69.73213958740234,
+    "code": "2253",
+    "desc": "Right Hand - Back - Pinky - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 222.42855834960938,
+    "y": 76.73213958740234,
+    "code": "1201",
+    "desc": "Left Hand - Back - Palm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 77.57144165039062,
+    "y": 76.73213958740234,
+    "code": "2201",
+    "desc": "Right Hand - Back - Palm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 205.42855834960938,
+    "y": 78.73213958740234,
+    "code": "1202",
+    "desc": "Left Hand - Back - Palm - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 94.57144165039062,
+    "y": 78.73213958740234,
+    "code": "2202",
+    "desc": "Right Hand - Back - Palm - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 189.42855834960938,
+    "y": 88.73213958740234,
+    "code": "1203",
+    "desc": "Left Hand - Back - Palm - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 110.57144165039062,
+    "y": 88.73213958740234,
+    "code": "2203",
+    "desc": "Right Hand - Back - Palm - Position 3",
+    "mode": "none"
+  },
+  {
+    "x": 235.42855834960938,
+    "y": 93.73213958740234,
+    "code": "1204",
+    "desc": "Left Hand - Back - Palm - Position 4",
+    "mode": "none"
+  },
+  {
+    "x": 64.57144165039062,
+    "y": 93.73213958740234,
+    "code": "2204",
+    "desc": "Right Hand - Back - Palm - Position 4",
+    "mode": "none"
+  },
+  {
+    "x": 215.42855834960938,
+    "y": 96.73213958740234,
+    "code": "1205",
+    "desc": "Left Hand - Back - Palm - Position 5",
+    "mode": "none"
+  },
+  {
+    "x": 84.57144165039062,
+    "y": 96.73213958740234,
+    "code": "2205",
+    "desc": "Right Hand - Back - Palm - Position 5",
+    "mode": "none"
+  },
+  {
+    "x": 193.42855834960938,
+    "y": 103.73213958740234,
+    "code": "1206",
+    "desc": "Left Hand - Back - Palm - Position 6",
+    "mode": "none"
+  },
+  {
+    "x": 106.57144165039062,
+    "y": 103.73213958740234,
+    "code": "2206",
+    "desc": "Right Hand - Back - Palm - Position 6",
+    "mode": "none"
+  },
+  {
+    "x": 231.42855834960938,
+    "y": 109.73213958740234,
+    "code": "1207",
+    "desc": "Left Hand - Back - Palm - Position 7",
+    "mode": "none"
+  },
+  {
+    "x": 68.57144165039062,
+    "y": 109.73213958740234,
+    "code": "2207",
+    "desc": "Right Hand - Back - Palm - Position 7",
+    "mode": "none"
+  },
+  {
+    "x": 206.42855834960938,
+    "y": 111.73213958740234,
+    "code": "1208",
+    "desc": "Left Hand - Back - Palm - Position 8",
+    "mode": "none"
+  },
+  {
+    "x": 93.57144165039062,
+    "y": 111.73213958740234,
+    "code": "2208",
+    "desc": "Right Hand - Back - Palm - Position 8",
+    "mode": "none"
+  },
+  {
+    "x": 95.22216796875,
+    "y": 154.59027099609375,
+    "code": "1161",
+    "desc": "Left Hand - Front - Wrist - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 204.77783203125,
+    "y": 154.59027099609375,
+    "code": "2161",
+    "desc": "Right Hand - Front - Wrist - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 217.22216796875,
+    "y": 150.59027099609375,
+    "code": "1261",
+    "desc": "Left Hand - Back - Wrist - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 82.77783203125,
+    "y": 150.59027099609375,
+    "code": "2261",
+    "desc": "Right Hand - Back - Wrist - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 99.22216796875,
+    "y": 213.59027099609375,
+    "code": "1171",
+    "desc": "Left Hand - Front - Forearm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 200.77783203125,
+    "y": 213.59027099609375,
+    "code": "2171",
+    "desc": "Right Hand - Front - Forearm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 213.22216796875,
+    "y": 215.59027099609375,
+    "code": "1271",
+    "desc": "Left Hand - Back - Forearm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 86.77783203125,
+    "y": 215.59027099609375,
+    "code": "2271",
+    "desc": "Right Hand - Back - Forearm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 98.22216796875,
+    "y": 267.59027099609375,
+    "code": "1172",
+    "desc": "Left Hand - Front - Forearm - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 201.77783203125,
+    "y": 267.59027099609375,
+    "code": "2172",
+    "desc": "Right Hand - Front - Forearm - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 212.22216796875,
+    "y": 267.59027099609375,
+    "code": "1172",
+    "desc": "Left Hand - Front - Forearm - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 87.77783203125,
+    "y": 267.59027099609375,
+    "code": "2172",
+    "desc": "Right Hand - Front - Forearm - Position 2",
+    "mode": "none"
+  },
+  {
+    "x": 105.22216796875,
+    "y": 361.59027099609375,
+    "code": "1181",
+    "desc": "Left Hand - Front - Upper arm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 194.77783203125,
+    "y": 361.59027099609375,
+    "code": "2181",
+    "desc": "Right Hand - Front - Upper arm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 198.22216796875,
+    "y": 362.59027099609375,
+    "code": "1281",
+    "desc": "Left Hand - Back - Upper arm - Position 1",
+    "mode": "none"
+  },
+  {
+    "x": 101.77783203125,
+    "y": 362.59027099609375,
+    "code": "2281",
+    "desc": "Right Hand - Back - Upper arm - Position 1",
+    "mode": "none"
+  }
+]
