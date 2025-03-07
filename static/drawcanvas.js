@@ -1,7 +1,7 @@
 //@ts-check
 import { notnull } from './util.mjs';
 
-const NUM_SAMPLES = 250;
+const NUM_SAMPLES = 150;
 
 export class DrawCanvasElement extends HTMLElement {
 
@@ -91,8 +91,8 @@ export class DrawCanvasElement extends HTMLElement {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.beginPath();
         this.ctx.moveTo(0, this.canvas.height * (1 - this.samples[0]));
-        this.ctx.lineWidth = 4;
-        this.ctx.lineCap = "round";
+        this.ctx.lineWidth = 8;
+        this.ctx.lineJoin = "round";
         this.ctx.strokeStyle = this.stroke_color;
         for (let i = 1; i < NUM_SAMPLES; i++) {
             const samp = this.samples[i];
