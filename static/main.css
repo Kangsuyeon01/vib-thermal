@@ -6,7 +6,7 @@ html, body {
 }
 div.envelope {
     display: grid;
-    grid-template-columns: 0.8fr 1fr;
+    grid-template-columns: 0.7fr minmax(0px, 1fr);
     align-items: center;
     /* margin: 0ex 2ex; */
     
@@ -48,6 +48,9 @@ body {
 }
 .signal-container {
     padding: 3ex;
+    display: flex;
+    flex-direction: column;
+    gap: 5ex;
 }
 .signal-container > div {
     display: grid;

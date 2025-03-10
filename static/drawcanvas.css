@@ -1,0 +1,4 @@
+draw-canvas {
+    overflow: hidden;
+    contain: layout paint style;
+}

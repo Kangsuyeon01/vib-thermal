@@ -5,6 +5,41 @@ const NUM_SAMPLES = 150;
 
 export class DrawCanvasElement extends HTMLElement {
 
+    #_resize_observer = new ResizeObserver(this.#_on_self_resize.bind(this));
+
+    static observedAttributes = ["width", "height"];
+    attributeChangedCallback(name, oldValue, newValue) {
+		if (name === "width") this.width = parseInt(newValue);
+		else if (name === "height") this.height = parseInt(newValue);
+	}
+
+	/** @type {number | null} */
+	#_set_width = null;
+	/** @type {number | null} */
+	#_set_height = null;
+	set width(value) {
+		this.#_set_width = value;
+		this.canvas.width = value;
+		this.draw_samples();
+	}
+	get width() {
+		return this.#_set_width ?? this.canvas.width;
+	}
+	set height(value) {
+		this.#_set_height = value;
+		this.canvas.height = value;
+		this.draw_samples();
+	}
+	get height() {
+		return this.#_set_height ?? this.canvas.height;
+	}
+
+    #_on_self_resize() {
+		if (!this.#_set_width) this.canvas.width = this.clientWidth ?? 400;
+		if (!this.#_set_height) this.canvas.height = this.clientHeight ?? 100;
+		this.draw_samples();
+	}
+
     constructor() {
         super();
         this.attachShadow({mode: 'open'});
@@ -12,10 +47,10 @@ export class DrawCanvasElement extends HTMLElement {
         shadowRoot.innerHTML = `
             <style>
                 canvas {
-                    border: 1px solid black;
+                    /* border: 1px solid black; */
                 }
             </style>
-            <canvas width="400" height="400"></canvas>
+            <canvas width="400" height="100"></canvas>
         `;
         this.canvas = notnull(shadowRoot.querySelector('canvas'));
         this.canvas.height = 100;
@@ -23,8 +58,10 @@ export class DrawCanvasElement extends HTMLElement {
         this.ctx = notnull(this.canvas.getContext('2d'));
 
         this.mouse_down = false;
-        /** @typedef {number[]} */
+
+        /** @type {number[]} */
         this.samples = new Array(NUM_SAMPLES).fill(0);
+        this.#_fill_random_samples();
 
         this.on_mouse_down = this.on_mouse_down.bind(this);
         this.on_mouse_up = this.on_mouse_up.bind(this);
@@ -36,6 +73,16 @@ export class DrawCanvasElement extends HTMLElement {
         this.stroke_color = "black";
     }
 
+    #_fill_random_samples() {
+        const [r1, r2] = [Math.random(), Math.random()];
+        const low = Math.min(r1, r2);
+        const high = Math.max(r1, r2);
+        const value = Math.random() * 0.8 + 0.2;
+        for (let i = NUM_SAMPLES*low; i < NUM_SAMPLES*high; i++) {
+            this.samples[Math.floor(i)] = value;
+        }
+    }
+
     connectedCallback() {
         this.addEventListener("mousedown", this.on_mouse_down, { passive: true });
         document.addEventListener("mouseup", this.on_mouse_up, { passive: true });
@@ -43,7 +90,8 @@ export class DrawCanvasElement extends HTMLElement {
 
         this.stroke_color = this.getAttribute("stroke-color") || "black";
 
-        this.draw_samples();
+        this.#_resize_observer.observe(this);
+        this.#_on_self_resize();
     }
 
     disconnectedCallback() {

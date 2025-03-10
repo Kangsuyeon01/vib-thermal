@@ -6,6 +6,7 @@
     <title>Vib-Thermal Editor</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="static/main.css">
+    <link rel="stylesheet" type="text/css" href="static/drawcanvas.css">
     <script src="static/drawcanvas.js" type="module"></script>
 </head>
 <body>
@@ -15,11 +16,11 @@
                 <h1>Vibrotactile Feedback</h1>
                 <div class="envelope">
                     <h2>Temporal Envelope:</h2>
-                    <draw-canvas stroke-color="blue"></draw-canvas>
+					<draw-canvas height=100 stroke-color="blue"></draw-canvas>
                 </div>
                 <div class="envelope">
                     <h2>Frequency Envelope:</h2>
-                    <draw-canvas stroke-color="green"></draw-canvas>
+					<draw-canvas height=100 stroke-color="green"></draw-canvas>
                 </div>
                 <div class="envelope">
                     <h2><label for="vibduration">Duration:</label></h2>
@@ -34,8 +35,8 @@
                 </div> -->
 				<div class="envelope">
 					<h2><label for="tempamp">Temporal Envelope:</label></h2>
-					<draw-canvas stroke-color="red"></draw-canvas>
-                </div>
+					<draw-canvas height=100 stroke-color="red"></draw-canvas>
+				</div>
                 <div class="envelope">
                     <h2><label for="tempduration">Duration:</label></h2>
                     <input type="range" min="0" max="10" value="5" id="tempduration">
@@ -43,7 +44,7 @@
             </div>
             <button class="play">PLAY</button>
         </div>
-        <div>
+        <div class="posrate-container">
             <!-- <div class="bodysite"> -->
                 {% include 'body_point_load.html' %}
             <!-- </div> -->
@@ -69,16 +70,16 @@
 					<label for="referral">Referral:</label>
 					<span class="radio-options">
 						<span>
-						<input type="radio" id="none" name="referral" value="none">
-						<label for="none">None</label>
+							<input type="radio" id="none" name="referral" value="none">
+							<label for="none">None</label>
 						</span>
 						<span>
-						<input type="radio" id="referral" name="referral" value="referral">
-						<label for="referral">Referral</label>
+							<input type="radio" id="referral" name="referral" value="referral">
+							<label for="referral">Referral</label>
 						</span>
 						<span>
-						<input type="radio" id="masking" name="referral" value="masking">
-						<label for="masking">Masking</label>
+							<input type="radio" id="masking" name="referral" value="masking">
+							<label for="masking">Masking</label>
 						</span>
 					</span>
 				</div>
