@@ -1,101 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  	<!--<meta http-equiv="content-type" content="text/html; charset=UTF8">-->
-  	<meta charset="UTF8">
-  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vib-Thermal Editor</title>
-
-	<!-- CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-	 <script type="text/css" src="css/macaron.css"></script>
-   
-
-
-  	<!-- Libraries-->
-	<!-- <script src="thirdparty/audiolet/Audiolet.js"></script> -->
-
-	<script src="static/drawcanvas.js" type="module"></script>
-	<link rel="stylesheet" type="text/css" href="static/main.css">
+    <link rel="stylesheet" type="text/css" href="static/main.css">
+    <script src="static/drawcanvas.js" type="module"></script>
 </head>
-
-
 <body>
-  <!-- <div id="app"></div> -->
-  <!-- <script src="http://localhost:8080/webpack-dev-server.js"></script> -->
-	<!-- <script src="static/bundle.js"></script> -->
+    <div class="main-container">
+        <div class="container">
+            <div class="vibration">
+                <h1>Vibrotactile Feedback</h1>
+                <div class="envelope">
+                    <h2>Temporal Envelope:</h2>
+                    <draw-canvas stroke-color="blue"></draw-canvas>
+                </div>
+                <div class="envelope">
+                    <h2>Frequency Envelope:</h2>
+                    <draw-canvas stroke-color="red"></draw-canvas>
+                </div>
+                <div class="envelope">
+                    <h2><label for="vibduration">Duration:</label></h2>
+                    <input type="range" min="0" max="10" value="5" id="vibduration">
+                </div>
+            </div>
+            <div class="thermal">
+                <h1>Thermal Feedback</h1>
+                <div class="envelope">
+                    <h2><label for="tempamp">Amplitude of Change:</label></h2>
+                    <input type="range" min="-8" max="8" value="0" id="tempamp">
+                </div>
+                <div class="envelope">
+                    <h2><label for="tempduration">Duration:</label></h2>
+                    <input type="range" min="0" max="10" value="5" id="tempduration">
+                </div>
+            </div>
+            <button class="play">PLAY</button>
+        </div>
+        <div>
+            <!-- <div class="bodysite"> -->
+                {% include 'body_point_load.html' %}
+            <!-- </div> -->
+            <div class="card">
+                <form class="ratings">
+                    <div class="envelope">
+                        <h2><label for="roughness">Roughness:</label></h2>
+                        <input type="range" min="0" max="100" value="50" id="roughness">
+                    </div>
+                    <div class="envelope">
+                        <h2><label for="valence">Valence:</label></h2>
+                        <input type="range" min="0" max="100" value="50" id="valence">
+                    </div>
+                    <div class="envelope">
+                        <h2><label for="warmness">Warmness:</label></h2>
+                        <input type="range" min="0" max="100" value="50" id="warmness">
+                    </div>
+                    <div class="envelope">
+                        <h2><label for="arousal">Arousal:</label></h2>
+                        <input type="range" min="0" max="100" value="50" id="arousal">
+                    </div>
+                    
+            <div class="envelope referral-container">
+                <label for="referral">Referral:</label>
+                <span class="radio-options">
+                    <input type="radio" id="none" name="referral" value="none">
+                    <label for="none">None</label>
 
-	<div class="container vibthermal">
-		<div class="container vibration">
-			<h1>Vibrotactile Feedback</h1>
-			<div class="envelope">
-				<h2>Temporal Envelope:</h2>
-				<draw-canvas stroke-color="blue"></draw-canvas>
-			</div>
-			<div class="envelope">
-				<h2>Frequency Envelope:</h2>
-				<draw-canvas stroke-color="red"></draw-canvas>
-			</div>
-			<div class="envelope">
-				<h2><label for="vibduration">Duration:</label></h2>
-				<input type="range" min="0" max="10" value="5" id="vibduration">
-			</div>
-		</div>
-		<div class="container thermal">
-			<h1>Thermal Feedback</h1>
-			<div class="envelope">
-				<h2><label for="tempamp">Amplitude of Change:</label></h2>
-				<input type="range" min="-8" max="8" value="0" id="tempamp">
-			</div>
-			<div class="envelope">
-				<h2><label for="tempduration">Duration:</label></h2>
-				<input type="range" min="0" max="10" value="5" id="tempduration">
-			</div>
-		</div>
-		<button class="play">PLAY</button>
-		<form class="ratings">
-			<div class="envelope">
-				<h2><label for="roughness">Roughness:</label></h2>
-				<input type="range" min="0" max="100" value="50" id="roughness">
-			</div>
-			<div class="envelope">
-				<h2><label for="valence">Valence:</label></h2>
-				<input type="range" min="0" max="100" value="50" id="valence">
-			</div>
-			<div class="envelope">
-				<h2><label for="warmness">Warmness:</label></h2>
-				<input type="range" min="0" max="100" value="50" id="warmness">
-			</div>
-			<div class="envelope">
-				<h2><label for="arousal">Arousal:</label></h2>
-				<input type="range" min="0" max="100" value="50" id="arousal">
-			</div>
-			<div class="envelope" style="grid-column: 1 / -1;">
-				<h2><label for="referral">Referral:</label></h2>
-				<div>
-					<div class="radio">
-						<input type="radio" id="none" name="referral" value="none">
-						<label for="none">None</label>
-					</div>
-					<div class="radio">
-						<input type="radio" id="referral" name="referral" value="referral">
-						<label for="referral">Referral</label>
-					</div>
-					<div class="radio">
-						<input type="radio" id="masking" name="referral" value="masking">
-						<label for="masking">Masking</label>
-					</div>
-				</div>
-			</div>
-			<input type="reset" value="Reset">
-			<input type="submit" value="Submit">
-		</form>
-	</div>
-	{% include 'body_point_load.html' %}
+                    <input type="radio" id="referral" name="referral" value="referral">
+                    <label for="referral">Referral</label>
+
+                    <input type="radio" id="masking" name="referral" value="masking">
+                    <label for="masking">Masking</label>
+                </span>
+            </div>
+            <span class="options">  
+                <input type="reset" value="Reset">
+                <input type="submit" value="Submit">
+            </form>
+        </span>
+            </div>
+            
+        </div>
+    </div>
 </body>
-
 </html>
-	
