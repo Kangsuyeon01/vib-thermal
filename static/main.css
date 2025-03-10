@@ -63,7 +63,7 @@ body {
     margin-bottom: 15px;
 }
 input[type="range"] {
-    width: 100%;
+    /* width: 100%; */ /* not needed in grid */
 }
 .play {
     display: block;
