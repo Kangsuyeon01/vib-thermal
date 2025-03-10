@@ -19,7 +19,7 @@
                 </div>
                 <div class="envelope">
                     <h2>Frequency Envelope:</h2>
-                    <draw-canvas stroke-color="red"></draw-canvas>
+                    <draw-canvas stroke-color="green"></draw-canvas>
                 </div>
                 <div class="envelope">
                     <h2><label for="vibduration">Duration:</label></h2>
@@ -28,9 +28,13 @@
             </div>
             <div class="thermal">
                 <h1>Thermal Feedback</h1>
-                <div class="envelope">
+                <!-- <div class="envelope">
                     <h2><label for="tempamp">Amplitude of Change:</label></h2>
                     <input type="range" min="-8" max="8" value="0" id="tempamp">
+                </div> -->
+				<div class="envelope">
+					<h2><label for="tempamp">Temporal Envelope:</label></h2>
+					<draw-canvas stroke-color="red"></draw-canvas>
                 </div>
                 <div class="envelope">
                     <h2><label for="tempduration">Duration:</label></h2>
