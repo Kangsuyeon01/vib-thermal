@@ -122,8 +122,9 @@ export class DrawCanvasElement extends HTMLElement {
             const y0 = this.last_y_perc;
             const y1 = y_perc;
             const [xlow, ylow, xhigh, yhigh] = x0 < x1 ? [x0, y0, x1, y1] : [x1, y1, x0, y0];
+            // console.log(xlow, ylow, xhigh, yhigh);
             for (let i = xlow; i <= xhigh; i++) {
-                const perc = (i - xlow) / (xhigh - xlow);
+                const perc = (i - xlow) / (xhigh - xlow + 1e-6);
                 this.samples[i] = ylow + perc * (yhigh - ylow);
             }
             this.last_x_perc = x_perc;
