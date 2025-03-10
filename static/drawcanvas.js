@@ -135,8 +135,32 @@ export class DrawCanvasElement extends HTMLElement {
         }
     }
 
+    #_total_duration = 10;
+    set_duration(duration) {
+        this.#_total_duration = duration;
+        this.draw_samples();
+    }
+
+    draw_grid() {
+        // draw 1 second lines, and 0.25 amplitude lines
+        this.ctx.beginPath();
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = "lightgray";
+        const line_dist = this.canvas.width / this.#_total_duration;
+        for (let i = 1; i < this.#_total_duration; i++) {
+            this.ctx.moveTo(i * line_dist, 0);
+            this.ctx.lineTo(i * line_dist, this.canvas.height);
+        }
+        for (let i = 1; i < 4; i++) {
+            this.ctx.moveTo(0, i * this.canvas.height / 4);
+            this.ctx.lineTo(this.canvas.width, i * this.canvas.height / 4);
+        }
+        this.ctx.stroke();
+    }
+
     draw_samples() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.draw_grid();
         this.ctx.beginPath();
         this.ctx.moveTo(0, this.canvas.height * (1 - this.samples[0]));
         this.ctx.lineWidth = 8;
