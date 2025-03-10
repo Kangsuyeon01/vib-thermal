@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="static/main.css">
     <link rel="stylesheet" type="text/css" href="static/drawcanvas.css">
-    <script src="static/drawcanvas.js" type="module"></script>
+    <script src="static/drawcanvas.mjs" type="module"></script>
+    <script src="static/main.mjs" type="module"></script>
 </head>
 <body>
     <div class="main-container">
@@ -15,17 +16,17 @@
             <div class="vibration">
                 <h1>Vibrotactile Feedback</h1>
                 <div class="envelope">
-                    <h2>Temporal Envelope:</h2>
-					<draw-canvas height=100 stroke-color="blue"></draw-canvas>
+                    <h2>Amplitude Envelope:</h2>
+					<draw-canvas id="drawvibaenv" height=100 stroke-color="blue"></draw-canvas>
                 </div>
                 <div class="envelope">
                     <h2>Frequency Envelope:</h2>
-					<draw-canvas height=100 stroke-color="green"></draw-canvas>
+					<draw-canvas id="drawvibfenv" height=100 stroke-color="green"></draw-canvas>
                 </div>
-                <div class="envelope">
+                <!-- <div class="envelope">
                     <h2><label for="vibduration">Duration:</label></h2>
                     <input type="range" min="0" max="10" value="5" id="vibduration">
-                </div>
+                </div> -->
             </div>
             <div class="thermal">
                 <h1>Thermal Feedback</h1>
@@ -34,15 +35,17 @@
                     <input type="range" min="-8" max="8" value="0" id="tempamp">
                 </div> -->
 				<div class="envelope">
-					<h2><label for="tempamp">Temporal Envelope:</label></h2>
-					<draw-canvas height=100 stroke-color="red"></draw-canvas>
+					<h2><label for="tempamp">Amplitude Envelope:</label></h2>
+					<draw-canvas id="drawthraenv" height=100 stroke-color="red"></draw-canvas>
 				</div>
-                <div class="envelope">
-                    <h2><label for="tempduration">Duration:</label></h2>
-                    <input type="range" min="0" max="10" value="5" id="tempduration">
-                </div>
             </div>
-            <button class="play">PLAY</button>
+			<div>
+				<div class="envelope">
+					<h2><label for="signalduration">Duration:</label></h2>
+					<input type="range" min="0" max="10" value="10" id="signalduration">
+				</div>
+			</div>
+            <button class="play" id="playsignal">PLAY</button>
         </div>
         <div class="posrate-container">
             <div class="bodysite">

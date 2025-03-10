@@ -20,5 +20,18 @@ def body_site_point_loader():
         return jsonify({"status": "success", "received": data})
     return render_template("body_point_load.html")
 
+@app.route("/play_signals", methods=["POST"])
+def play_signals(): 
+    data = request.get_json()
+    assert "vib_signal" in data
+    assert "thermal_signal" in data
+    assert "sample_rate" in data
+    print(f"Received data: {{ vib_signal: len({len(data['vib_signal'])}), thermal_signal: len({len(data['thermal_signal'])}), sample_rate: {data['sample_rate']} }}")
+
+    # TODO: Implement playback
+
+    return jsonify({"status": "success", "received": data})
+    
+
 if __name__ == "__main__":
     app.run(debug=True)
