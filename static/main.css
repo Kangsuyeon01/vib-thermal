@@ -6,8 +6,9 @@ html, body {
 }
 div.envelope {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.7fr minmax(0px, 1fr);
     align-items: center;
+    /* margin: 0ex 2ex; */
     
     &>h2, &>label {
         display: flex;
@@ -25,30 +26,39 @@ div.container.vibthermal {
 form.ratings {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1ex;
+    gap: 2ex 3ex;
 }
 
 body {
     font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
     background-color: #f4f4f4;
     margin: 0;
-    padding: 20px;
 }
 .main-container {
-    display: flex;
-    width: 90%;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3ex;
+    padding: 3ex;
 }
 .container {
     flex: 1;
     background: white;
-    /* padding: 20px;
-    border-radius: 10px; */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    
+}
+.signal-container {
+    padding: 3ex;
+    display: flex;
+    flex-direction: column;
+    gap: 5ex;
+}
+.signal-container > div {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2ex;
+    /* & > h1 {
+        grid-column: 1 / -1;
+    } */
 }
 .container-hands{
     flex-shrink: 0; /* 부모 요소에 의해 축소되지 않도록 방지 */
@@ -58,12 +68,6 @@ body {
 .container h1 {
     text-align: center;
     color: #333;
-}
-.envelope {
-    margin-bottom: 15px;
-}
-input[type="range"] {
-    /* width: 100%; */ /* not needed in grid */
 }
 .play {
     display: block;
@@ -81,29 +85,33 @@ input[type="range"] {
 }
 .card {
     background: white;
-    padding: 20px;
+    padding: 3ex;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 15px;
-    width: 100%;
+    margin-top: 2ex;
 }
 .ratings {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 2ex;
 }
 .ratings .envelope {
     flex: 1 1 45%;
 }
 .radio {
     display: flex;
-    gap: 10px;
+    gap: 1ex;
     align-items: center;
 }
+form > span.options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2ex;
+    padding-left: 3ex;
+}
 input[type="reset"], input[type="submit"] {
-    width: 48%;
-    padding: 10px;
-    font-size: 16px;
+    padding: 1ex;
+    font-size: 1.3em;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -122,17 +130,13 @@ input[type="reset"]:hover {
 input[type="submit"]:hover {
     background: #218838;
 }
-.bodysite-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+div.posrate-container {
+    display: grid;
+    grid-template-rows: auto auto;
+    /* gap: 5ex; */
 }
 .bodysite {
-    position: relative;
-}
-.bodysite img {
-    width: 100%;
+    /* position: relative; */
 }
 .bodysite .points {
     position: absolute;
@@ -142,13 +146,23 @@ input[type="submit"]:hover {
     height: 100%;
     pointer-events: none;
 }
-.referral-container {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-.referral-container label {
-    font-weight: bold;
+div.referral-container {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr;
+    gap: 2px;
+
+    &>label {
+        font-size: 1.2em;
+    }
+    label {
+        font-weight: bold;
+    }
+
+    span.radio-options {
+        display: flex;
+        gap: 1ex;
+        justify-content: space-evenly;
+    }
 }
 .radio {
     display: flex;

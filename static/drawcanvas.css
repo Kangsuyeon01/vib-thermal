@@ -1,0 +1,5 @@
+draw-canvas {
+    overflow: hidden;
+    contain: layout paint style;
+    outline: 1px solid lightgray;
+}
