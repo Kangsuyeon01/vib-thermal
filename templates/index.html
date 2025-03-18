@@ -11,6 +11,8 @@
     <script src="static/main.mjs" type="module"></script>
 </head>
 <body>
+
+    <h2>trial: <span id="trial_current_label">0</span>/ <span id="trial_end_label"></span></h2>
     <div class="main-container">
         <div class="container signal-container">
             <div class="vibration">
@@ -52,11 +54,15 @@
                 {% include 'body_point_load.html' %}
             </div>
             <div class="card">
+                <h3><span id="alert_slider_label" style="color: red;"></span></h3>
                 <form class="ratings">
-                    <div class="envelope">
-                        <h2><label for="roughness">Roughness:</label></h2>
-                        <input type="range" min="0" max="100" value="50" id="roughness">
-                    </div>
+                        <!-- 새로운 alert_label과 count_label 추가 -->
+                    <span>
+                        <div class="envelope">
+                            <h2><label for="roughness">Roughness:</label></h2>
+                            <input type="range" min="0" max="100" value="50" id="roughness">
+                        </div>
+                    </span>
                     <div class="envelope">
                         <h2><label for="valence">Valence:</label></h2>
                         <input type="range" min="0" max="100" value="50" id="valence">
@@ -69,28 +75,29 @@
                         <h2><label for="arousal">Arousal:</label></h2>
                         <input type="range" min="0" max="100" value="50" id="arousal">
                     </div>
-				<div class="envelope referral-container">
-					<label for="referral">Referral:</label>
-					<span class="radio-options">
-						<span>
-							<input type="radio" id="none" name="referral" value="none">
-							<label for="none">None</label>
-						</span>
-						<span>
-							<input type="radio" id="referral" name="referral" value="referral">
-							<label for="referral">Referral</label>
-						</span>
-						<span>
-							<input type="radio" id="masking" name="referral" value="masking">
-							<label for="masking">Masking</label>
-						</span>
-					</span>
-				</div>
+                    <div class="envelope referral-container">
+                        <label for="referral">Referral:</label>
+                        <span class="radio-options">
+                            <span>
+                                <input type="radio" id="none" name="referral" value="none">
+                                <label for="none">None</label>
+                            </span>
+                            <span>
+                                <input type="radio" id="referral_option" name="referral" value="referral"> <!-- FIXED -->
+                                <label for="referral_option">Referral</label>  <!-- FIXED -->
+                            </span>
+                            <span>
+                                <input type="radio" id="masking" name="referral" value="masking">
+                                <label for="masking">Masking</label>
+                            </span>
+                        </span>
+                    </div>                    
 				<span class="options">  
-					<input type="reset" value="Reset">
-					<input type="submit" value="Submit">
+					<!-- <input type="reset" value="Reset"> -->
+                    <h3><span id="alert_referral_label" style="color: red;"></span> </h2>
 				</span>
             </form>
+            <button id="submit">Submit</button>
             </div>
         </div>
     </div>

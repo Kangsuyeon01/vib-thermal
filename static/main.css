@@ -120,14 +120,14 @@ input[type="reset"] {
     background: #ff4c4c;
     color: white;
 }
-input[type="submit"] {
+button[type="submit"] {
     background: #28a745;
     color: white;
 }
 input[type="reset"]:hover {
     background: #c82333;
 }
-input[type="submit"]:hover {
+button[type="submit"]:hover {
     background: #218838;
 }
 div.posrate-container {
