@@ -47,7 +47,12 @@
 					<input type="range" min="0" max="10" value="10" id="signalduration">
 				</div>
 			</div>
+            <span>
+            <h3><span id="alert_signal_label" style="color: red;"></span></h3>
             <button class="play" id="playsignal">PLAY</button>
+            <button class="confirm" id="confirmsignal">CONFIRM</button>
+            <button class="modify" id="modifysignal">MODIFY</button>
+        </span>
         </div>
         <div class="posrate-container">
             <div class="bodysite">
@@ -56,7 +61,6 @@
             <div class="card">
                 <h3><span id="alert_slider_label" style="color: red;"></span></h3>
                 <form class="ratings">
-                        <!-- 새로운 alert_label과 count_label 추가 -->
                     <span>
                         <div class="envelope">
                             <h2><label for="roughness">Roughness:</label></h2>
@@ -94,7 +98,7 @@
                     </div>                    
 				<span class="options">  
 					<!-- <input type="reset" value="Reset"> -->
-                    <h3><span id="alert_referral_label" style="color: red;"></span> </h2>
+                    <h3><span id="alert_referral_label" style="color: red;"></span></h3>
 				</span>
             </form>
             <button id="submit">Submit</button>

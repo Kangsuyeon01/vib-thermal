@@ -55,7 +55,7 @@ def save_result():
 
     # 🔹 3. Save data to JSON file
     with open("static/src/collected_data.json", "w") as f:
-        json.dump(data, f, indent=4)
+        json.dump(data, f)
 
     return jsonify({"status": "success", "message": "Data saved successfully"})
 

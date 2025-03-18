@@ -109,7 +109,7 @@ form > span.options {
     gap: 2ex;
     padding-left: 3ex;
 }
-input[type="reset"], input[type="submit"] {
+input[type="reset"], button[id="submit"] {
     padding: 1ex;
     font-size: 1.3em;
     border: none;
@@ -120,14 +120,14 @@ input[type="reset"] {
     background: #ff4c4c;
     color: white;
 }
-button[type="submit"] {
+button[id="submit"] {
     background: #28a745;
     color: white;
 }
 input[type="reset"]:hover {
     background: #c82333;
 }
-button[type="submit"]:hover {
+button[id="submit"]:hover {
     background: #218838;
 }
 div.posrate-container {

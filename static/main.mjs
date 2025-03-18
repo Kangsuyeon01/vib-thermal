@@ -4,7 +4,7 @@ import { notnull } from './util.mjs';
 
 const SAMPLE_RATE = 8000;
 const TARGET_COUNT = 5;
-
+let hasPlayed = false; // Track if Play button has been pressed
 // trial label
 /** @type {HTMLSpanElement} */
 const trial_current_label = notnull(document.querySelector("#trial_current_label"));
@@ -19,7 +19,8 @@ const alert_body_label = notnull(document.querySelector("#alert_body_label"));
 const alert_slider_label = notnull(document.querySelector("#alert_slider_label"));
 /** @type {HTMLSpanElement} */
 const alert_referral_label = notnull(document.querySelector("#alert_referral_label"));
-
+/** @type {HTMLSpanElement} */
+const alert_signal_label = notnull(document.querySelector("#alert_signal_label"));
 
 // draw signal
 /** @type {DrawCanvasElement} */
@@ -32,6 +33,10 @@ const thr_amp_env_dcanvas = notnull(document.querySelector("#drawthraenv"));
 const duration_input = notnull(document.querySelector("#signalduration"));
 /** @type {HTMLButtonElement} */
 const play_button = notnull(document.querySelector("#playsignal"));
+/** @type {HTMLButtonElement} */
+const confirm_button = notnull(document.querySelector("#confirmsignal"));
+/** @type {HTMLButtonElement} */
+const modify_button = notnull(document.querySelector("#modifysignal"));
 /** @type {HTMLButtonElement} */
 const submit_button = notnull(document.querySelector("#submit"));
 
@@ -115,11 +120,11 @@ function getSelectedReferral() {
     return selectedReferral ? selectedReferral: null;
 }
 async function on_submit(event) {
-    event.preventDefault();  // 기본 동작 방지 (새로고침 방지)
+    event.preventDefault();  
 
     let allSlidersUsed = sliders.every(slider => slider.dataset.touched);
     const referralValue = getSelectedReferral();
-    const bodySiteValid = vibrationInfo.textContent !== "None" || thermalInfo.textContent !== "None";
+    const bodySiteValid = vibrationInfo.textContent !== "None" && thermalInfo.textContent !== "None";
 
     // Display warning messages and prevent submission if invalid
     let isValid = true;
@@ -183,7 +188,7 @@ async function on_submit(event) {
             warmness: warmness_slider.value, 
             valence: valence_slider.value, 
             arousal: arousal_slider.value, 
-            referral: referralValue 
+            referral: referralValue.value
         }
     };
 
@@ -196,18 +201,18 @@ async function on_submit(event) {
     .then(result => {
         alert("Submission successful!");
         
-        // ✅ 슬라이더 초기화
+
         sliders.forEach(slider => {
-            slider.value = "50";  // 기본값 50으로 설정 (원래 기본값이 다르면 바꿔야 함)
-            delete slider.dataset.touched;  // 데이터셋 초기화
+            slider.value = "50";  // default value
+            delete slider.dataset.touched;  
         });
 
-        // ✅ Referral 초기화 (선택 해제)
+    
         referral_radio_buttons.forEach(radio => {
             radio.checked = false;
         });
 
-        // ✅ Trial 카운트 업데이트
+        // update Trial count
         let trialCurrent = parseInt(trial_current_label.textContent || "0", 10) + 1;
         trial_current_label.textContent = trialCurrent.toString();
         trial_end_label.textContent = TARGET_COUNT.toString();
@@ -224,6 +229,55 @@ async function on_submit(event) {
 }
 
 
-submit_button.addEventListener("click", on_submit);
+/** Function to enable or disable DrawCanvas */
+function toggleDrawCanvas(enabled) {
+    if (enabled) {
+        vib_amp_env_dcanvas.removeAttribute("disabled");
+        vib_freq_env_dcanvas.removeAttribute("disabled");
+        thr_amp_env_dcanvas.removeAttribute("disabled");
+    } else {
+        vib_amp_env_dcanvas.setAttribute("disabled", "true");
+        vib_freq_env_dcanvas.setAttribute("disabled", "true");
+        thr_amp_env_dcanvas.setAttribute("disabled", "true");
+    }
+}
 
+/** Function to update button states */
+function updateButtonStates({ confirm = false, modify = false, playRequired = false }) {
+    confirm_button.disabled = !confirm;
+    modify_button.style.display = modify ? "inline-block" : "none"; // Show/hide Modify button
+    if (playRequired) hasPlayed = false; // Reset play requirement
+}
+
+// Play button functionality
+play_button.addEventListener("click", () => {
+    hasPlayed = true;
+    confirm_button.disabled = false; // Enable Confirm button after Play
+});
+
+// Confirm button functionality
+confirm_button.addEventListener("click", () => {
+    if (!hasPlayed) {
+        alert_signal_label.textContent = "⚠ Please press the Play button at least once before confirming.";
+        return;
+    }
+    alert_signal_label.textContent = ""; // Clear warning message
+
+    // Disable Confirm button, show Modify button, and lock DrawCanvas
+    updateButtonStates({ confirm: false, modify: true });
+    toggleDrawCanvas(false);
+});
+
+// Modify button functionality
+modify_button.addEventListener("click", () => {
+    // Re-enable DrawCanvas editing
+    toggleDrawCanvas(true);
+
+    // Reset Play requirement and hide Modify button
+    // TODO: Disable editing of the draw UI
+    updateButtonStates({ confirm: true, playRequired: true });
+});
+
+
+submit_button.addEventListener("click", on_submit);
 play_button.addEventListener("click", on_play_signal);
