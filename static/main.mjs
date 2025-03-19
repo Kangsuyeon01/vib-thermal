@@ -33,10 +33,10 @@ const thr_amp_env_dcanvas = notnull(document.querySelector("#drawthraenv"));
 const duration_input = notnull(document.querySelector("#signalduration"));
 /** @type {HTMLButtonElement} */
 const play_button = notnull(document.querySelector("#playsignal"));
-/** @type {HTMLButtonElement} */
-const confirm_button = notnull(document.querySelector("#confirmsignal"));
-/** @type {HTMLButtonElement} */
-const modify_button = notnull(document.querySelector("#modifysignal"));
+// /** @type {HTMLButtonElement} */
+// const confirm_button = notnull(document.querySelector("#confirmsignal"));
+// /** @type {HTMLButtonElement} */
+// const modify_button = notnull(document.querySelector("#modifysignal"));
 /** @type {HTMLButtonElement} */
 const submit_button = notnull(document.querySelector("#submit"));
 
@@ -243,40 +243,36 @@ function toggleDrawCanvas(enabled) {
 }
 
 /** Function to update button states */
-function updateButtonStates({ confirm = false, modify = false, playRequired = false }) {
-    confirm_button.disabled = !confirm;
-    modify_button.style.display = modify ? "inline-block" : "none"; // Show/hide Modify button
-    if (playRequired) hasPlayed = false; // Reset play requirement
-}
+// function updateButtonStates({ confirm = false, modify = false, playRequired = false }) {
+//     confirm_button.disabled = !confirm;
+//     modify_button.style.display = modify ? "inline-block" : "none"; // Show/hide Modify button
+//     if (playRequired) hasPlayed = false; // Reset play requirement
+// }
 
 // Play button functionality
-play_button.addEventListener("click", () => {
-    hasPlayed = true;
-    confirm_button.disabled = false; // Enable Confirm button after Play
-});
 
-// Confirm button functionality
-confirm_button.addEventListener("click", () => {
-    if (!hasPlayed) {
-        alert_signal_label.textContent = "⚠ Please press the Play button at least once before confirming.";
-        return;
-    }
-    alert_signal_label.textContent = ""; // Clear warning message
+// // Confirm button functionality
+// confirm_button.addEventListener("click", () => {
+//     if (!hasPlayed) {
+//         alert_signal_label.textContent = "⚠ Please press the Play button at least once before confirming.";
+//         return;
+//     }
+//     alert_signal_label.textContent = ""; // Clear warning message
 
-    // Disable Confirm button, show Modify button, and lock DrawCanvas
-    updateButtonStates({ confirm: false, modify: true });
-    toggleDrawCanvas(false);
-});
+//     // Disable Confirm button, show Modify button, and lock DrawCanvas
+//     updateButtonStates({ confirm: false, modify: true });
+//     toggleDrawCanvas(false);
+// });
 
-// Modify button functionality
-modify_button.addEventListener("click", () => {
-    // Re-enable DrawCanvas editing
-    toggleDrawCanvas(true);
+// // Modify button functionality
+// modify_button.addEventListener("click", () => {
+//     // Re-enable DrawCanvas editing
+//     toggleDrawCanvas(true);
 
-    // Reset Play requirement and hide Modify button
-    // TODO: Disable editing of the draw UI
-    updateButtonStates({ confirm: true, playRequired: true });
-});
+//     // Reset Play requirement and hide Modify button
+//     // TODO: Disable editing of the draw UI
+//     updateButtonStates({ confirm: true, playRequired: true });
+// });
 
 
 submit_button.addEventListener("click", on_submit);

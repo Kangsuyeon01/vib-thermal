@@ -51,7 +51,6 @@ def save_result():
     print(f"- Sample Rate: {data['sample_rate']} Hz")
     print(f"- Body Sites: {data['body_sites']} selected points")
     print(f"- Ratings: {data['ratings']}")
-    print(f"- Referral: {data['ratings']['referral']}")
 
     # 🔹 3. Save data to JSON file
     with open("static/src/collected_data.json", "w") as f:
