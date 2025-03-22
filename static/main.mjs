@@ -36,6 +36,8 @@ const duration_input = notnull(document.querySelector("#signalduration"));
 const play_button = notnull(document.querySelector("#playsignal"));
 /** @type {HTMLButtonElement} */
 const submit_button = notnull(document.querySelector("#submit"));
+/** @type {HTMLSpanElement} */
+const submitstatus_span = notnull(document.querySelector("#submitstatus"));
 
 
 // body site info
@@ -62,7 +64,7 @@ const sliders = [roughness_slider, warmness_slider, valence_slider, arousal_slid
 
 // Mark sliders as "touched" when adjusted
 sliders.forEach(slider => {
-    slider.addEventListener("input", () => {
+    slider.addEventListener("pointerdown", () => {
         slider.dataset.touched = "true";  // Mark as interacted
     });
 });
@@ -103,14 +105,24 @@ async function on_submit(event) {
     event.preventDefault();  
 
     // Validate that all sliders have been used
-    let allSlidersUsed = sliders.every(slider => slider.dataset.touched);
+    const allSlidersUsed = sliders.every(slider => slider.dataset.touched);
     const referralValue = getSelectedReferral();
     const bodySiteValid = vibrationInfo.textContent !== "None" && thermalInfo.textContent !== "None";
 
+
     // Display warning messages and prevent submission if invalid
     let isValid = true;
+    
+    function animate_alert_label(label) {
+        label.animate([ { opacity: 0 }, { opacity: 1 } ], {
+            duration: 500,
+            iterations: 1
+        });
+    }
+
     if (!allSlidersUsed) {
         alert_slider_label.textContent = "⚠ Please adjust all sliders at least once.";
+        animate_alert_label(alert_slider_label);
         isValid = false;
     } else {
         alert_slider_label.textContent = "";
@@ -118,6 +130,7 @@ async function on_submit(event) {
     
     if (!referralValue) {
         alert_referral_label.textContent = "⚠ Please select a referral option.";
+        animate_alert_label(alert_referral_label);
         isValid = false;
     } else {
         alert_referral_label.textContent = "";
@@ -125,12 +138,17 @@ async function on_submit(event) {
     
     if (!bodySiteValid) {
         alert_body_label.textContent = "⚠ Please select a body site.";
+        animate_alert_label(alert_body_label);
         isValid = false;
     } else {
         alert_body_label.textContent = "";
     }
 
-    if (!isValid) {
+    if (isValid) {
+        submitstatus_span.textContent = "";
+    } else {
+        // submitstatus_span.textContent = "⚠ See above alerts.";
+        // animate_alert_label(submitstatus_span);
         return;
     }
 
@@ -185,5 +203,6 @@ async function on_submit(event) {
         alert("Submission failed!");
     });
 }
+
 submit_button.addEventListener("click", on_submit);
 play_button.addEventListener("click", on_play_signal);
