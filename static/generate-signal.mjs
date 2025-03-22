@@ -26,6 +26,16 @@ function map_frequency(value, minValue, maxValue) {
     return MIN_FREQ + (MAX_FREQ - MIN_FREQ) * ((value - minValue) / (maxValue - minValue));
 }
 
+function linterp_index(arr, perc) {
+    const index = perc * (arr.length - 1);
+    const lower = Math.floor(index);
+    const upper = Math.ceil(index);
+    const weight = index - lower;
+    const value = arr[lower] * (1 - weight) + arr[upper] * weight;
+    return value;
+}
+
+
 export function generate_signal() {
     const vib_amp = vib_amp_env_dcanvas.samples;
     const vib_freq = vib_freq_env_dcanvas.samples;
@@ -41,21 +51,25 @@ export function generate_signal() {
     for (let i = 0; i < num_output_samples; i++) {
         const perc = i / num_output_samples;
         const lperc = perc * active_perc;
-        const freq_i = Math.floor(lperc * vib_freq.length);
-        const amp_i = Math.floor(lperc * vib_amp.length);
-        const current_freq = map_frequency(vib_freq[freq_i], 0, 1);
+        
+        const s_freq = linterp_index(vib_freq, lperc);
+        const s_amp = linterp_index(vib_amp, lperc);
+
+        const current_freq = map_frequency(s_freq, 0, 1);
         const phase_delta = 2 * Math.PI * current_freq / SAMPLE_RATE;
         
         phase_acc += phase_delta;
-        vib_signal[i] = vib_amp[amp_i] * Math.sin(phase_acc);
+        vib_signal[i] = s_amp * Math.sin(phase_acc);
     }
     
     const thermal_signal = new Float32Array(num_output_samples);
     for (let i = 0; i < num_output_samples; i++) {
         const perc = i / num_output_samples;
         const lperc = perc * active_perc;
-        const amp_i = Math.floor(lperc * thr_amp.length);
-        thermal_signal[i] = thr_amp[amp_i];
+        
+        const s_amp = linterp_index(thr_amp, lperc);
+
+        thermal_signal[i] = s_amp;
     }
 
     return { vib_signal, thermal_signal };
