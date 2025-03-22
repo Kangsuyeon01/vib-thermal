@@ -39,6 +39,12 @@ const submit_button = notnull(document.querySelector("#submit"));
 /** @type {HTMLSpanElement} */
 const submitstatus_span = notnull(document.querySelector("#submitstatus"));
 
+duration_input.addEventListener("input", () => {
+    const duration = parseFloat(duration_input.value);
+    [vib_amp_env_dcanvas, vib_freq_env_dcanvas, thr_amp_env_dcanvas].forEach(canvas => {
+        canvas.set_active_duration(duration);
+    });
+});
 
 // body site info
 /** @type {HTMLSpanElement} */

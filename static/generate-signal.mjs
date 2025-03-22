@@ -1,5 +1,5 @@
 //@ts-check
-import { DrawCanvasElement } from "./drawcanvas.mjs";
+import { DrawCanvasElement, TOTAL_DURATION_SEC } from "./drawcanvas.mjs";
 import { notnull } from "./util.mjs";
 
 export const SAMPLE_RATE = 8000;
@@ -31,15 +31,18 @@ export function generate_signal() {
     const vib_freq = vib_freq_env_dcanvas.samples;
     const thr_amp = thr_amp_env_dcanvas.samples;
 
-    const duration = parseFloat(duration_input.value);
-    const num_output_samples = Math.floor(duration * SAMPLE_RATE);
+    const total_sample_duration = TOTAL_DURATION_SEC;
+    const active_duration = parseFloat(duration_input.value);
+    const active_perc = active_duration / total_sample_duration;
+    const num_output_samples = Math.floor(active_duration * SAMPLE_RATE);
     const vib_signal = new Float32Array(num_output_samples);
 
     let phase_acc = 0;
     for (let i = 0; i < num_output_samples; i++) {
         const perc = i / num_output_samples;
-        const freq_i = Math.floor(perc * vib_freq.length);
-        const amp_i = Math.floor(perc * vib_amp.length);
+        const lperc = perc * active_perc;
+        const freq_i = Math.floor(lperc * vib_freq.length);
+        const amp_i = Math.floor(lperc * vib_amp.length);
         const current_freq = map_frequency(vib_freq[freq_i], 0, 1);
         const phase_delta = 2 * Math.PI * current_freq / SAMPLE_RATE;
         
@@ -50,7 +53,8 @@ export function generate_signal() {
     const thermal_signal = new Float32Array(num_output_samples);
     for (let i = 0; i < num_output_samples; i++) {
         const perc = i / num_output_samples;
-        const amp_i = Math.floor(perc * thr_amp.length);
+        const lperc = perc * active_perc;
+        const amp_i = Math.floor(lperc * thr_amp.length);
         thermal_signal[i] = thr_amp[amp_i];
     }
 

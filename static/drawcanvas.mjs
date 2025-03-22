@@ -1,7 +1,8 @@
 //@ts-check
 import { notnull } from './util.mjs';
 
-const NUM_SAMPLES = 150;
+export const TOTAL_DURATION_SEC = 10;
+export const NUM_SAMPLES = 150;
 
 export class DrawCanvasElement extends HTMLElement {
 
@@ -136,14 +137,19 @@ export class DrawCanvasElement extends HTMLElement {
         }
     }
 
-    #_total_duration = 10;
-    set_duration(duration) {
-        this.#_total_duration = duration;
+    #_total_duration = TOTAL_DURATION_SEC;
+    #_active_duration = TOTAL_DURATION_SEC;
+    // set_total_duration(duration) {
+    //     this.#_total_duration = duration;
+    //     this.draw_samples();
+    // }
+    set_active_duration(duration) {
+        this.#_active_duration = duration;
         this.draw_samples();
     }
 
-    draw_grid() {
-        // draw 1 second lines, and 0.25 amplitude lines
+    #_draw_grid() {
+        // draw 1 second grid lines, and 0.25 amplitude lines
         this.ctx.beginPath();
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "lightgray";
@@ -161,7 +167,7 @@ export class DrawCanvasElement extends HTMLElement {
 
     draw_samples() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.draw_grid();
+        this.#_draw_grid();
         this.ctx.beginPath();
         this.ctx.moveTo(0, this.canvas.height * (1 - this.samples[0]));
         this.ctx.lineWidth = 8;
@@ -172,6 +178,12 @@ export class DrawCanvasElement extends HTMLElement {
             this.ctx.lineTo(i * this.canvas.width / NUM_SAMPLES, this.canvas.height * (1 - samp));
         }
         this.ctx.stroke();
+
+
+        // draw gray box for inactive duration
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.33)";
+        const start_x = this.canvas.width * this.#_active_duration / this.#_total_duration;
+        this.ctx.fillRect(start_x, 0, this.canvas.width - start_x, this.canvas.height);
     }
 }
 
