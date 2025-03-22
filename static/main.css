@@ -51,6 +51,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 5ex;
+    justify-content: space-between;
 }
 .signal-container > div {
     display: grid;
@@ -71,7 +72,7 @@ body {
 }
 .play {
     display: block;
-    margin: 1.5ex auto;
+    margin: 0ex auto;
     padding: 1.3ex;
     font-size: 1.4em;
     background: #007bff;
@@ -88,7 +89,13 @@ body {
     padding: 3ex;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 2ex;
+}
+.ratingcard {
+    display: flex;
+    /* grid-template-rows: 1fr 1fr; */
+    gap: 3ex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .ratings {
     display: flex;
@@ -104,10 +111,10 @@ body {
     align-items: center;
 }
 form > span.options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2ex;
-    padding-left: 3ex;
+    /* display: grid; */
+    /* grid-template-columns: 1fr 1fr; */
+    /* gap: 2ex; */
+    /* padding-left: 3ex; */
 }
 input[type="reset"], button[id="submit"] {
     padding: 1ex;
@@ -128,7 +135,7 @@ input[type="reset"]:active {
 }
 button[id="submit"] {
     background: #28a745;
-    margin-top: 1.5ex;
+    /* margin-top: 1.5ex; */
     padding: 1.3ex;
     font-size: 1.4em;
 }
@@ -180,4 +187,5 @@ div.referral-container {
 .alertlabel {
     color: red;
     font-weight: bold;
+    font-size: 1.24em;
 }
