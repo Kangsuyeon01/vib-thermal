@@ -134,7 +134,12 @@ export class DrawCanvasElement extends HTMLElement {
             // const sample = Math.floor(x_perc * NUM_SAMPLES);
             // this.samples[sample] = y_perc;
             this.draw_samples();
+            this.#_emit_input_event();
         }
+    }
+
+    #_emit_input_event() {
+        this.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
     #_total_duration = TOTAL_DURATION_SEC;

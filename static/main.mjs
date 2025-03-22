@@ -1,6 +1,7 @@
 //@ts-check
 import { DrawCanvasElement } from './drawcanvas.mjs';
 import { generate_signal, SAMPLE_RATE } from './generate-signal.mjs';
+import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
 import { notnull } from './util.mjs';
 
 const TARGET_COUNT = 5;
@@ -30,6 +31,7 @@ const vib_amp_env_dcanvas = notnull(document.querySelector("#drawvibaenv"));
 const vib_freq_env_dcanvas = notnull(document.querySelector("#drawvibfenv"));
 /** @type {DrawCanvasElement} */
 const thr_amp_env_dcanvas = notnull(document.querySelector("#drawthraenv"));
+const drawcanvases = [vib_amp_env_dcanvas, vib_freq_env_dcanvas, thr_amp_env_dcanvas];
 /** @type {HTMLInputElement} */
 const duration_input = notnull(document.querySelector("#signalduration"));
 /** @type {HTMLButtonElement} */
@@ -38,13 +40,21 @@ const play_button = notnull(document.querySelector("#playsignal"));
 const submit_button = notnull(document.querySelector("#submit"));
 /** @type {HTMLSpanElement} */
 const submitstatus_span = notnull(document.querySelector("#submitstatus"));
+/** @type {NpWaveFormCanvas} */
+const vibrationwaveform_np = notnull(document.querySelector("#vibrationwaveform"));
 
 duration_input.addEventListener("input", () => {
     const duration = parseFloat(duration_input.value);
-    [vib_amp_env_dcanvas, vib_freq_env_dcanvas, thr_amp_env_dcanvas].forEach(canvas => {
+    drawcanvases.forEach(canvas => {
         canvas.set_active_duration(duration);
     });
 });
+drawcanvases.forEach(canvas => {
+    canvas.addEventListener("input", () => {
+        vibrationwaveform_np.draw_waveform(generate_signal().vib_signal);
+    });
+});
+vibrationwaveform_np.draw_waveform(generate_signal().vib_signal);
 
 // body site info
 /** @type {HTMLSpanElement} */

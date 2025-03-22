@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="static/main.css">
     <link rel="stylesheet" type="text/css" href="static/drawcanvas.css">
     <script src="static/drawcanvas.mjs" type="module"></script>
+    <script src="static/np-waveform-canvas.mjs" type="module"></script>
     <script src="static/main.mjs" type="module"></script>
 </head>
 <body>
@@ -29,6 +30,12 @@
                     <h2><label for="vibduration">Duration:</label></h2>
                     <input type="range" min="0" max="10" value="5" id="vibduration">
                 </div> -->
+                <div class="envelope">
+                    <h2>Final Waveform:</h2>
+                    <div>
+                        <np-waveform-canvas id="vibrationwaveform" height="100"></np-waveform-canvas>
+                    </div>
+                </div>
             </div>
             <div class="thermal">
                 <h1>Thermal Feedback</h1>
