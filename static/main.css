@@ -40,6 +40,10 @@ input[type="range"] {
     appearance: none;
     cursor: pointer;
 }
+input[type="range"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
 input[type="range"]::-webkit-slider-runnable-track {
     background: #ddd;
     border-radius: 2ex;
@@ -53,6 +57,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 50%;
     transform: translateY(-0.25em);
 }
+
 
 div.envelope {
     display: grid;
@@ -109,7 +114,7 @@ body {
     text-align: center;
     color: #333;
 }
-.play {
+button.play {
     display: block;
     margin: 0ex auto;
     padding: 1.3ex;
@@ -120,8 +125,15 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
-.play:hover {
+button.play:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+button.play:hover {
     background: #0056b3;
+}
+button.play:active {
+    background: #0042a2;
 }
 .card {
     background: white;
