@@ -1,5 +1,5 @@
 //@ts-check
-import { DrawCanvasElement } from './drawcanvas.mjs';
+import { DrawCanvasElement, TOTAL_DURATION_SEC } from './drawcanvas.mjs';
 import { generate_signal, SAMPLE_RATE } from './generate-signal.mjs';
 import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
 import { notnull, wait_ms } from './util.mjs';
@@ -49,12 +49,14 @@ duration_input.addEventListener("input", () => {
         canvas.set_active_duration(duration);
     });
 });
-drawcanvases.forEach(canvas => {
-    canvas.addEventListener("input", () => {
-        vibrationwaveform_np.draw_waveform(generate_signal().vib_signal);
-    });
-});
-vibrationwaveform_np.draw_waveform(generate_signal().vib_signal);
+function update_vibration_np() {
+    const vib_signal = generate_signal(true).vib_signal;
+    const active_duration = parseFloat(duration_input.value);
+    const perc_active = active_duration / TOTAL_DURATION_SEC; // todo: update vis based on this?
+    vibrationwaveform_np.draw_waveform(vib_signal);
+}
+drawcanvases.forEach(canvas => canvas.addEventListener("input", () => update_vibration_np()));
+update_vibration_np();
 
 // body site info
 /** @type {HTMLSpanElement} */

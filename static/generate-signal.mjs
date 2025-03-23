@@ -36,13 +36,18 @@ function linterp_index(arr, perc) {
 }
 
 
-export function generate_signal() {
+/**
+ * Generate a signal based on the current envelope values.
+ * @param {boolean} [force_full_duration=false] - If true, the full duration of the signal is generated regardless of the active duration.
+ * @returns {{ vib_signal: Float32Array, thermal_signal: Float32Array, duration: number }}
+ */
+export function generate_signal(force_full_duration = false) {
     const vib_amp = vib_amp_env_dcanvas.samples;
     const vib_freq = vib_freq_env_dcanvas.samples;
     const thr_amp = thr_amp_env_dcanvas.samples;
 
     const total_sample_duration = TOTAL_DURATION_SEC;
-    const active_duration = parseFloat(duration_input.value);
+    const active_duration = force_full_duration ? TOTAL_DURATION_SEC : parseFloat(duration_input.value);
     const active_perc = active_duration / total_sample_duration;
     const num_output_samples = Math.floor(active_duration * SAMPLE_RATE);
     const vib_signal = new Float32Array(num_output_samples);
