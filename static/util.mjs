@@ -16,3 +16,12 @@ export function notnull(v) {
 export function assert_unreachable(x) {
 	throw new Error("Unexpected variant: " + x);
 }
+
+/**
+ * Wait for a given number of milliseconds.
+ * @param {number} ms - The number of milliseconds to wait.
+ * @returns {Promise<void>}
+ */
+export async function wait_ms(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}

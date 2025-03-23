@@ -8,10 +8,11 @@ export class DrawCanvasElement extends HTMLElement {
 
     #_resize_observer = new ResizeObserver(this.#_on_self_resize.bind(this));
 
-    static observedAttributes = ["width", "height"];
+    static observedAttributes = ["width", "height", "disabled"];
     attributeChangedCallback(name, oldValue, newValue) {
 		if (name === "width") this.width = parseInt(newValue);
 		else if (name === "height") this.height = parseInt(newValue);
+        else if (name === "disabled") this.disabled = newValue;
 	}
 
 	/** @type {number | null} */
@@ -40,6 +41,18 @@ export class DrawCanvasElement extends HTMLElement {
 		if (!this.#_set_height) this.canvas.height = this.clientHeight ?? 100;
 		this.draw_samples();
 	}
+
+    #_disabled = false;
+    set disabled(value) {
+        this.#_disabled = value;
+        if (value) this.#_internals.states.add("disabled");
+        else this.#_internals.states.delete("disabled");
+    }
+    get disabled() {
+        return this.#_disabled;
+    }
+
+    #_internals = this.attachInternals();
 
     constructor() {
         super();

@@ -2,7 +2,7 @@
 import { DrawCanvasElement } from './drawcanvas.mjs';
 import { generate_signal, SAMPLE_RATE } from './generate-signal.mjs';
 import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
-import { notnull } from './util.mjs';
+import { notnull, wait_ms } from './util.mjs';
 
 const TARGET_COUNT = 5;
 let hasPlayed = false; // Track if Play button has been pressed
@@ -90,13 +90,18 @@ sliders.forEach(slider => {
  * Sends the generated signal to the server for playback.
  */
 function on_play_signal() {
-    const { vib_signal, thermal_signal } = generate_signal();
+    const { vib_signal, thermal_signal, duration } = generate_signal();
     
     const data = {
         vib_signal: Array.from(vib_signal),
         thermal_signal: Array.from(thermal_signal),
         sample_rate: SAMPLE_RATE
     }; // ~522kB
+
+    const input_els = [...drawcanvases, play_button, duration_input];
+
+    for (const el of  input_els) el.disabled = true;
+    wait_ms(duration * 1000).then(() => { for (const el of input_els) el.disabled = false; }); // id rather wait for the duration of fetch, but flask doesn't support async by default?
 
     fetch("/play_signals", {
         method: "POST",
@@ -105,8 +110,7 @@ function on_play_signal() {
     })
     .then(response => response.json())
     .then(data => console.log("Sent data:", data))
-    .catch(error => console.error("Error sending data:", error));
-    
+    .catch(error => console.error("Error sending data:", error));    
 }
 /**
  * 

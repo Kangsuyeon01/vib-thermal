@@ -72,5 +72,5 @@ export function generate_signal() {
         thermal_signal[i] = s_amp;
     }
 
-    return { vib_signal, thermal_signal };
+    return { vib_signal, thermal_signal, duration: active_duration };
 }
