@@ -93,13 +93,13 @@ sliders.forEach(slider => {
  */
 function on_play_signal() {
     const { vib_signal, thermal_signal, duration } = generate_signal();
-    
+
     const data = {
         vib_signal: Array.from(vib_signal),
         thermal_signal: Array.from(thermal_signal),
         sample_rate: SAMPLE_RATE
     }; // ~522kB
-
+    
     const input_els = [...drawcanvases, play_button, duration_input];
 
     for (const el of  input_els) el.disabled = true;
@@ -111,8 +111,14 @@ function on_play_signal() {
         body: JSON.stringify(data)
     })
     .then(response => response.json())
-    .then(data => console.log("Sent data:", data))
-    .catch(error => console.error("Error sending data:", error));    
+    .then(data => {
+        console.log("Server response:", data);
+        if (data.wav_url) {
+            const audio = new Audio(data.wav_url);
+            audio.play().catch(err => console.error("Audio play failed:", err));
+        }
+    })
+    .catch(error => console.error("Error sending data:", error));
 }
 /**
  * 

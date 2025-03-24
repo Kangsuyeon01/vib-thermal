@@ -1,6 +1,6 @@
 static/src/collected_data.json
 static/src/vib_signal.wav
-
+static/src/save_data/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
