@@ -1,7 +1,8 @@
 //@ts-check
-import { DrawCanvasElement } from './drawcanvas.mjs';
+import { DrawCanvasElement, TOTAL_DURATION_SEC } from './drawcanvas.mjs';
 import { generate_signal, SAMPLE_RATE } from './generate-signal.mjs';
-import { notnull } from './util.mjs';
+import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
+import { notnull, wait_ms } from './util.mjs';
 
 const TARGET_COUNT = 5;
 let hasPlayed = false; // Track if Play button has been pressed
@@ -30,6 +31,7 @@ const vib_amp_env_dcanvas = notnull(document.querySelector("#drawvibaenv"));
 const vib_freq_env_dcanvas = notnull(document.querySelector("#drawvibfenv"));
 /** @type {DrawCanvasElement} */
 const thr_amp_env_dcanvas = notnull(document.querySelector("#drawthraenv"));
+const drawcanvases = [vib_amp_env_dcanvas, vib_freq_env_dcanvas, thr_amp_env_dcanvas];
 /** @type {HTMLInputElement} */
 const duration_input = notnull(document.querySelector("#signalduration"));
 /** @type {HTMLButtonElement} */
@@ -38,13 +40,23 @@ const play_button = notnull(document.querySelector("#playsignal"));
 const submit_button = notnull(document.querySelector("#submit"));
 /** @type {HTMLSpanElement} */
 const submitstatus_span = notnull(document.querySelector("#submitstatus"));
+/** @type {NpWaveFormCanvas} */
+const vibrationwaveform_np = notnull(document.querySelector("#vibrationwaveform"));
 
 duration_input.addEventListener("input", () => {
     const duration = parseFloat(duration_input.value);
-    [vib_amp_env_dcanvas, vib_freq_env_dcanvas, thr_amp_env_dcanvas].forEach(canvas => {
+    drawcanvases.forEach(canvas => {
         canvas.set_active_duration(duration);
     });
 });
+function update_vibration_np() {
+    const vib_signal = generate_signal(true).vib_signal;
+    const active_duration = parseFloat(duration_input.value);
+    const perc_active = active_duration / TOTAL_DURATION_SEC; // todo: update vis based on this?
+    vibrationwaveform_np.draw_waveform(vib_signal);
+}
+drawcanvases.forEach(canvas => canvas.addEventListener("input", () => update_vibration_np()));
+update_vibration_np();
 
 // body site info
 /** @type {HTMLSpanElement} */
@@ -80,13 +92,18 @@ sliders.forEach(slider => {
  * Sends the generated signal to the server for playback.
  */
 function on_play_signal() {
-    const { vib_signal, thermal_signal } = generate_signal();
+    const { vib_signal, thermal_signal, duration } = generate_signal();
     
     const data = {
         vib_signal: Array.from(vib_signal),
         thermal_signal: Array.from(thermal_signal),
         sample_rate: SAMPLE_RATE
     }; // ~522kB
+
+    const input_els = [...drawcanvases, play_button, duration_input];
+
+    for (const el of  input_els) el.disabled = true;
+    wait_ms(duration * 1000).then(() => { for (const el of input_els) el.disabled = false; }); // id rather wait for the duration of fetch, but flask doesn't support async by default?
 
     fetch("/play_signals", {
         method: "POST",
@@ -95,8 +112,7 @@ function on_play_signal() {
     })
     .then(response => response.json())
     .then(data => console.log("Sent data:", data))
-    .catch(error => console.error("Error sending data:", error));
-    
+    .catch(error => console.error("Error sending data:", error));    
 }
 /**
  * 

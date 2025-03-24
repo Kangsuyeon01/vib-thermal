@@ -3,7 +3,62 @@ html, body {
     padding: 0;
     font-family: 'Roboto', sans-serif;
     /* font-size: 16px; */
+
+    --interactive-color: #007bff;
 }
+input[type="radio"] {
+    appearance: none;
+    background-color: #fff;
+    cursor: pointer;
+    margin: 0.5ex;
+    width: 1.5em;
+    height: 1.5em;
+    color: currentColor;
+    border: 0.15em solid currentColor;
+    border-radius: 50%;
+    place-self: center;
+    /* display: grid; */
+    /* place-content: center; */
+    /* position: relative; */
+}
+input[type="radio"]::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: inset 1em 1em var(--interactive-color);
+    transform: scale(0);
+    transition: transform 0.08s;
+}
+input[type="radio"]:checked::before {
+    transform: scale(0.80);
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+input[type="range"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+    background: #ddd;
+    border-radius: 2ex;
+    height: 1em;
+}
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 1.5em;
+    height: 1.5em;
+    background: var(--interactive-color);
+    border-radius: 50%;
+    transform: translateY(-0.25em);
+}
+
+
 div.envelope {
     display: grid;
     grid-template-columns: 0.7fr minmax(0px, 1fr);
@@ -15,12 +70,6 @@ div.envelope {
         justify-content: center;
         text-align: center;
     }
-}
-
-div.container.vibthermal {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3ex;
 }
 
 form.ratings {
@@ -41,16 +90,12 @@ body {
     gap: 3ex;
     padding: 3ex;
 }
-.container {
-    flex: 1;
-    background: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
 .signal-container {
     padding: 3ex;
     display: flex;
     flex-direction: column;
     gap: 5ex;
+    justify-content: space-between;
 }
 .signal-container > div {
     display: grid;
@@ -69,9 +114,9 @@ body {
     text-align: center;
     color: #333;
 }
-.play {
+button.play {
     display: block;
-    margin: 1.5ex auto;
+    margin: 0ex auto;
     padding: 1.3ex;
     font-size: 1.4em;
     background: #007bff;
@@ -80,15 +125,28 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
-.play:hover {
+button.play:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+button.play:hover {
     background: #0056b3;
+}
+button.play:active {
+    background: #0042a2;
 }
 .card {
     background: white;
     padding: 3ex;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 2ex;
+}
+.ratingcard {
+    display: flex;
+    /* grid-template-rows: 1fr 1fr; */
+    gap: 3ex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .ratings {
     display: flex;
@@ -104,10 +162,10 @@ body {
     align-items: center;
 }
 form > span.options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2ex;
-    padding-left: 3ex;
+    /* display: grid; */
+    /* grid-template-columns: 1fr 1fr; */
+    /* gap: 2ex; */
+    /* padding-left: 3ex; */
 }
 input[type="reset"], button[id="submit"] {
     padding: 1ex;
@@ -128,7 +186,7 @@ input[type="reset"]:active {
 }
 button[id="submit"] {
     background: #28a745;
-    margin-top: 1.5ex;
+    /* margin-top: 1.5ex; */
     padding: 1.3ex;
     font-size: 1.4em;
 }
@@ -180,4 +238,5 @@ div.referral-container {
 .alertlabel {
     color: red;
     font-weight: bold;
+    font-size: 1.24em;
 }
