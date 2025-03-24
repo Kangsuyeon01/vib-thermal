@@ -71,9 +71,9 @@ body {
 }
 .play {
     display: block;
-    margin: 10px auto;
-    padding: 10px;
-    font-size: 18px;
+    margin: 1.5ex auto;
+    padding: 1.3ex;
+    font-size: 1.4em;
     background: #007bff;
     color: white;
     border: none;
@@ -109,26 +109,34 @@ form > span.options {
     gap: 2ex;
     padding-left: 3ex;
 }
-input[type="reset"], input[type="submit"] {
+input[type="reset"], button[id="submit"] {
     padding: 1ex;
     font-size: 1.3em;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    color: white;
 }
 input[type="reset"] {
     background: #ff4c4c;
-    color: white;
-}
-input[type="submit"] {
-    background: #28a745;
-    color: white;
 }
 input[type="reset"]:hover {
     background: #c82333;
 }
-input[type="submit"]:hover {
+input[type="reset"]:active {
+    background: #b21f2d;
+}
+button[id="submit"] {
+    background: #28a745;
+    margin-top: 1.5ex;
+    padding: 1.3ex;
+    font-size: 1.4em;
+}
+button[id="submit"]:hover {
     background: #218838;
+}
+button[id="submit"]:active {
+    background: #1e7e34;
 }
 div.posrate-container {
     display: grid;
@@ -168,4 +176,8 @@ div.referral-container {
     display: flex;
     align-items: center;
     gap: 5px;
+}
+.alertlabel {
+    color: red;
+    font-weight: bold;
 }
