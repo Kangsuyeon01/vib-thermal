@@ -92,33 +92,56 @@ sliders.forEach(slider => {
  * Sends the generated signal to the server for playback.
  */
 function on_play_signal() {
-    const { vib_signal, thermal_signal, duration } = generate_signal();
+	const { vib_signal, thermal_signal, duration } = generate_signal();
+	const MAX_DURATION = TOTAL_DURATION_SEC;
 
-    const data = {
-        vib_signal: Array.from(vib_signal),
-        thermal_signal: Array.from(thermal_signal),
-        sample_rate: SAMPLE_RATE
-    }; // ~522kB
-    
-    const input_els = [...drawcanvases, play_button, duration_input];
+	const data = {
+		vib_signal: Array.from(vib_signal),
+		thermal_signal: Array.from(thermal_signal),
+		sample_rate: SAMPLE_RATE
+	}; // ~522kB
+
+	const input_els = [...drawcanvases, play_button, duration_input];
+	input_els.forEach(el => el.disabled = true);
+
+	// 애니메이션 시작
+	const canvas = vibrationwaveform_np;
+	const canvas_width = canvas.width;
+	const start_time = performance.now();
+	const total_duration_ms = duration * 1000;
+
+	function animate_playhead(current_time) {
+		const elapsed = current_time - start_time;
+		const progress = Math.min(elapsed / total_duration_ms, 1); // 0~1
+		const x = progress * (canvas_width * (duration / MAX_DURATION)); 
+
+		canvas.draw_playhead(x);
+
+		if (progress < 1) {
+			requestAnimationFrame(animate_playhead);
+		}
+	}
+
+	requestAnimationFrame(animate_playhead);
+
 
     for (const el of  input_els) el.disabled = true;
     wait_ms(duration * 1000).then(() => { for (const el of input_els) el.disabled = false; }); // id rather wait for the duration of fetch, but flask doesn't support async by default?
 
-    fetch("/play_signals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
+	fetch("/play_signals", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(data)
+	})
+	.then(response => response.json())
+	.then(data => {
         console.log("Server response:", data);
-        if (data.wav_url) {
-            const audio = new Audio(data.wav_url);
-            audio.play().catch(err => console.error("Audio play failed:", err));
-        }
-    })
-    .catch(error => console.error("Error sending data:", error));
+		if (data.wav_url) {
+			const audio = new Audio(data.wav_url);
+			audio.play().catch(err => console.error("Audio play failed:", err));
+		}
+	})
+	.catch(error => console.error("Error sending data:", error));
 }
 /**
  * 

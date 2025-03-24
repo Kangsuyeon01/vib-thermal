@@ -58,6 +58,29 @@ export class NpWaveFormCanvas extends HTMLElement {
 	disconnectedCallback() {
 		this.#_resize_observer.disconnect();
 	}
+	/**
+	 * Draw a vertical red playhead line at given x-position.
+	 * @param {number} x - x position in pixels
+	 */
+	draw_playhead(x) {
+		const ctx = this.#ctx;
+		const canvas = this.#canvas;
+		const { height } = canvas;
+
+		if (!this.#last_waveform) return;
+
+		// redraw waveform first
+		this.draw_waveform(this.#last_waveform);
+
+		// draw red vertical line as playhead
+		ctx.beginPath();
+		ctx.moveTo(x, 0);
+		ctx.lineTo(x, height);
+		ctx.strokeStyle = "red";
+		ctx.lineWidth = 2;
+		ctx.stroke();
+	}
+
 
 
 	/**
