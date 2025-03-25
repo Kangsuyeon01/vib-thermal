@@ -68,9 +68,10 @@ drawcanvases.forEach(canvas => canvas.addEventListener("input", () => {
 
 function update_vibration_np() {
     const vib_signal = generate_signal(true).vib_signal;
+    const vib_freq = vib_freq_env_dcanvas.samples;
     const active_duration = parseFloat(duration_input.value);
     const perc_active = active_duration / TOTAL_DURATION_SEC; // todo: update vis based on this?
-    vibrationwaveform_np.draw_waveform(vib_signal);
+    vibrationwaveform_np.draw_waveform(vib_signal,vib_freq);
 }
 // drawcanvases.forEach(canvas => canvas.addEventListener("input", () => update_vibration_np()));
 update_vibration_np();
