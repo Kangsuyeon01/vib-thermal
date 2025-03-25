@@ -2,7 +2,7 @@
 import { DrawCanvasElement, TOTAL_DURATION_SEC } from "./drawcanvas.mjs";
 import { notnull } from "./util.mjs";
 
-export const SAMPLE_RATE = 8000;
+export const SAMPLE_RATE = 10000;
 export const MIN_FREQ = 50;
 export const MAX_FREQ = 500;
 
@@ -71,10 +71,11 @@ export function generate_signal(force_full_duration = false) {
     for (let i = 0; i < num_output_samples; i++) {
         const perc = i / num_output_samples;
         const lperc = perc * active_perc;
-        
+    
         const s_amp = linterp_index(thr_amp, lperc);
-
-        thermal_signal[i] = s_amp;
+    
+        // Map [0, 1] to [-6, 6]
+        thermal_signal[i] = -6 + 12 * s_amp;
     }
 
     return { vib_signal, thermal_signal, duration: active_duration };

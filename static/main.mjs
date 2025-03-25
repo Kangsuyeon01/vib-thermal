@@ -5,8 +5,8 @@ import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
 import { notnull, wait_ms } from './util.mjs';
 
 const TARGET_COUNT = 5;
+let hasChanged = false; // Track if Play button has been modifyed
 let hasPlayed = false; // Track if Play button has been pressed
-
 // trial label
 /** @type {HTMLSpanElement} */
 const trial_current_label = notnull(document.querySelector("#trial_current_label"));
@@ -43,19 +43,34 @@ const submitstatus_span = notnull(document.querySelector("#submitstatus"));
 /** @type {NpWaveFormCanvas} */
 const vibrationwaveform_np = notnull(document.querySelector("#vibrationwaveform"));
 
+// duration slider handler
 duration_input.addEventListener("input", () => {
     const duration = parseFloat(duration_input.value);
     drawcanvases.forEach(canvas => {
         canvas.set_active_duration(duration);
     });
+
+    // if signals are modifyed, user have to press play button at least one
+    hasChanged = true;
+    alert_signal_label.textContent = "⚠ Signal changed. Please press PLAY again to apply changes.";
+    alert_signal_label.style.color = "red";
 });
+
+drawcanvases.forEach(canvas => canvas.addEventListener("input", () => {
+    update_vibration_np();
+    // if signals are modifyed, user have to press play button at least one
+    hasChanged = true;
+    alert_signal_label.textContent = "⚠ Signal changed. Please press PLAY again to apply changes.";
+    alert_signal_label.style.color = "red";
+}));
+
 function update_vibration_np() {
     const vib_signal = generate_signal(true).vib_signal;
     const active_duration = parseFloat(duration_input.value);
     const perc_active = active_duration / TOTAL_DURATION_SEC; // todo: update vis based on this?
     vibrationwaveform_np.draw_waveform(vib_signal);
 }
-drawcanvases.forEach(canvas => canvas.addEventListener("input", () => update_vibration_np()));
+// drawcanvases.forEach(canvas => canvas.addEventListener("input", () => update_vibration_np()));
 update_vibration_np();
 
 // body site info
@@ -92,56 +107,58 @@ sliders.forEach(slider => {
  * Sends the generated signal to the server for playback.
  */
 function on_play_signal() {
-	const { vib_signal, thermal_signal, duration } = generate_signal();
-	const MAX_DURATION = TOTAL_DURATION_SEC;
+    hasChanged = false;  // signal has been played, so reset change flag
+    hasPlayed = true;
+    const { vib_signal, thermal_signal, duration } = generate_signal();
+    const MAX_DURATION = TOTAL_DURATION_SEC;
 
-	const data = {
-		vib_signal: Array.from(vib_signal),
-		thermal_signal: Array.from(thermal_signal),
-		sample_rate: SAMPLE_RATE
-	}; // ~522kB
+    const data = {
+        vib_signal: Array.from(vib_signal),
+        thermal_signal: Array.from(thermal_signal),
+        sample_rate: SAMPLE_RATE
+    }; // ~522kB
 
-	const input_els = [...drawcanvases, play_button, duration_input];
-	input_els.forEach(el => el.disabled = true);
+    const input_els = [...drawcanvases, play_button, duration_input];
+    input_els.forEach(el => el.disabled = true);
 
-	// 애니메이션 시작
-	const canvas = vibrationwaveform_np;
-	const canvas_width = canvas.width;
-	const start_time = performance.now();
-	const total_duration_ms = duration * 1000;
+    // animation start
+    const canvas = vibrationwaveform_np;
+    const canvas_width = canvas.width;
+    const start_time = performance.now();
+    const total_duration_ms = duration * 1000;
 
-	function animate_playhead(current_time) {
-		const elapsed = current_time - start_time;
-		const progress = Math.min(elapsed / total_duration_ms, 1); // 0~1
-		const x = progress * (canvas_width * (duration / MAX_DURATION)); 
+    function animate_playhead(current_time) {
+        const elapsed = current_time - start_time;
+        const progress = Math.min(elapsed / total_duration_ms, 1); // 0~1
+        const x = progress * (canvas_width * (duration / MAX_DURATION)); 
 
-		canvas.draw_playhead(x);
+        canvas.draw_playhead(x);
 
-		if (progress < 1) {
-			requestAnimationFrame(animate_playhead);
-		}
-	}
+        if (progress < 1) {
+            requestAnimationFrame(animate_playhead);
+        }
+    }
 
-	requestAnimationFrame(animate_playhead);
+    requestAnimationFrame(animate_playhead);
 
 
     for (const el of  input_els) el.disabled = true;
     wait_ms(duration * 1000).then(() => { for (const el of input_els) el.disabled = false; }); // id rather wait for the duration of fetch, but flask doesn't support async by default?
 
-	fetch("/play_signals", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(data)
-	})
-	.then(response => response.json())
-	.then(data => {
+    fetch("/play_signals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
         console.log("Server response:", data);
-		if (data.wav_url) {
-			const audio = new Audio(data.wav_url);
-			audio.play().catch(err => console.error("Audio play failed:", err));
-		}
-	})
-	.catch(error => console.error("Error sending data:", error));
+        if (data.wav_url) {
+            const audio = new Audio(data.wav_url);
+            audio.play().catch(err => console.error("Audio play failed:", err));
+        }
+    })
+    .catch(error => console.error("Error sending data:", error));
 }
 /**
  * 
@@ -163,13 +180,27 @@ async function on_submit(event) {
 
     // Display warning messages and prevent submission if invalid
     let isValid = true;
-    
+
     function animate_alert_label(label) {
         label.animate([ { opacity: 0 }, { opacity: 1 } ], {
             duration: 500,
             iterations: 1
         });
     }
+    if (!hasPlayed) {
+        alert_signal_label.textContent = "⚠ Please press the PLAY button at least once before submitting.";
+        animate_alert_label(alert_signal_label);
+        isValid = false;
+    } else {
+        if (hasChanged) {
+            alert_signal_label.textContent = "⚠ Signal was changed. Please press PLAY again before submitting.";
+            animate_alert_label(alert_signal_label);
+            isValid = false;
+        } else {
+            alert_signal_label.textContent = "";
+        }
+    }
+
 
     if (!allSlidersUsed) {
         alert_slider_label.textContent = "⚠ Please adjust all sliders at least once.";
@@ -178,7 +209,7 @@ async function on_submit(event) {
     } else {
         alert_slider_label.textContent = "";
     }
-    
+
     if (!referralValue) {
         alert_referral_label.textContent = "⚠ Please select a referral option.";
         animate_alert_label(alert_referral_label);
@@ -186,7 +217,7 @@ async function on_submit(event) {
     } else {
         alert_referral_label.textContent = "";
     }
-    
+
     if (!bodySiteValid) {
         alert_body_label.textContent = "⚠ Please select a body site.";
         animate_alert_label(alert_body_label);
@@ -195,14 +226,12 @@ async function on_submit(event) {
         alert_body_label.textContent = "";
     }
 
-    if (isValid) {
-        submitstatus_span.textContent = "";
-    } else {
-        // submitstatus_span.textContent = "⚠ See above alerts.";
-        // animate_alert_label(submitstatus_span);
+    if (!isValid) {
+        hasPlayed = false;
         return;
     }
 
+    submitstatus_span.textContent = "";
 
     const { vib_signal, thermal_signal } = generate_signal();
 

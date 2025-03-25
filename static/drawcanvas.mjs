@@ -74,7 +74,7 @@ export class DrawCanvasElement extends HTMLElement {
         this.mouse_down = false;
 
         /** @type {number[]} */
-        this.samples = new Array(NUM_SAMPLES).fill(0);
+        this.samples = new Array(NUM_SAMPLES).fill(0.5);
         this.#_fill_random_samples();
 
         this.on_mouse_down = this.on_mouse_down.bind(this);
