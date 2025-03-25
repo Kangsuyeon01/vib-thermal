@@ -61,7 +61,7 @@ export class DrawCanvasElement extends HTMLElement {
         shadowRoot.innerHTML = `
             <style>
                 canvas {
-                    /* border: 1px solid black; */
+                    display: block;
                 }
             </style>
             <canvas width="400" height="100"></canvas>
