@@ -80,7 +80,7 @@ export class DrawCanvasElement extends HTMLElement {
         this.on_mouse_down = this.on_mouse_down.bind(this);
         this.on_mouse_up = this.on_mouse_up.bind(this);
         this.on_mouse_move = this.on_mouse_move.bind(this);
-        
+
         this.last_x_perc = 0;
         this.last_y_perc = 0;
 
@@ -203,6 +203,13 @@ export class DrawCanvasElement extends HTMLElement {
         const start_x = this.canvas.width * this.#_active_duration / this.#_total_duration;
         this.ctx.fillRect(start_x, 0, this.canvas.width - start_x, this.canvas.height);
     }
+
+    reset_samples_to(value = 0.5) {
+        this.samples = new Float32Array(this.samples.length).fill(value);
+        this.draw_samples();
+    }
+
 }
+
 
 window.customElements.define('draw-canvas', DrawCanvasElement);

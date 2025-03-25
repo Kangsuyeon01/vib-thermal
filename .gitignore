@@ -1,7 +1,7 @@
 static/src/collected_data.json
 static/src/vib_signal.wav
 static/save_data/*.wav
-
+.idea/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -35,6 +35,8 @@ const drawcanvases = [vib_amp_env_dcanvas, vib_freq_env_dcanvas, thr_amp_env_dca
 /** @type {HTMLInputElement} */
 const duration_input = notnull(document.querySelector("#signalduration"));
 /** @type {HTMLButtonElement} */
+const reset_button = notnull(document.querySelector("#resetsignal"));
+/** @type {HTMLButtonElement} */
 const play_button = notnull(document.querySelector("#playsignal"));
 /** @type {HTMLButtonElement} */
 const submit_button = notnull(document.querySelector("#submit"));
@@ -169,6 +171,22 @@ function getSelectedReferral() {
     const selectedReferral = document.querySelector('input[name="referral"]:checked');
     return selectedReferral;
 }
+function on_reset_signal() {
+    const duration = parseFloat(duration_input.value);
+
+    drawcanvases.forEach(canvas => {
+        canvas.set_active_duration(duration);
+        canvas.reset_samples_to(0.5);
+    });
+
+    update_vibration_np();
+
+    hasChanged = true;
+    alert_signal_label.textContent = "Signal reset.";
+    alert_signal_label.style.color = "red";
+}
+
+
 async function on_submit(event) {
     event.preventDefault();  
 
@@ -283,6 +301,6 @@ async function on_submit(event) {
         alert("Submission failed!");
     });
 }
-
-submit_button.addEventListener("click", on_submit);
 play_button.addEventListener("click", on_play_signal);
+reset_button.addEventListener("click",on_reset_signal);
+submit_button.addEventListener("click", on_submit);
