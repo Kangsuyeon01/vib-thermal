@@ -5,6 +5,9 @@ import { notnull } from "./util.mjs";
 export const SAMPLE_RATE = 10000;
 export const MIN_FREQ = 50;
 export const MAX_FREQ = 500;
+export const MIN_THERMAL = -6;
+export const MAX_THERMAL = 6;
+
 
 /** @type {DrawCanvasElement} */
 const vib_amp_env_dcanvas = notnull(document.querySelector("#drawvibaenv"));
@@ -24,6 +27,9 @@ const duration_input = notnull(document.querySelector("#signalduration"));
  */
 function map_frequency(value, minValue, maxValue) {
     return MIN_FREQ + (MAX_FREQ - MIN_FREQ) * ((value - minValue) / (maxValue - minValue));
+}
+function map_thermal(value, minValue, maxValue) {
+    return MIN_THERMAL + (MAX_THERMAL- MIN_THERMAL) * ((value - minValue) / (maxValue - minValue));
 }
 
 function linterp_index(arr, perc) {
@@ -75,7 +81,8 @@ export function generate_signal(force_full_duration = false) {
         const s_amp = linterp_index(thr_amp, lperc);
     
         // Map [0, 1] to [-6, 6]
-        thermal_signal[i] = -6 + 12 * s_amp;
+        const current_s_amp = map_thermal(s_amp, 0, 1);
+        thermal_signal[i] = current_s_amp
     }
 
     return { vib_signal, thermal_signal, duration: active_duration };

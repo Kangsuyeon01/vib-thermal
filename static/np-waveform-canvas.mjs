@@ -107,15 +107,8 @@ export class NpWaveFormCanvas extends HTMLElement {
 
 		// Downsample and normalize freqs if provided
 		let colorFreqs = null;
-		if (freqs && freqs.length > 0) {
-			colorFreqs = downsampleArray(freqs, width);
-			const maxFreq = Math.max(...colorFreqs);
-			if (maxFreq > 0) {
-				colorFreqs = colorFreqs.map(f => f / maxFreq);
-			} else {
-				colorFreqs = colorFreqs.map(_ => 0);
-			}
-		}
+
+		colorFreqs = downsampleArray(freqs, width);
 
 		wf_ctx.beginPath();
 		wf_ctx.moveTo(0, height / 2);

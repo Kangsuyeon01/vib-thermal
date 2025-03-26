@@ -205,7 +205,8 @@ export class DrawCanvasElement extends HTMLElement {
     }
 
     reset_samples_to(value = 0.5) {
-        this.samples = new Float32Array(this.samples.length).fill(value);
+        this.samples.fill(value);
+        // this.samples = new Float32Array(this.samples.length).fill(value);
         this.draw_samples();
     }
 
