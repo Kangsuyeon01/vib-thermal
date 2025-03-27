@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 import mimetypes
-import json
+import json, os
+import numpy as np
+import scipy.io.wavfile
+from datetime import datetime
 mimetypes.add_type('application/javascript', '.mjs')
 
 app = Flask(__name__)
@@ -22,16 +25,25 @@ def body_site_point_loader():
     return render_template("body_point_load.html")
 
 @app.route("/play_signals", methods=["POST"])
-def play_signals(): 
+def play_signals():
+    # Receive JSON data from frontend
     data = request.get_json()
-    assert "vib_signal" in data
-    assert "thermal_signal" in data
-    assert "sample_rate" in data
-    print(f"Received data: {{ vib_signal: len({len(data['vib_signal'])}), thermal_signal: len({len(data['thermal_signal'])}), sample_rate: {data['sample_rate']} }}")
+    vib_signal = np.array(data["vib_signal"], dtype=np.float32)
+    sample_rate = data["sample_rate"]
+    # timestamp file name
+    filename = f"vib_signal_{datetime.now().strftime('%Y%m%d%H%M%S%f')}.wav"
+    # filename = f"vib_signal_tmp.wav"
+    filepath = os.path.join("static","save_data",filename)
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
 
-    # TODO: Implement playback
+    # Save the vibration signal as a WAV file
+    scipy.io.wavfile.write(filepath, sample_rate, vib_signal)
 
-    return jsonify({"status": "success", "received": data})
+    # Return the file path to the client for playback
+    return jsonify({
+        "status": "success",
+        "wav_url": f"/{filepath}"
+    })
 
 
 # save signal, body site and user rating
