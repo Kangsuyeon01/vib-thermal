@@ -68,6 +68,7 @@ drawcanvases.forEach(canvas => canvas.addEventListener("input", () => {
 
 function update_vibration_np() {
     const vib_signal = generate_signal(true).vib_signal;
+    // const vib_amp = vib_amp_env_dcanvas.samples;
     const vib_freq = vib_freq_env_dcanvas.samples;
     const active_duration = parseFloat(duration_input.value);
     const perc_active = active_duration / TOTAL_DURATION_SEC; // todo: update vis based on this?
@@ -256,6 +257,8 @@ async function on_submit(event) {
 
     const data = {
         vib_signal: Array.from(vib_signal),
+        vib_amp: Array.from(vib_amp_env_dcanvas.samples), /////
+        vib_freq: Array.from(vib_freq_env_dcanvas.samples), ////
         thermal_signal: Array.from(thermal_signal),
         sample_rate: SAMPLE_RATE,
         body_sites: { vibrationInfo: vibrationInfo.textContent, thermalInfo: thermalInfo.textContent },

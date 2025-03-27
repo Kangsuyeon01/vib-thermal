@@ -2,15 +2,18 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
-    /* font-size: 16px; */
+        /* font-size: 16px; */
 
     --interactive-color: #007bff;
+}
+h1, h2 {
+    text-align: center;
 }
 input[type="radio"] {
     appearance: none;
     background-color: #fff;
     cursor: pointer;
-    margin: 0.5ex;
+    margin: 0.75ex;
     width: 1.5em;
     height: 1.5em;
     color: currentColor;
@@ -21,6 +24,7 @@ input[type="radio"] {
     /* place-content: center; */
     /* position: relative; */
 }
+
 input[type="radio"]::before {
     content: "";
     display: block;
@@ -39,6 +43,8 @@ input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
     cursor: pointer;
+    width: 100%;
+    height: 1.2em;
 }
 input[type="range"]:disabled {
     cursor: not-allowed;
@@ -58,12 +64,14 @@ input[type="range"]::-webkit-slider-thumb {
     transform: translateY(-0.25em);
 }
 
-
+h2.trial-num {
+    margin: 0.5ex 0px 0px;
+}
 div.envelope {
     display: grid;
-    grid-template-columns: 0.7fr minmax(0px, 1fr);
+    grid-template-columns: 0.6fr minmax(0px, 1fr);
     align-items: center;
-    /* margin: 0ex 2ex; */
+    margin-right: 4ex;    
     
     &>h2, &>label {
         display: flex;
@@ -71,11 +79,68 @@ div.envelope {
         text-align: center;
     }
 }
+.envelope input[type="range"] {
+    flex-grow: 1;
+    max-width: 100%;
+}
+
+.envelope.full-width {
+    display: flex;
+    align-items: center;
+    gap: 1ex;
+  }
+
+
+  .slider-row {
+    display: grid;
+    grid-template-columns: minmax(min-content, 10ex) 1fr minmax(min-content, 10ex);
+    align-items: center; /* 슬라이더 중앙 정렬 */
+    /* gap: 1ex; */
+    margin-bottom: 2ex;
+  }
+  
+  .slider-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .slider-wrapper h2 {
+    margin: 0ex 0ex 0.8ex;
+  }
+  
+  .slider-wrapper label {
+    font-weight: bold;
+    margin-bottom: 0.5ex;
+  }
+  
+  .slider-value {
+    font-weight: bold;
+    margin-bottom: 0.3ex;
+  }
+  
+  input[type="range"] {
+    width: 100%;
+    vertical-align: middle;
+  }
+  
+  .side-label {
+    font-size: 0.9em;
+    text-align: center;
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* 중앙 정렬 */
+    height: 100%; /* align with slider */
+  }
+  
 
 form.ratings {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2ex 3ex;
+    gap: 1ex;
 }
 
 @media (max-width: 700px) {
@@ -95,7 +160,8 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 3ex;
-    padding: 3ex;
+    /* padding: 3ex; */
+    margin: 3ex;
 }
 
 @media (max-width: 1000px) {
@@ -103,24 +169,25 @@ body {
         grid-template-columns: 1fr;
     }
 }
-.signal-container {
+div.signal-container {
     padding: 3ex;
     display: flex;
     flex-direction: column;
-    gap: 5ex;
+    gap: 3ex;
     justify-content: space-between;
+    /* padding-right: 10ex; */
 }
-.signal-container > div {
+div.signal-container > div {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2ex;
-    /* & > h1 {
+        /* & > h1 {
         grid-column: 1 / -1;
     } */
 }
-.container-hands{
-    flex-shrink: 0; /* 부모 요소에 의해 축소되지 않도록 방지 */
-    justify-content: center; /* 중앙 정렬 */
+.container-hands {
+    flex-shrink: 0;
+    justify-content: center;
     align-items: center;
 }
 .container h1 {
@@ -173,15 +240,16 @@ button.reset:active {
 .card {
     background: white;
     padding: 3ex;
+    /* padding-right: 10ex; */
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 .ratingcard {
     display: flex;
     /* grid-template-rows: 1fr 1fr; */
-    gap: 3ex;
+    gap: 0ex;
     flex-direction: column;
-    justify-content: space-between;
+    /* justify-content: space-between; */
 }
 .ratings {
     display: flex;
@@ -197,10 +265,11 @@ button.reset:active {
     align-items: center;
 }
 form > span.options {
-    /* display: grid; */
+    display: grid;
     /* grid-template-columns: 1fr 1fr; */
     /* gap: 2ex; */
     /* padding-left: 3ex; */
+    align-items: center;
 }
 input[type="reset"], button[id="submit"] {
     padding: 1ex;
@@ -221,9 +290,10 @@ input[type="reset"]:active {
 }
 button[id="submit"] {
     background: #28a745;
-    /* margin-top: 1.5ex; */
+    margin-top: 0.5ex;
     padding: 1.3ex;
     font-size: 1.4em;
+    margin-left: calc(50% - 5ex);
 }
 button[id="submit"]:hover {
     background: #218838;
@@ -257,14 +327,19 @@ div.posrate-container {
 }
 div.referral-container {
     display: grid;
-    grid-template-columns: 0.5fr 1fr;
-    gap: 2px;
+    grid-template-columns: 0.33fr 1fr;
+    gap: 2px; 
+
 
     &>label {
         font-size: 1.2em;
     }
     label {
         font-weight: bold;
+        display: flex;
+        /* justify-content: center; */
+        align-items: center;
+        font-size: 1.15em;
     }
 
     span.radio-options {
@@ -282,6 +357,7 @@ div.referral-container {
     color: red;
     font-weight: bold;
     font-size: 1.24em;
+    text-align: center;
 }
 
 canvas {

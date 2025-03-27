@@ -52,13 +52,15 @@ def save_result():
     data = request.get_json()
 
     # 🔹 1. Validate received data
-    required_keys = ["vib_signal", "thermal_signal", "sample_rate", "body_sites", "ratings"]
+    required_keys = ["vib_signal","vib_amp","vib_freq", "thermal_signal", "sample_rate", "body_sites", "ratings"]
     if not all(key in data for key in required_keys):
         return jsonify({"status": "error", "message": "Missing required data"}), 400
 
     # 🔹 2. Log received data
     print("Received Data:")
     print(f"- Vib Signal: {len(data['vib_signal'])} samples")
+    print(f"- Vib amp: {len(data['vib_amp'])} samples")
+    print(f"- Vib freq: {len(data['vib_freq'])} samples")
     print(f"- Thermal Signal: {len(data['thermal_signal'])} samples")
     print(f"- Sample Rate: {data['sample_rate']} Hz")
     print(f"- Body Sites: {data['body_sites']} selected points")
