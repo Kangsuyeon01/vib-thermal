@@ -2,10 +2,11 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
-    /* font-size: 16px; */
+        /* font-size: 16px; */
 
     --interactive-color: #007bff;
 }
+
 input[type="radio"] {
     appearance: none;
     background-color: #fff;
@@ -21,6 +22,7 @@ input[type="radio"] {
     /* place-content: center; */
     /* position: relative; */
 }
+
 input[type="radio"]::before {
     content: "";
     display: block;
@@ -39,6 +41,8 @@ input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
     cursor: pointer;
+    width: 100%;
+    height: 1.2em;
 }
 input[type="range"]:disabled {
     cursor: not-allowed;
@@ -71,11 +75,64 @@ div.envelope {
         text-align: center;
     }
 }
+.envelope input[type="range"] {
+    flex-grow: 1;
+    max-width: 100%;
+}
+
+.envelope.full-width {
+    display: flex;
+    align-items: center;
+    gap: 1ex;
+  }
+
+
+  .slider-row {
+    display: flex;
+    align-items: center; /* 슬라이더 중앙 정렬 */
+    gap: 1em;
+    margin-bottom: 2ex;
+  }
+  
+  .slider-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  
+  .slider-wrapper label {
+    font-weight: bold;
+    margin-bottom: 0.5ex;
+  }
+  
+  .slider-value {
+    font-weight: bold;
+    margin-bottom: 0.3ex;
+  }
+  
+  input[type="range"] {
+    width: 100%;
+    vertical-align: middle;
+  }
+  
+  .side-label {
+    width: 60px;
+    font-size: 0.9em;
+    text-align: center;
+    line-height: 1.2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 중앙 정렬 */
+    height: 100%; /* align with slider */
+  }
+  
 
 form.ratings {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2ex 3ex;
+    gap: 5ex 2ex;
 }
 
 @media (max-width: 700px) {
@@ -107,20 +164,20 @@ body {
     padding: 3ex;
     display: flex;
     flex-direction: column;
-    gap: 5ex;
+    gap: 3ex;
     justify-content: space-between;
 }
 .signal-container > div {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2ex;
-    /* & > h1 {
+        /* & > h1 {
         grid-column: 1 / -1;
     } */
 }
-.container-hands{
-    flex-shrink: 0; /* 부모 요소에 의해 축소되지 않도록 방지 */
-    justify-content: center; /* 중앙 정렬 */
+.container-hands {
+    flex-shrink: 0;
+    justify-content: center;
     align-items: center;
 }
 .container h1 {
@@ -172,16 +229,18 @@ button.reset:active {
 }
 .card {
     background: white;
-    padding: 5ex;
+    padding: 3ex;
+    padding-right: 10ex;
+
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 .ratingcard {
     display: flex;
     /* grid-template-rows: 1fr 1fr; */
-    gap: 3ex;
+    gap: 0ex;
     flex-direction: column;
-    justify-content: space-between;
+    /* justify-content: space-between; */
 }
 .ratings {
     display: flex;
