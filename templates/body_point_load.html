@@ -5,124 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mark a point as Vibration or Thermal.</title>
     <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
+    div.body-point-load {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        margin: 0;
+        /* padding: 20px; */
+        text-align: center;
+
+        h2 {
+            margin: 0ex 0ex 0.5ex;
+        }
+
+        .point {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        background-color: rgba(128, 128, 128, 0.3);
+        cursor: pointer;
+        }
+
+        .buttons {
+        margin-bottom: 20px;
+        }
+
+        .buttons button {
+        padding: 10px 15px;
+        margin: 0 5px;
+        border: none;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        }
+
+        #vibrationMode { background-color: #1e90ff; color: white; }
+        #thermalMode { background-color: #ff4d4d; color: white; }
+        #clearMode { background-color: #888; color: white; }
+
+        .active {
+        outline: 3px solid yellow;
+        }
+
+        .tooltip {
+        position: absolute;
+        display: none;
+        background: black;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 12px;
+        z-index: 10;
+        }
+
+        .status-display {
+        margin: 10px 0 30px;
+        font-size: 14px;
+        color: #333;
+        }
+        .hand-label {
+        margin-top: 10px;
+        font-weight: 600;
+        font-size: 23px;
+        color: #222;
+        }
+
+        .hands-wrapper {
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        margin-top: 20px;
+        }
+
+        .container-hands {
+        position: relative;
+        display: inline-block;
+        text-align: center;
+        }
+
+        .handImage {
+        width: 300px;
+        height: auto;
+        display: block;
+        /* border-radius: 8px; */
+        border-radius: 12px;
+        }
+
+        .label-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 8px;
+        margin-bottom: 5px;
+        }
+
+        .front-label {
+        background-color: white;
+        color: black;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 15px;
+        }
+
+        .back-label {
+        background-color: rgba(0, 0, 0);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 15px;
+        border: 0.1px solid #222;
+        }
     }
-
-    h2 {
-      margin-bottom: 10px;
-    }
-
-    .point {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      position: absolute;
-      transform: translate(-50%, -50%);
-      background-color: rgba(128, 128, 128, 0.3);
-      cursor: pointer;
-    }
-
-    .buttons {
-      margin-bottom: 20px;
-    }
-
-    .buttons button {
-      padding: 10px 15px;
-      margin: 0 5px;
-      border: none;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #vibrationMode { background-color: #1e90ff; color: white; }
-    #thermalMode { background-color: #ff4d4d; color: white; }
-    #clearMode { background-color: #888; color: white; }
-
-    .active {
-      outline: 3px solid yellow;
-    }
-
-    .tooltip {
-      position: absolute;
-      display: none;
-      background: black;
-      color: white;
-      padding: 5px;
-      border-radius: 5px;
-      font-size: 12px;
-      z-index: 10;
-    }
-
-    .status-display {
-      margin: 10px 0 30px;
-      font-size: 14px;
-      color: #333;
-    }
-    .hand-label {
-    margin-top: 10px;
-    font-weight: 600;
-    font-size: 23px;
-    color: #222;
-    }
-
-    .hands-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 60px;
-    margin-top: 20px;
-    }
-
-    .container-hands {
-    position: relative;
-    display: inline-block;
-    text-align: center;
-    }
-
-    .handImage {
-    width: 300px;
-    height: auto;
-    display: block;
-    /* border-radius: 8px; */
-    border-radius: 12px;
-    }
-
-    .label-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 8px;
-    margin-bottom: 5px;
-    }
-
-    .front-label {
-    background-color: white;
-    color: black;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 15px;
-    }
-
-    .back-label {
-    background-color: rgba(0, 0, 0);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 15px;
-    border: 0.1px solid #222;
-    }
-
-
     </style>
 </head>
 <body>
+<div class="body-point-load">
 
 <h2>Mark a point as Vibration or Thermal.</h2>
 
@@ -332,5 +331,6 @@
     }
 </script>
 
+</div>
 </body>
 </html>

@@ -15,24 +15,19 @@ draw-canvas:state(disabled) {
 }
 
 .canvas-with-axis {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
+    display: grid;
+    grid-template-columns: min-content auto;
 }
 
 .y-axis-labels {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100px;
-    margin-right: 6px;
-    font-size: 20px;
+    height: 100%;
+    margin-right: 0.5ex;
+    font-size: 1.24em;
     color: #555;
     text-align: right;
-    min-width: 24px;
-    flex-shrink: 0;
-    /* position: relative; */
 }
 
 .y-axis-labels span {
