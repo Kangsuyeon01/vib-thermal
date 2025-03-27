@@ -16,7 +16,7 @@ draw-canvas:state(disabled) {
 
 .canvas-with-axis {
     display: grid;
-    grid-template-columns: min-content auto;
+    grid-template-columns: 6ex auto;
 }
 
 .y-axis-labels {

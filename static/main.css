@@ -69,9 +69,9 @@ h2.trial-num {
 }
 div.envelope {
     display: grid;
-    grid-template-columns: 0.7fr minmax(0px, 1fr);
+    grid-template-columns: 0.6fr minmax(0px, 1fr);
     align-items: center;
-    margin: 0ex 2ex;
+    margin-right: 4ex;    
     
     &>h2, &>label {
         display: flex;
