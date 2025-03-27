@@ -64,7 +64,9 @@ input[type="range"]::-webkit-slider-thumb {
     transform: translateY(-0.25em);
 }
 
-
+h2.trial-num {
+    margin: 0.5ex 0px 0px;
+}
 div.envelope {
     display: grid;
     grid-template-columns: 0.7fr minmax(0px, 1fr);
@@ -158,7 +160,8 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 3ex;
-    padding: 3ex;
+    /* padding: 3ex; */
+    margin: 3ex;
 }
 
 @media (max-width: 1000px) {
@@ -326,7 +329,7 @@ div.referral-container {
     display: grid;
     grid-template-columns: 0.33fr 1fr;
     gap: 2px; 
-    
+
 
     &>label {
         font-size: 1.2em;
