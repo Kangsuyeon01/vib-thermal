@@ -5,30 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mark a point as Vibration or Thermal.</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        #wrapper { display: flex; justify-content: center; gap: 20px; margin-bottom: 10px; }
-        .container-hands { position: relative; display: inline-block; }
-        .handImage { width: 300px; height: auto; }
-        .point {
-            width: 12px; height: 12px; border-radius: 50%;
-            position: absolute; cursor: pointer;
-            transform: translate(-50%, -50%);
-            background-color: rgba(128, 128, 128, 0.3)
-            
-        }
-        .tooltip {
-            position: absolute; display: none; background: black;
-            color: white; padding: 5px; border-radius: 5px; font-size: 12px;
-        }
-        .buttons { margin-bottom: 10px; }
-        .buttons button {
-            padding: 8px; margin: 5px; cursor: pointer;
-            border: none; color: white; font-weight: bold;
-        }
-        #vibrationMode { background-color: blue; }
-        #thermalMode { background-color: red; }
-        #clearMode { background-color: rgb(128, 128, 128); }
-        .active { border: 3px solid yellow; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    .point {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background-color: rgba(128, 128, 128, 0.3);
+      cursor: pointer;
+    }
+
+    .buttons {
+      margin-bottom: 20px;
+    }
+
+    .buttons button {
+      padding: 10px 15px;
+      margin: 0 5px;
+      border: none;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #vibrationMode { background-color: #1e90ff; color: white; }
+    #thermalMode { background-color: #ff4d4d; color: white; }
+    #clearMode { background-color: #888; color: white; }
+
+    .active {
+      outline: 3px solid yellow;
+    }
+
+    .tooltip {
+      position: absolute;
+      display: none;
+      background: black;
+      color: white;
+      padding: 5px;
+      border-radius: 5px;
+      font-size: 12px;
+      z-index: 10;
+    }
+
+    .status-display {
+      margin: 10px 0 30px;
+      font-size: 14px;
+      color: #333;
+    }
+    .hand-label {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #222;
+    }
+
+    .hands-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 20px;
+    }
+
+    .container-hands {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    }
+
+    .handImage {
+    width: 300px;
+    height: auto;
+    display: block;
+    /* border-radius: 8px; */
+    border-radius: 12px;
+    }
+    .position-label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    }
+    .label-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+    margin-bottom: 5px;
+    }
+
+    .front-label {
+    background-color: white;
+    color: black;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+    }
+
+    .back-label {
+    background-color: rgba(0, 0, 0);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+    border: 0.1px solid #222;
+    }
+
+
     </style>
 </head>
 <body>
@@ -49,17 +144,28 @@
 <strong>Current Thermal:</strong> <span id="thermalInfo">None</span></p>
 
 
-<div id="wrapper">
-    <!-- Left hand -->
+<div class="hands-wrapper">
+    <!-- Left Hand -->
     <div class="container-hands" id="leftContainer">
-        <img id="leftHandImage" class="handImage" src="static/src/left_hand.jpg" alt="Left Hand">
+      <img id="leftHandImage" class="handImage" src="static/src/left_hand.jpg" alt="Left Hand">
+      <div class="label-container">
+        <div class="front-label">Front</div>
+        <div class="back-label">Back</div>
+      </div>
+      <div class="hand-label">Left Hand</div>
     </div>
-
-    <!-- Right hand -->
+  
+    <!-- Right Hand -->
     <div class="container-hands" id="rightContainer">
-        <img id="rightHandImage" class="handImage" src="static/src/right_hand.jpg" alt="Right Hand">
+      <img id="rightHandImage" class="handImage" src="static/src/right_hand.jpg" alt="Right Hand">
+      <div class="label-container">
+        <div class="back-label">Back</div>
+        <div class="front-label">Front</div>
+      </div>
+      <div class="hand-label">Right Hand</div>
     </div>
-</div>
+  </div>
+
 <!-- <button onclick="sendData()">Save</button> -->
 <div class="tooltip" id="tooltip"></div>
 
