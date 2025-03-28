@@ -96,7 +96,7 @@ div.envelope {
     grid-template-columns: minmax(min-content, 10ex) 1fr minmax(min-content, 10ex);
     align-items: center; /* 슬라이더 중앙 정렬 */
     /* gap: 1ex; */
-    margin-bottom: 2ex;
+    margin-bottom: 1ex;
   }
   
   .slider-wrapper {
@@ -119,6 +119,7 @@ div.envelope {
   .slider-value {
     font-weight: bold;
     margin-bottom: 0.3ex;
+    font-size: 2.2ex;
   }
   
   input[type="range"] {
@@ -161,7 +162,7 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 3ex;
     /* padding: 3ex; */
-    margin: 3ex;
+    margin: 1ex;
 }
 
 @media (max-width: 1000px) {
@@ -203,7 +204,7 @@ button.play {
     display: block;
     margin: 0ex auto;
     padding: 1.3ex;
-    font-size: 1.4em;
+    font-size: 1.2em;
     background: #007bff;
     color: white;
     border: none;
@@ -221,8 +222,8 @@ button.play:active {
     background: #0042a2;
 }
 button.reset {
-    padding: 1.3ex;
-    font-size: 1.4em;
+    /* padding: 1.3ex; */
+    font-size: 1.2em;
     background: #ff4c4c;
     color: white;
     border: none;
@@ -239,7 +240,7 @@ button.reset:active {
 }
 .card {
     background: white;
-    padding: 3ex;
+    padding: 1ex;
     /* padding-right: 10ex; */
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -273,7 +274,7 @@ form > span.options {
 }
 input[type="reset"], button[id="submit"] {
     padding: 1ex;
-    font-size: 1.3em;
+    font-size: 1.2em;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -291,8 +292,8 @@ input[type="reset"]:active {
 button[id="submit"] {
     background: #28a745;
     margin-top: 0.5ex;
-    padding: 1.3ex;
-    font-size: 1.4em;
+    /* padding: 1.3ex; */
+    font-size: 1.2em;
     margin-left: calc(50% - 5ex);
 }
 button[id="submit"]:hover {

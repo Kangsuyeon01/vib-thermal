@@ -33,16 +33,11 @@
         .buttons button {
         padding: 10px 15px;
         margin: 0 5px;
-        border: none;
+        border: 0;
         font-weight: bold;
         border-radius: 5px;
         cursor: pointer;
         }
-
-        #vibrationMode { background-color: #1e90ff; color: white; }
-        #thermalMode { background-color: #ff4d4d; color: white; }
-        #clearMode { background-color: #888; color: white; }
-
         .active {
         outline: 3px solid yellow;
         }
@@ -53,7 +48,7 @@
         background: black;
         color: white;
         padding: 5px;
-        border-radius: 5px;
+        
         font-size: 12px;
         z-index: 10;
         }
@@ -66,7 +61,7 @@
         .hand-label {
         margin-top: 10px;
         font-weight: 600;
-        font-size: 23px;
+        font-size: 20px;
         color: #222;
         }
 
@@ -118,27 +113,50 @@
         border: 0.1px solid #222;
         }
     }
+    .status-button-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px auto;
+    font-size: 16px;
+    }
+
+    .status-button-bar button {
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    }
+
+    #vibrationMode { background-color: #1e90ff; color: white; }
+    #thermalMode { background-color: #ff4d4d; color: white; }
+    #clearMode { background-color: #888; color: white; }
+
+    .status-button-bar span {
+    font-size: 16px;
+    color: #222;
+    }
+
     </style>
 </head>
 <body>
 <div class="body-point-load">
 
 <h2>Mark a point as Vibration or Thermal.</h2>
-
-<!-- Mode selection buttons -->
-<div class="buttons">
-    <button id="vibrationMode" onclick="setMode('vibration')">Vibration</button>
-    <button id="thermalMode" onclick="setMode('thermal')">Thermal</button>
-    <button id="clearMode" onclick="setMode('none')">Clear</button>
-</div>
-
 <!-- Display selected Thermal & Vibration information -->
-<span id="alert_body_label" class="alertlabel"></span>
-<p>
-<strong>Current Vibration:</strong> <span id="vibrationInfo">None</span>
-<strong>Current Thermal:</strong> <span id="thermalInfo">None</span></p>
-
-
+<div class="status-button-bar">
+    <button id="vibrationMode" onclick="setMode('vibration')">Vibration</button>
+    <span> <span id="vibrationInfo">None</span></span>
+    <button id="thermalMode" onclick="setMode('thermal')">Thermal</button>
+    <span> <span id="thermalInfo">None</span></span>
+    <button id="clearMode" onclick="setMode('none')">Clear</button>
+  </div>
+  
+  <span id="alert_body_label" class="alertlabel"></span>
 <div class="hands-wrapper">
     <!-- Left Hand -->
     <div class="container-hands" id="leftContainer">
