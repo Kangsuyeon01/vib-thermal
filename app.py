@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
 import mimetypes
 import json, os
 import numpy as np
 import scipy.io.wavfile
 from datetime import datetime
+
+from play_signal.play_vib_ther_signal import run_stim_from_json  # 파일명에 따라 수정
 mimetypes.add_type('application/javascript', '.mjs')
 
 app = Flask(__name__)
@@ -24,27 +26,43 @@ def body_site_point_loader():
         return jsonify({"status": "success", "received": data})
     return render_template("body_point_load.html")
 
+# @app.route("/play_signals", methods=["POST"])
+# def play_signals():
+#     # Receive JSON data from frontend
+#     data = request.get_json()
+#     vib_signal = np.array(data["vib_signal"], dtype=np.float32)
+#     sample_rate = data["sample_rate"]
+#     # timestamp file name
+#     filename = f"vib_signal_{datetime.now().strftime('%Y%m%d%H%M%S%f')}.wav"
+#     # filename = f"vib_signal_tmp.wav"
+#     filepath = os.path.join("static","save_data",filename)
+#     os.makedirs(os.path.dirname(filepath), exist_ok=True)
+
+#     # Save the vibration signal as a WAV file
+#     scipy.io.wavfile.write(filepath, sample_rate, vib_signal)
+
+#     # Return the file path to the client for playback
+#     return jsonify({
+#         "status": "success",
+#         "wav_url": f"/{filepath}"
+#     })
+
+
+
 @app.route("/play_signals", methods=["POST"])
 def play_signals():
-    # Receive JSON data from frontend
     data = request.get_json()
-    vib_signal = np.array(data["vib_signal"], dtype=np.float32)
-    sample_rate = data["sample_rate"]
-    # timestamp file name
-    filename = f"vib_signal_{datetime.now().strftime('%Y%m%d%H%M%S%f')}.wav"
-    # filename = f"vib_signal_tmp.wav"
-    filepath = os.path.join("static","save_data",filename)
-    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    print("[Flask] Received signal for play")
 
-    # Save the vibration signal as a WAV file
-    scipy.io.wavfile.write(filepath, sample_rate, vib_signal)
+    # 🟢 먼저 클라이언트에게 실행 시작을 알림
+    def respond_first():
+        return jsonify({"status": "started"})
+    def generate_response():
+        yield 'data: {"status": "started"}\n\n'
+        run_stim_from_json(data)
+        yield 'data: {"status": "completed"}\n\n'
 
-    # Return the file path to the client for playback
-    return jsonify({
-        "status": "success",
-        "wav_url": f"/{filepath}"
-    })
-
+    return Response(generate_response(), mimetype='text/event-stream')
 
 # save signal, body site and user rating
 @app.route("/save_result", methods=["POST"])
@@ -58,13 +76,13 @@ def save_result():
 
     # 🔹 2. Log received data
     print("Received Data:")
-    print(f"- Vib Signal: {len(data['vib_signal'])} samples")
-    print(f"- Vib amp: {len(data['vib_amp'])} samples")
-    print(f"- Vib freq: {len(data['vib_freq'])} samples")
-    print(f"- Thermal Signal: {len(data['thermal_signal'])} samples")
-    print(f"- Sample Rate: {data['sample_rate']} Hz")
-    print(f"- Body Sites: {data['body_sites']} selected points")
-    print(f"- Ratings: {data['ratings']}")
+    # print(f"- Vib Signal: {len(data['vib_signal'])} samples")
+    # print(f"- Vib amp: {len(data['vib_amp'])} samples")
+    # print(f"- Vib freq: {len(data['vib_freq'])} samples")
+    # print(f"- Thermal Signal: {len(data['thermal_signal'])} samples")
+    # print(f"- Sample Rate: {data['sample_rate']} Hz")
+    # print(f"- Body Sites: {data['body_sites']} selected points")
+    # print(f"- Ratings: {data['ratings']}")
 
     # 🔹 3. Save data to JSON file
     with open("static/src/collected_data.json", "w") as f:

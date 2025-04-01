@@ -157,13 +157,13 @@ function on_play_signal() {
     .then(response => response.json())
     .then(data => {
         console.log("Server response:", data);
-        if (data.wav_url) {
-            const audio = new Audio(data.wav_url);
-            audio.play().catch(err => console.error("Audio play failed:", err));
+        if (data.status === "completed") {
+            // 모든 작업이 끝난 뒤 활성화
+            for (const el of input_els) el.disabled = false;
         }
     })
     .catch(error => console.error("Error sending data:", error));
-}
+}    
 /**
  * 
  * @returns {HTMLInputElement | null} - The selected referral radio button, or null if none selected.
