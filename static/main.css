@@ -343,17 +343,125 @@ div.referral-container {
         font-size: 1.15em;
     }
 
-    span.radio-options {
+    /* span.radio-options {
         display: flex;
         gap: 1ex;
         justify-content: space-evenly;
-    }
+    } */
 }
 .radio {
     display: flex;
     align-items: center;
     gap: 5px;
 }
+.scale-group {
+    margin: 2ex 0;
+    text-align: center;
+  }
+  
+  .scale-label {
+    font-weight: bold;
+    font-size: 1.1em;
+    display: block;
+    margin-bottom: 0.5ex;
+  }
+  
+  .scale-row {
+    display: flex;
+    justify-content: center;
+    gap: 3ex;
+    margin-bottom: 0.5ex;
+  }
+  
+  .scale-numbers span {
+    font-size: 0.95em;
+    width: 1.5em;
+    text-align: center;
+  }
+  
+  .scale-inputs label {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+  }
+  
+  .scale-inputs input[type="radio"] {
+    appearance: none;
+    width: 1.5em;
+    height: 1.5em;
+    border: 2px solid #555;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .scale-inputs input[type="radio"]::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--interactive-color, #007bff);
+    transform: scale(0);
+    transition: transform 0.1s ease-in-out;
+  }
+  
+  .scale-inputs input[type="radio"]:checked::before {
+    transform: scale(0.6);
+  }
+  .scale-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2ex auto;
+  }
+  
+  .scale-block .scale-label {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 0.6ex;
+  }
+  
+  .scale-block .scale-numbers,
+  .scale-block .scale-inputs {
+    display: flex;
+    gap: 2ex;
+    justify-content: center;
+  }
+  
+  .scale-block .scale-numbers span {
+    font-size: 0.95em;
+    width: 1.5em;
+    text-align: center;
+  }
+  
+  .scale-block .scale-inputs input[type="radio"] {
+    appearance: none;
+    width: 1.4em;
+    height: 1.4em;
+    border: 2px solid #555;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.1s ease-in-out;
+  }
+  
+  .scale-block .scale-inputs input[type="radio"]::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--interactive-color, #007bff);
+    transform: scale(0);
+    transition: transform 0.15s ease-in-out;
+  }
+  
+  .scale-block .scale-inputs input[type="radio"]:checked::before {
+    transform: scale(0.6);
+  }
+  
+  
 .alertlabel {
     color: red;
     font-weight: bold;

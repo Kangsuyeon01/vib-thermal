@@ -88,8 +88,8 @@ const thermalInfo = notnull(document.querySelector("#thermalInfo"));
 // Slider elements
 /** @type {HTMLInputElement} */
 const roughness_slider = notnull(document.querySelector("#roughness"));
-/** @type {HTMLInputElement} */
-const warmness_slider = notnull(document.querySelector("#warmness"));
+// /** @type {HTMLInputElement} */
+// const warmness_slider = notnull(document.querySelector("#warmness"));
 /** @type {HTMLInputElement} */
 const valence_slider = notnull(document.querySelector("#valence"));
 /** @type {HTMLInputElement} */
@@ -97,7 +97,7 @@ const arousal_slider = notnull(document.querySelector("#arousal"));
 /** @type {NodeListOf<HTMLInputElement>} */
 const referral_radio_buttons = document.querySelectorAll('input[name="referral"]');
 /** Mark sliders as "touched" when adjusted */
-const sliders = [roughness_slider, warmness_slider, valence_slider, arousal_slider];
+const sliders = [roughness_slider, valence_slider, arousal_slider];
 
 // Mark sliders as "touched" when adjusted
 sliders.forEach(slider => {
@@ -264,7 +264,7 @@ async function on_submit(event) {
         body_sites: { vibrationInfo: vibrationInfo.textContent, thermalInfo: thermalInfo.textContent },
         ratings: { 
             roughness: roughness_slider.value, 
-            warmness: warmness_slider.value, 
+            // warmness: warmness_slider.value, 
             valence: valence_slider.value, 
             arousal: arousal_slider.value, 
             referral: referralValue?.value
