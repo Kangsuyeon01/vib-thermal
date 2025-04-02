@@ -10,7 +10,7 @@ import os
 from datetime import datetime
 from scipy.signal import resample
 
-def run_stim_from_json(data):
+def run_stim_from_json(data,dir_path,unix_time):
     SAMPLE_RATE = 10000
     TOTAL_DURATION_SEC = data.get("duration", 10)
     THERMAL_RATE = 100  # 100Hz (0.01s 간격)
@@ -46,10 +46,8 @@ def run_stim_from_json(data):
         return None
 
     # 유닉스 타임 기반 파일 저장
-    timestamp = str(int(time.time()))
-    save_dir = os.path.join("static", "save_data")
-    os.makedirs(save_dir, exist_ok=True)
-    json_path = os.path.join(save_dir, f"collected_data_{timestamp}.json")
+    os.makedirs(os.path.join(dir_path,"jsons"), exist_ok=True)
+    json_path = os.path.join(dir_path,"jsons", f"collected_data_{unix_time}.json")
 
     with open(json_path, 'w') as f:
         json.dump(data, f)
@@ -68,9 +66,9 @@ def run_stim_from_json(data):
         target_len = int(TOTAL_DURATION_SEC * THERMAL_RATE)
         thermal_resampled = resample(thermal_signal, target_len)
 
-        log_dir = os.path.join("logs")
+        log_dir = os.path.join(dir_path,"logs")
         os.makedirs(log_dir, exist_ok=True)
-        csv_path = os.path.join(log_dir, f"arduino_log_{timestamp}.csv")
+        csv_path = os.path.join(log_dir, f"arduino_log_{unix_time}.csv")
         with open(csv_path, 'w', newline='') as csv_file:
             csv_writer = csv.writer(csv_file)
             csv_writer.writerow(['Time(ms)', 'Kp', 'Ki', 'Kd', 'CurrentTemp', 'TargetTemp', 'PWM', 'DeltaTemp', 'Step', 'BreakTime'])

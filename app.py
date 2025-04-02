@@ -4,12 +4,17 @@ import json, os
 import numpy as np
 import scipy.io.wavfile
 from datetime import datetime
-
+import time
+import shutil
 from play_signal.play_vib_ther_signal import run_stim_from_json  # 파일명에 따라 수정
 mimetypes.add_type('application/javascript', '.mjs')
 
 app = Flask(__name__)
-
+user_num = 1
+trial = 1
+last_unix_time = 0
+os.makedirs(f"static/save_data/{user_num}",exist_ok=True)
+dir_path = f"static/save_data/{user_num}"
 @app.route("/")
 def home():
     return render_template("index.html", load_content=render_template("body_point_load.html"))
@@ -51,43 +56,48 @@ def body_site_point_loader():
 
 @app.route("/play_signals", methods=["POST"])
 def play_signals():
+    global last_unix_time
     data = request.get_json()
     print("[Flask] Received signal for play")
-
-    # 🟢 먼저 클라이언트에게 실행 시작을 알림
+    timestamp = str(int(time.time()))
+    last_unix_time = timestamp
     def respond_first():
         return jsonify({"status": "started"})
     def generate_response():
         yield 'data: {"status": "started"}\n\n'
-        run_stim_from_json(data)
+        run_stim_from_json(data,dir_path,timestamp)
         yield 'data: {"status": "completed"}\n\n'
-
     return Response(generate_response(), mimetype='text/event-stream')
 
 # save signal, body site and user rating
 @app.route("/save_result", methods=["POST"])
 def save_result():
+    global trial
     data = request.get_json()
 
     # 🔹 1. Validate received data
-    required_keys = ["vib_signal","vib_amp","vib_freq", "thermal_signal", "sample_rate", "body_sites", "ratings"]
+    required_keys = ["vib_signal","vib_amp","vib_freq", "thermal_signal", "sample_rate", "duration","body_sites", "ratings"]
     if not all(key in data for key in required_keys):
         return jsonify({"status": "error", "message": "Missing required data"}), 400
 
     # 🔹 2. Log received data
     print("Received Data:")
-    # print(f"- Vib Signal: {len(data['vib_signal'])} samples")
-    # print(f"- Vib amp: {len(data['vib_amp'])} samples")
-    # print(f"- Vib freq: {len(data['vib_freq'])} samples")
-    # print(f"- Thermal Signal: {len(data['thermal_signal'])} samples")
-    # print(f"- Sample Rate: {data['sample_rate']} Hz")
-    # print(f"- Body Sites: {data['body_sites']} selected points")
-    # print(f"- Ratings: {data['ratings']}")
+    print(f"- Vib Signal: {len(data['vib_signal'])} samples")
+    print(f"- Vib amp: {len(data['vib_amp'])} samples")
+    print(f"- Vib freq: {len(data['vib_freq'])} samples")
+    print(f"- Thermal Signal: {len(data['thermal_signal'])} samples")
+    print(f"- Sample Rate: {data['sample_rate']} Hz")
+    print(f"- Body Sites: {data['body_sites']} selected points")
+    print(f"- Ratings: {data['ratings']}")
 
     # 🔹 3. Save data to JSON file
-    with open("static/src/collected_data.json", "w") as f:
+    with open(f"static/save_data/{user_num}/{trial}_collected_data.json", "w") as f:
         json.dump(data, f)
-
+        # csv last_unix_time 에 있는거 저장하기
+    csv_path = os.path.join(f"static/save_data/{user_num}/logs", f"arduino_log_{last_unix_time}.csv")
+    dst_path = os.path.join(f"static/save_data/{user_num}/", f"{trial}_arduino_log.csv")
+    shutil.move(csv_path, dst_path)
+    trial += 1
     return jsonify({"status": "success", "message": "Data saved successfully"})
 
 

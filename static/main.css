@@ -97,6 +97,7 @@ div.envelope {
     align-items: center; /* 슬라이더 중앙 정렬 */
     /* gap: 1ex; */
     margin-bottom: 1ex;
+    
   }
   
   .slider-wrapper {
@@ -130,11 +131,13 @@ div.envelope {
   .side-label {
     font-size: 0.9em;
     text-align: center;
-    line-height: 1.2;
+    line-height:1.2em;
     display: flex;
     flex-direction: column;
     justify-content: flex-end; /* 중앙 정렬 */
+    justify-items: flex-end;
     height: 100%; /* align with slider */
+
   }
   
 
@@ -142,6 +145,8 @@ form.ratings {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1ex;
+    /* max-width: 70%; */
+    align-items: center;
 }
 
 @media (max-width: 700px) {
@@ -246,9 +251,10 @@ button.reset:active {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 .ratingcard {
-    display: flex;
+    /* display: flex; */
     /* grid-template-rows: 1fr 1fr; */
-    gap: 0ex;
+    /* gap: 0ex; */
+    align-items: center;
     flex-direction: column;
     /* justify-content: space-between; */
 }
@@ -265,11 +271,31 @@ button.reset:active {
     gap: 1ex;
     align-items: center;
 }
+.six-grid {
+    display: grid;
+    grid-template-areas:
+      "alert-slider alert-radio"
+      "roughness referral"
+      "arousal masking"
+      "valence submit";
+    gap: 0ex;
+    justify-content: center;
+  }
+  
+  .six-grid .cell {
+    /* padding: 0ex; */
+    /* display: flex; */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
 form > span.options {
     display: grid;
     /* grid-template-columns: 1fr 1fr; */
     /* gap: 2ex; */
     /* padding-left: 3ex; */
+    
     align-items: center;
 }
 input[type="reset"], button[id="submit"] {
@@ -467,6 +493,7 @@ div.referral-container {
     font-weight: bold;
     font-size: 1.24em;
     text-align: center;
+    margin: 0 auto;
 }
 
 canvas {

@@ -14,14 +14,14 @@ with open('Coeff.txt') as file:
 m = np.mean(Coeffs)
 Coeffs = Coeffs/m
 
-def map_frequency(value, min_value, max_value):
-    return MIN_FREQ + (MAX_FREQ - MIN_FREQ) * ((value - min_value) / (max_value - min_value))
-
 # def map_frequency(value, min_value, max_value):
-#     log_min = np.log10(MIN_FREQ)  # log10(50)
-#     log_max = np.log10(MAX_FREQ)  # log10(500)
-#     log_freq = log_min + (log_max - log_min) * ((value - min_value) / (max_value - min_value))
-#     return 10 ** log_freq
+#     return MIN_FREQ + (MAX_FREQ - MIN_FREQ) * ((value - min_value) / (max_value - min_value))
+
+def map_frequency(value, min_value, max_value):
+    log_min = np.log10(MIN_FREQ)  # log10(50)
+    log_max = np.log10(MAX_FREQ)  # log10(500)
+    log_freq = log_min + (log_max - log_min) * ((value - min_value) / (max_value - min_value))
+    return 10 ** log_freq
 
 
 def linterp_index(arr, perc):

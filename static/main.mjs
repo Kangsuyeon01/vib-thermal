@@ -23,7 +23,8 @@ const alert_slider_label = notnull(document.querySelector("#alert_slider_label")
 const alert_referral_label = notnull(document.querySelector("#alert_referral_label"));
 /** @type {HTMLSpanElement} */
 const alert_signal_label = notnull(document.querySelector("#alert_signal_label"));
-
+// /** @type {HTMLInputElement} */
+// const slider_value = notnull(document.querySelectorAll("#slider_value"));
 // draw signal
 /** @type {DrawCanvasElement} */
 const vib_amp_env_dcanvas = notnull(document.querySelector("#drawvibaenv"));
@@ -48,15 +49,14 @@ const vibrationwaveform_np = notnull(document.querySelector("#vibrationwaveform"
 // duration slider handler
 duration_input.addEventListener("input", () => {
     const duration = parseFloat(duration_input.value);
-    drawcanvases.forEach(canvas => {
-        canvas.set_active_duration(duration);
+
     });
 
     // if signals are modifyed, user have to press play button at least one
     hasChanged = true;
     alert_signal_label.textContent = "⚠ Signal changed. Please press PLAY again to apply changes.";
     alert_signal_label.style.color = "red";
-});
+
 
 drawcanvases.forEach(canvas => canvas.addEventListener("input", () => {
     update_vibration_np();
@@ -94,8 +94,11 @@ const roughness_slider = notnull(document.querySelector("#roughness"));
 const valence_slider = notnull(document.querySelector("#valence"));
 /** @type {HTMLInputElement} */
 const arousal_slider = notnull(document.querySelector("#arousal"));
+
 /** @type {NodeListOf<HTMLInputElement>} */
 const referral_radio_buttons = document.querySelectorAll('input[name="referral"]');
+/** @type {NodeListOf<HTMLInputElement>} */
+const masking_radio_buttons = document.querySelectorAll('input[name="masking"]');
 /** Mark sliders as "touched" when adjusted */
 const sliders = [roughness_slider, valence_slider, arousal_slider];
 
@@ -173,6 +176,11 @@ function getSelectedReferral() {
     const selectedReferral = document.querySelector('input[name="referral"]:checked');
     return selectedReferral;
 }
+function getSelectedMasking() {
+    /** @type {HTMLInputElement | null} */
+    const selectedMasking = document.querySelector('input[name="masking"]:checked');
+    return selectedMasking;
+}
 function on_reset_signal() {
     const duration = parseFloat(duration_input.value);
 
@@ -195,6 +203,7 @@ async function on_submit(event) {
     // Validate that all sliders have been used
     const allSlidersUsed = sliders.every(slider => slider.dataset.touched);
     const referralValue = getSelectedReferral();
+    const maskingValue = getSelectedMasking()
     const bodySiteValid = vibrationInfo.textContent !== "None" && thermalInfo.textContent !== "None";
 
 
@@ -261,13 +270,15 @@ async function on_submit(event) {
         vib_freq: Array.from(vib_freq_env_dcanvas.samples), ////
         thermal_signal: Array.from(thermal_signal),
         sample_rate: SAMPLE_RATE,
+        duration: parseFloat(duration_input.value),
         body_sites: { vibrationInfo: vibrationInfo.textContent, thermalInfo: thermalInfo.textContent },
         ratings: { 
             roughness: roughness_slider.value, 
             // warmness: warmness_slider.value, 
             valence: valence_slider.value, 
             arousal: arousal_slider.value, 
-            referral: referralValue?.value
+            referral: referralValue?.value,
+            masking: maskingValue?.value,
         }
     };
 
@@ -289,6 +300,10 @@ async function on_submit(event) {
         referral_radio_buttons.forEach(radio => {
             radio.checked = false;
         });
+        masking_radio_buttons.forEach(radio => {
+            radio.checked = false;
+        });
+                
 
         // update Trial count
         let trialCurrent = parseInt(trial_current_label.textContent || "0", 10) + 1;
