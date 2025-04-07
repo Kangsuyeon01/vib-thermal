@@ -201,10 +201,14 @@ div.signal-container > div {
     color: #333;
 }
 .button-group {
-    display: flex;
-    gap: 1ex;
-    justify-content: center;
+    display: flex;             
+    flex-wrap: nowrap;        
+    justify-content: center;    
+    align-items: center;        
+    /* gap: 2ex;                  */
+    /* margin-top: 1ex; */
 }
+
 button.play {
     display: block;
     margin: 0ex auto;
@@ -227,13 +231,16 @@ button.play:active {
     background: #0042a2;
 }
 button.reset {
-    /* padding: 1.3ex; */
+    display: block;
+    margin: 0ex auto;
+    padding: 1.3ex;
     font-size: 1.2em;
-    background: #ff4c4c;
+    background: #acacac;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+
 }
 
 button.reset:hover {
@@ -318,7 +325,7 @@ input[type="reset"]:active {
 button[id="submit"] {
     background: #28a745;
     margin-top: 0.5ex;
-    /* padding: 1.3ex; */
+    padding: 1.3ex;
     font-size: 1.2em;
     margin-left: calc(50% - 5ex);
 }
@@ -328,6 +335,31 @@ button[id="submit"]:hover {
 button[id="submit"]:active {
     background: #1e7e34;
 }
+button.stop {
+    display: block;
+    margin: 0ex auto;
+    padding: 1.3ex;
+    font-size: 1.2em;
+    background: #ff0019;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.stop:hover {
+    background: #e0a800;
+}
+
+button.stop:active {
+    background: #c69500;
+}
+
+button.stop:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 div.posrate-container {
     display: grid;
     grid-template-rows: auto auto;

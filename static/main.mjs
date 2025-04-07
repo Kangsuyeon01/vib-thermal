@@ -40,7 +40,10 @@ const reset_button = notnull(document.querySelector("#resetsignal"));
 /** @type {HTMLButtonElement} */
 const play_button = notnull(document.querySelector("#playsignal"));
 /** @type {HTMLButtonElement} */
-const submit_button = notnull(document.querySelector("#submit"));
+const submit_button = notnull(document.querySelector("#submit"))
+/** @type {HTMLButtonElement} */
+const stop_button = notnull(document.querySelector("#stopsignal"));
+
 /** @type {HTMLSpanElement} */
 const submitstatus_span = notnull(document.querySelector("#submitstatus"));
 /** @type {NpWaveFormCanvas} */
@@ -195,6 +198,23 @@ function on_reset_signal() {
     alert_signal_label.textContent = "Signal reset.";
     alert_signal_label.style.color = "red";
 }
+function on_stop_signal() {
+    fetch("/stop_signal", {
+        method: "POST",
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.status === "stopped") {
+            alert(" Signal stopped and temperature reset to baseline.");
+        } else {
+            alert("Failed to stop: " + result.message);
+        }
+    })
+    .catch(error => {
+        console.error("[STOP] Error:", error);
+        alert("Error occurred while sending stop command.");
+    });
+}
 
 
 async function on_submit(event) {
@@ -323,3 +343,4 @@ async function on_submit(event) {
 play_button.addEventListener("click", on_play_signal);
 reset_button.addEventListener("click",on_reset_signal);
 submit_button.addEventListener("click", on_submit);
+stop_button.addEventListener("click", on_stop_signal);

@@ -6,7 +6,15 @@ import scipy.io.wavfile
 from datetime import datetime
 import time
 import shutil
-from play_signal.play_vib_ther_signal import run_stim_from_json  # 파일명에 따라 수정
+
+
+# 시리얼 포트 설정 및 연결
+from play_signal.play_vib_ther_signal import run_stim_from_json, reconnect_serial  # reconnect_serial 추가
+ser = reconnect_serial(port="COM4")  # 포트 이름 확인 필요
+
+if ser is None:
+    raise RuntimeError("❌ Arduino 연결 실패. 포트를 확인하세요.")
+
 mimetypes.add_type('application/javascript', '.mjs')
 
 app = Flask(__name__)
@@ -61,13 +69,25 @@ def play_signals():
     print("[Flask] Received signal for play")
     timestamp = str(int(time.time()))
     last_unix_time = timestamp
-    def respond_first():
-        return jsonify({"status": "started"})
+
     def generate_response():
         yield 'data: {"status": "started"}\n\n'
-        run_stim_from_json(data,dir_path,timestamp)
+        run_stim_from_json(data, dir_path, timestamp, ser)  # ✅ ser 추가됨
         yield 'data: {"status": "completed"}\n\n'
+
     return Response(generate_response(), mimetype='text/event-stream')
+
+@app.route("/stop_signal", methods=["POST"])
+def stop_signal():
+    global ser
+    if ser and ser.is_open:
+        ser.write(b"STOP\n")
+        ser.flush()
+        print("[Flask] STOP command sent to Arduino.")
+        return jsonify({"status": "stopped"})
+    else:
+        return jsonify({"status": "error", "message": "Serial not connected"})
+
 
 # save signal, body site and user rating
 @app.route("/save_result", methods=["POST"])

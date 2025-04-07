@@ -10,7 +10,21 @@ import os
 from datetime import datetime
 from scipy.signal import resample
 
-def run_stim_from_json(data,dir_path,unix_time):
+# 앱 시작 시 실행되는 시리얼 연결 함수
+def reconnect_serial(port="COM4", baudrate=115200, max_retries=5, retry_delay=1):
+    for attempt in range(max_retries):
+        try:
+            ser = serial.Serial(port, baudrate, timeout=0.01)
+            print(f"[Serial] Connected on attempt {attempt + 1}")
+            return ser
+        except serial.SerialException:
+            print(f"[Serial] Retry {attempt + 1}/{max_retries}... waiting {retry_delay}s")
+            time.sleep(retry_delay)
+    print("[ERROR] Could not reconnect to Arduino.")
+    return None
+
+# 버튼 누를 때 실행되는 함수
+def run_stim_from_json(data, dir_path, unix_time, ser):
     SAMPLE_RATE = 10000
     TOTAL_DURATION_SEC = data.get("duration", 10)
     THERMAL_RATE = 100  # 100Hz (0.01s 간격)
@@ -33,40 +47,27 @@ def run_stim_from_json(data,dir_path,unix_time):
             task.wait_until_done()
             task.stop()
 
-    def reconnect_serial(port="COM3", baudrate=115200, max_retries=5, retry_delay=1):
-        for attempt in range(max_retries):
-            try:
-                ser = serial.Serial(port, baudrate, timeout=0.01)
-                print(f"[Serial] Connected on attempt {attempt + 1}")
-                return ser
-            except serial.SerialException:
-                print(f"[Serial] Retry {attempt + 1}/{max_retries}... waiting {retry_delay}s")
-                time.sleep(retry_delay)
-        print("[ERROR] Could not reconnect to Arduino.")
-        return None
-
-    # 유닉스 타임 기반 파일 저장
-    os.makedirs(os.path.join(dir_path,"jsons"), exist_ok=True)
-    json_path = os.path.join(dir_path,"jsons", f"collected_data_{unix_time}.json")
-
-    with open(json_path, 'w') as f:
-        json.dump(data, f)
-
-    ser = reconnect_serial()
     if ser is None:
         print("[WARNING] Arduino not connected. Skipping serial streaming.")
         return
+
+    # 유닉스 타임 기반 파일 저장
+    os.makedirs(os.path.join(dir_path, "jsons"), exist_ok=True)
+    json_path = os.path.join(dir_path, "jsons", f"collected_data_{unix_time}.json")
+    with open(json_path, 'w') as f:
+        json.dump(data, f)
 
     try:
         vib_signal = np.array(data['vib_signal'])
         thermal_signal = np.array(data.get('thermal_signal', [0.0] * len(vib_signal)))
         vib_signal_result = vib_signal.copy()
 
-        # Thermal signal resample to 100Hz for TOTAL_DURATION_SEC
+        # Thermal signal resample to 100Hz
         target_len = int(TOTAL_DURATION_SEC * THERMAL_RATE)
         thermal_resampled = resample(thermal_signal, target_len)
 
-        log_dir = os.path.join(dir_path,"logs")
+        # 로그 디렉토리 및 CSV 로그 파일 생성
+        log_dir = os.path.join(dir_path, "logs")
         os.makedirs(log_dir, exist_ok=True)
         csv_path = os.path.join(log_dir, f"arduino_log_{unix_time}.csv")
         with open(csv_path, 'w', newline='') as csv_file:
@@ -82,7 +83,7 @@ def run_stim_from_json(data,dir_path,unix_time):
                 command = f"{delta_temp:.3f}\n"
                 ser.write(command.encode())
 
-                # Try to read from Arduino non-blocking
+                # Try to read logs from Arduino
                 try:
                     while ser.in_waiting:
                         line = ser.readline().decode('utf-8', errors='ignore').strip()
@@ -93,20 +94,37 @@ def run_stim_from_json(data,dir_path,unix_time):
                 except Exception:
                     continue
 
-                # Sync sending at 100Hz
+                # 100Hz sync
                 next_time = thermal_start_time + (idx + 1) * 0.01
                 while time.perf_counter() < next_time:
                     time.sleep(0.001)
 
             daq_thread.join()
-                        # 🔁 마지막에 21도 기준으로 초기화 명령 전송 (0°C 변경량 기준)
+
             print("[Arduino] Resetting temperature to baseline (21°C)...")
-            
-            # time.sleep(3)  # 온도 안정화 시간
 
     finally:
         if ser is not None and ser.is_open:
             ser.write(b"0.000\n")
             ser.flush()
-            ser.close()
+            # ser.close()  # 연결은 계속 유지하고 싶으면 닫지 마세요
         print("✅ All signals sent, DAQ complete, and logs saved.")
+
+# ---------------------------
+# 예시: 앱 흐름
+# ---------------------------
+if __name__ == "__main__":
+    # 앱 시작 시 시리얼 연결
+    ser = reconnect_serial()
+    if ser is None:
+        raise RuntimeError("시리얼 연결 실패")
+
+    # 버튼 누르면 아래 코드 실행
+    sample_data = {
+        "duration": 10,
+        "vib_signal": [0.5] * 100000,
+        "thermal_signal": [5.0] * 10000
+    }
+    output_dir = "./output"
+    timestamp = int(time.time())
+    run_stim_from_json(sample_data, output_dir, timestamp, ser)
