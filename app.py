@@ -7,6 +7,7 @@ from datetime import datetime
 import time
 import shutil
 from user_info import save_user_info
+import csv
 
 # 시리얼 포트 설정 및 연결 (필요 시 사용)
 # from play_signal.play_vib_ther_signal import run_stim_from_json, reconnect_serial
@@ -17,7 +18,10 @@ mimetypes.add_type('application/javascript', '.mjs')
 app = Flask(__name__)
 app.secret_key = "1234"
 last_unix_time = 0
-
+"""
+====================================================================================
+user study login
+"""
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -33,7 +37,34 @@ def login():
         session["trial"] = trial_number  # trial도 세션에 저장
         return redirect("/main")
     return render_template("login.html")
+def check_user(experiment_id):
+    # 실제 사용자 정보를 CSV에서 로드하도록 수정
+    user_info = load_user_info_from_csv()  # 실제 CSV에서 사용자 정보 로드
+    user = next((u for u in user_info if u["experiment_id"] == experiment_id), None)
 
+    if user:
+        return jsonify({
+            "exists": True,
+            "trial": user["trial"],
+            "gender": user["gender"]
+        })
+    else:
+        return jsonify({"exists": False})
+
+def load_user_info_from_csv():
+    user_info = []
+    file_path = "static/save_data/users.csv"  # 사용자 정보를 담고 있는 CSV 파일 경로
+    if os.path.exists(file_path):
+        with open(file_path, "r", newline='') as f:
+            reader = csv.DictReader(f)
+            user_info = [row for row in reader]
+    return user_info
+
+
+"""
+====================================================================================
+vibration main
+"""
 @app.route("/main")
 def main():
     if "user_id" not in session:
@@ -156,3 +187,4 @@ def save_result():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080, debug=True)
+
