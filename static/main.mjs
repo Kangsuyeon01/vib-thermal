@@ -124,10 +124,13 @@ function on_play_signal() {
 
     const data = {
         vib_signal: Array.from(vib_signal),
-        thermal_signal: Array.from(thermal_signal),
-        sample_rate: SAMPLE_RATE
+        vib_amp : Array(vib_amp_env_dcanvas.samples),
+        vib_freq : Array(vib_freq_env_dcanvas.samples),
+        thr_amp: Array.from(thermal_signal),
+        sample_rate: SAMPLE_RATE,
+        duration : parseFloat(duration_input.value)
     }; // ~522kB
-
+    console.log(data);
     const input_els = [...drawcanvases, play_button, duration_input];
     input_els.forEach(el => el.disabled = true);
 
@@ -136,20 +139,20 @@ function on_play_signal() {
     const canvas_width = canvas.width;
     const start_time = performance.now();
     const total_duration_ms = duration * 1000;
-
+    
     function animate_playhead(current_time) {
         const elapsed = current_time - start_time;
         const progress = Math.min(elapsed / total_duration_ms, 1); // 0~1
-        const x = progress * (canvas_width * (duration / MAX_DURATION)); 
-
+        const x = progress * canvas_width;  // 🔥 duration 무시하고 canvas 전체 채움
+    
         canvas.draw_playhead(x);
-
+    
         if (progress < 1) {
             requestAnimationFrame(animate_playhead);
         }
     }
-
     requestAnimationFrame(animate_playhead);
+    
 
 
     for (const el of  input_els) el.disabled = true;
@@ -293,8 +296,7 @@ async function on_submit(event) {
         duration: parseFloat(duration_input.value),
         body_sites: { vibrationInfo: vibrationInfo.textContent, thermalInfo: thermalInfo.textContent },
         ratings: { 
-            roughness: roughness_slider.value, 
-            // warmness: warmness_slider.value, 
+            roughness: roughness_slider.value,  
             valence: valence_slider.value, 
             arousal: arousal_slider.value, 
             referral: referralValue?.value,

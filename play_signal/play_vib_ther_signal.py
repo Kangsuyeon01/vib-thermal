@@ -9,7 +9,7 @@ from nidaqmx.constants import AcquisitionType
 import os
 from datetime import datetime
 from scipy.signal import resample
-
+from play_signal.generate_signal import generate_signal  # 진동 생성 함수 import
 
 def run_stim_from_json(data):
     SAMPLE_RATE = 10000
@@ -61,13 +61,17 @@ def run_stim_from_json(data):
         return
 
     try:
-        vib_signal = np.array(data['vib_signal'])
-        thermal_signal = np.array(data.get('thermal_signal', [0.0] * len(vib_signal)))
+        vib_amp = np.array(data['vib_amp'])  # e.g. [0.8, 0.5, 0.2]
+        vib_freq = np.array(data['vib_freq'])  # e.g. [0.3, 0.7, 0.6]
+        logscale = data.get('logscale', False)
+
+        vib_signal, duration = generate_signal(vib_amp, vib_freq, TOTAL_DURATION_SEC, logscale=logscale)
         vib_signal_result = vib_signal.copy()
 
-        target_len = int(TOTAL_DURATION_SEC * THERMAL_RATE)
+        thermal_signal = np.array(data.get('thermal_signal', [0.0] * len(vib_signal)))
+        target_len = int(duration * THERMAL_RATE)
         thermal_resampled = resample(thermal_signal, target_len)
-        thermal_resampled = np.append(thermal_resampled, 0.0)  # 마지막은 복귀용 0
+        thermal_resampled = np.append(thermal_resampled, 0.0)
 
         delta_list = [float(f"{val:.2f}") for val in thermal_resampled]
 
@@ -101,7 +105,6 @@ def run_stim_from_json(data):
                     except Exception:
                         continue
 
-            # Run threads
             log_thread = threading.Thread(target=read_arduino_logs)
             daq_thread = threading.Thread(target=Run_DAQ, args=(out_chan, vib_signal_result))
             thermal_thread = threading.Thread(target=send_delta_thermal)
@@ -115,7 +118,7 @@ def run_stim_from_json(data):
 
             print("[Arduino] Waiting briefly for Arduino to finish...")
             time.sleep(TOTAL_DURATION_SEC + 1)
-
             print("[Arduino] Done. Returning to baseline.")
+
     except Exception as e:
         print("[ERROR]", e)
