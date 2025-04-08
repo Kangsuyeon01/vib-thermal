@@ -97,6 +97,7 @@ div.envelope {
     align-items: center; /* 슬라이더 중앙 정렬 */
     /* gap: 1ex; */
     margin-bottom: 1ex;
+    
   }
   
   .slider-wrapper {
@@ -130,11 +131,13 @@ div.envelope {
   .side-label {
     font-size: 0.9em;
     text-align: center;
-    line-height: 1.2;
+    line-height:1.2em;
     display: flex;
     flex-direction: column;
     justify-content: flex-end; /* 중앙 정렬 */
+    justify-items: flex-end;
     height: 100%; /* align with slider */
+
   }
   
 
@@ -142,6 +145,8 @@ form.ratings {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1ex;
+    /* max-width: 70%; */
+    align-items: center;
 }
 
 @media (max-width: 700px) {
@@ -196,10 +201,14 @@ div.signal-container > div {
     color: #333;
 }
 .button-group {
-    display: flex;
-    gap: 1ex;
-    justify-content: center;
+    display: flex;             
+    flex-wrap: nowrap;        
+    justify-content: center;    
+    align-items: center;        
+    /* gap: 2ex;                  */
+    /* margin-top: 1ex; */
 }
+
 button.play {
     display: block;
     margin: 0ex auto;
@@ -222,13 +231,16 @@ button.play:active {
     background: #0042a2;
 }
 button.reset {
-    /* padding: 1.3ex; */
+    display: block;
+    margin: 0ex auto;
+    padding: 1.3ex;
     font-size: 1.2em;
-    background: #ff4c4c;
+    background: #acacac;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+
 }
 
 button.reset:hover {
@@ -246,9 +258,10 @@ button.reset:active {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 .ratingcard {
-    display: flex;
+    /* display: flex; */
     /* grid-template-rows: 1fr 1fr; */
-    gap: 0ex;
+    /* gap: 0ex; */
+    align-items: center;
     flex-direction: column;
     /* justify-content: space-between; */
 }
@@ -265,11 +278,31 @@ button.reset:active {
     gap: 1ex;
     align-items: center;
 }
+.six-grid {
+    display: grid;
+    grid-template-areas:
+      "alert-slider alert-radio"
+      "roughness referral"
+      "arousal masking"
+      "valence submit";
+    gap: 0ex;
+    justify-content: center;
+  }
+  
+  .six-grid .cell {
+    /* padding: 0ex; */
+    /* display: flex; */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
 form > span.options {
     display: grid;
     /* grid-template-columns: 1fr 1fr; */
     /* gap: 2ex; */
     /* padding-left: 3ex; */
+    
     align-items: center;
 }
 input[type="reset"], button[id="submit"] {
@@ -292,7 +325,7 @@ input[type="reset"]:active {
 button[id="submit"] {
     background: #28a745;
     margin-top: 0.5ex;
-    /* padding: 1.3ex; */
+    padding: 1.3ex;
     font-size: 1.2em;
     margin-left: calc(50% - 5ex);
 }
@@ -302,6 +335,31 @@ button[id="submit"]:hover {
 button[id="submit"]:active {
     background: #1e7e34;
 }
+button.stop {
+    display: block;
+    margin: 0ex auto;
+    padding: 1.3ex;
+    font-size: 1.2em;
+    background: #ff0019;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.stop:hover {
+    background: #e0a800;
+}
+
+button.stop:active {
+    background: #c69500;
+}
+
+button.stop:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 div.posrate-container {
     display: grid;
     grid-template-rows: auto auto;
@@ -343,22 +401,131 @@ div.referral-container {
         font-size: 1.15em;
     }
 
-    span.radio-options {
+    /* span.radio-options {
         display: flex;
         gap: 1ex;
         justify-content: space-evenly;
-    }
+    } */
 }
 .radio {
     display: flex;
     align-items: center;
     gap: 5px;
 }
+.scale-group {
+    margin: 2ex 0;
+    text-align: center;
+  }
+  
+  .scale-label {
+    font-weight: bold;
+    font-size: 1.1em;
+    display: block;
+    margin-bottom: 0.5ex;
+  }
+  
+  .scale-row {
+    display: flex;
+    justify-content: center;
+    gap: 3ex;
+    margin-bottom: 0.5ex;
+  }
+  
+  .scale-numbers span {
+    font-size: 0.95em;
+    width: 1.5em;
+    text-align: center;
+  }
+  
+  .scale-inputs label {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+  }
+  
+  .scale-inputs input[type="radio"] {
+    appearance: none;
+    width: 1.5em;
+    height: 1.5em;
+    border: 2px solid #555;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .scale-inputs input[type="radio"]::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--interactive-color, #007bff);
+    transform: scale(0);
+    transition: transform 0.1s ease-in-out;
+  }
+  
+  .scale-inputs input[type="radio"]:checked::before {
+    transform: scale(0.6);
+  }
+  .scale-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2ex auto;
+  }
+  
+  .scale-block .scale-label {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 0.6ex;
+  }
+  
+  .scale-block .scale-numbers,
+  .scale-block .scale-inputs {
+    display: flex;
+    gap: 2ex;
+    justify-content: center;
+  }
+  
+  .scale-block .scale-numbers span {
+    font-size: 0.95em;
+    width: 1.5em;
+    text-align: center;
+  }
+  
+  .scale-block .scale-inputs input[type="radio"] {
+    appearance: none;
+    width: 1.4em;
+    height: 1.4em;
+    border: 2px solid #555;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.1s ease-in-out;
+  }
+  
+  .scale-block .scale-inputs input[type="radio"]::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--interactive-color, #007bff);
+    transform: scale(0);
+    transition: transform 0.15s ease-in-out;
+  }
+  
+  .scale-block .scale-inputs input[type="radio"]:checked::before {
+    transform: scale(0.6);
+  }
+  
+  
 .alertlabel {
     color: red;
     font-weight: bold;
     font-size: 1.24em;
     text-align: center;
+    margin: 0 auto;
 }
 
 canvas {
