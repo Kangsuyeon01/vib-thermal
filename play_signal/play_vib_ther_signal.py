@@ -13,14 +13,13 @@ from scipy.signal import resample
 # 앱 시작 시 실행되는 시리얼 연결 함수
 def reconnect_serial(port="COM4", baudrate=115200, max_retries=5, retry_delay=1):
     for attempt in range(max_retries):
-        try:
-            ser = serial.Serial(port, baudrate, timeout=0.01)
-            print(f"[Serial] Connected on attempt {attempt + 1}")
-            return ser
-        except serial.SerialException:
-            print(f"[Serial] Retry {attempt + 1}/{max_retries}... waiting {retry_delay}s")
-            time.sleep(retry_delay)
-    print("[ERROR] Could not reconnect to Arduino.")
+        ser = serial.Serial(port, baudrate, timeout=0.01)
+        print(f"[Serial] Connected on attempt {attempt + 1}")
+    #         return ser
+    #     except serial.SerialException:
+    #         print(f"[Serial] Retry {attempt + 1}/{max_retries}... waiting {retry_delay}s")
+    #         time.sleep(retry_delay)
+    # print("[ERROR] Could not reconnect to Arduino.")
     return None
 
 # 버튼 누를 때 실행되는 함수
