@@ -14,16 +14,24 @@ float c2 = 5.505203063e-04;
 float c3 = -9.653138374e-07;
 
 // PID variables
-double input = 0, output = 0, init_setpoint = 32.5, setpoint = init_setpoint, targetTemp = setpoint;
+double input = 0, output = 0;
+double init_setpoint = 32.5;
+double setpoint = init_setpoint;
 double Kp = 128, Ki = 8, Kd = 16;
 
 PID myPID(&input, &output, &setpoint, Kp, Ki, Kd, DIRECT);
 
-// State variables
+String serialBuffer = "";
+unsigned long lastReceiveTime = 0;
 unsigned long startTime = 0;
-bool receivedCommand = false;
+
+// duration 설정 (예: Python에서 5초간 보낸다고 하면)
+unsigned long durationMs = 5000;
+bool finished = false;
 
 void setup() {
+  Serial.begin(115200);
+
   pinMode(PWM, OUTPUT);
   pinMode(PHASE1, OUTPUT);
   pinMode(PHASE2, OUTPUT);
@@ -31,83 +39,74 @@ void setup() {
   myPID.SetMode(AUTOMATIC);
   myPID.SetOutputLimits(-255, 255);
 
-  Serial.begin(115200);
   Serial.println("READY");
+  startTime = millis();
+  lastReceiveTime = millis();
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    String inputString = Serial.readStringUntil('\n');
-    ProcessCommand(inputString);
+  // 수신 처리
+  while (Serial.available() > 0) {
+    char c = Serial.read();
+    if (c == '\n') {
+      serialBuffer.trim();
+      if (serialBuffer.length() > 0) {
+        double delta = serialBuffer.toFloat();
+        setpoint = init_setpoint + delta;
+        lastReceiveTime = millis();  // 수신 시간 갱신
+        finished = false;
+
+        Serial.print("📥 Delta Received: ");
+        Serial.print(delta);
+        Serial.print(" → Setpoint: ");
+        Serial.println(setpoint);
+      }
+      serialBuffer = "";
+    } else {
+      serialBuffer += c;
+    }
   }
 
-  if (receivedCommand) {
-    MaintainTemperature(setpoint);
-  }
-}
-
-void ProcessCommand(String command) {
-  double newSetpointChange = command.toDouble();
-  if (isnan(newSetpointChange)) {
-    Serial.println("Invalid number format. Ignoring command.");
-    return;
+  // duration 후 자동 복귀
+  if (!finished && millis() - lastReceiveTime > durationMs) {
+    Serial.println("⏱ Duration passed. Returning to init_setpoint.");
+    setpoint = init_setpoint;
+    finished = true;
   }
 
-  targetTemp = init_setpoint + newSetpointChange;
-  setpoint = targetTemp;
-  myPID.SetTunings(Kp, Ki, Kd);
-  receivedCommand = true;
-
-  Serial.print("Target Temperature: ");
-  Serial.print(targetTemp);
-  Serial.println(" degC");
-}
-
-void MaintainTemperature(double targetTemp) {
-  setpoint = targetTemp;
-  AdjustTemperature();
-  delay(10);  // fast update for continuous control
-}
-
-void AdjustTemperature() {
+  // PID 제어
   input = ReadTemperature();
   myPID.Compute();
 
+  double pwmValue = abs(output);
   if (input < setpoint) {
     digitalWrite(PHASE1, LOW);
     digitalWrite(PHASE2, HIGH);
-    analogWrite(PWM, abs(output));
-    LogData("HEATING", false, output);
   } else {
     digitalWrite(PHASE1, HIGH);
     digitalWrite(PHASE2, LOW);
-    analogWrite(PWM, abs(output));
-    LogData("COOLING", true, output);
   }
+  analogWrite(PWM, pwmValue);
+
+  LogData(pwmValue);
+  delay(10);  // 100Hz
 }
 
 double ReadTemperature() {
   int Vo = analogRead(A0);
-  float R2 = R1 * (Vi / (float)Vo - 1);
-  logR2 = log(R2);
-  T = (1.0 / (c1 + c2 * logR2 + c3 * logR2 * logR2 * logR2)) - 273.15;
+  if (Vo <= 0) return -999.0;
+  float R2 = R1 * (Vi / (float)Vo - 1.0);
+  float logR2 = log(R2);
+  T = (1.0 / (c1 + c2 * logR2 + c3 * pow(logR2, 3))) - 273.15;
   return T;
 }
 
-void LogData(String status, bool cooling, double pwmValue) {
-  double currentKp = Kp;
-  double temperatureChange = targetTemp - init_setpoint;
-  double targetTemp_text = targetTemp;
-
-  myPID.SetTunings(currentKp, Ki, Kd);
-
-  String time = GetTimeMs();
-  String message = time + "," + String(currentKp) + "," + String(Ki) + "," + String(Kd) + "," +
-                   String(input, 2) + "," + String(targetTemp_text) + "," + String(pwmValue, 2) + "," +
-                   String(temperatureChange, 2) + ",0,0;";
+void LogData(double pwmValue) {
+  double delta = setpoint - init_setpoint;
+  String time = String(millis() - startTime);
+  String message = time + "," +
+                   String(input, 2) + "," +
+                   String(setpoint, 2) + "," +
+                   String(delta, 2);
   Serial.println(message);
-}
-
-String GetTimeMs() {
-  return String(millis() - startTime);
 }
