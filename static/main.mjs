@@ -121,11 +121,11 @@ function on_play_signal() {
     hasPlayed = true;
     const { vib_signal, thermal_signal, duration } = generate_signal();
     const MAX_DURATION = TOTAL_DURATION_SEC;
-
+    
     const data = {
         vib_signal: Array.from(vib_signal),
-        vib_amp : Array(vib_amp_env_dcanvas.samples),
-        vib_freq : Array(vib_freq_env_dcanvas.samples),
+        vib_amp : vib_amp_env_dcanvas.samples,
+        vib_freq : vib_freq_env_dcanvas.samples,
         thr_amp: Array.from(thermal_signal),
         sample_rate: SAMPLE_RATE,
         duration : parseFloat(duration_input.value)
@@ -289,8 +289,8 @@ async function on_submit(event) {
 
     const data = {
         vib_signal: Array.from(vib_signal),
-        vib_amp: Array.from(vib_amp_env_dcanvas.samples), /////
-        vib_freq: Array.from(vib_freq_env_dcanvas.samples), ////
+        vib_amp: vib_amp_env_dcanvas.samples, /////
+        vib_freq: vib_freq_env_dcanvas.samples, ////
         thermal_signal: Array.from(thermal_signal),
         sample_rate: SAMPLE_RATE,
         duration: parseFloat(duration_input.value),

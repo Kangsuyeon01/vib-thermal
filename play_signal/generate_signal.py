@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.signal import resample
 
 SAMPLE_RATE = 10000
 MIN_FREQ = 50
@@ -10,7 +11,7 @@ with open('play_signal/Coeff.txt') as file:
     for line in file:
         Coeffs.append(10000 / float(line.strip()))
 m = np.mean(Coeffs)
-Coeffs = np.array(Coeffs) / m  # Normalize
+Coeffs = np.array(Coeffs) / m
 assert len(Coeffs) == (MAX_FREQ - MIN_FREQ + 1), "Coeff.txt length mismatch"
 
 
@@ -29,8 +30,7 @@ def linterp_index(arr, perc):
     lower = int(np.floor(index))
     upper = int(np.ceil(index))
     weight = index - lower
-    value = arr[lower] * (1 - weight) + arr[upper] * weight
-    return value
+    return arr[lower] * (1 - weight) + arr[upper] * weight
 
 
 def generate_signal(vib_amp, vib_freq, TOTAL_DURATION_SEC, duration=None, logscale=False):
@@ -56,3 +56,20 @@ def generate_signal(vib_amp, vib_freq, TOTAL_DURATION_SEC, duration=None, logsca
         vib_signal[i] = s_amp * np.sin(phase_acc) * Coeffs[int(current_freq) - MIN_FREQ]
 
     return vib_signal, duration
+
+
+def generate_signal_with_thermal(vib_amp, vib_freq, thermal_amp, TOTAL_DURATION_SEC, duration=None, logscale=False, thermal_rate=100):
+    vib_signal, actual_duration = generate_signal(vib_amp, vib_freq, TOTAL_DURATION_SEC, duration, logscale)
+
+    # vib_signal의 길이에 맞춰 thermal_amp를 interpolation
+    vib_len = len(vib_signal)
+    thermal_full = np.interp(
+        np.linspace(0, len(thermal_amp) - 1, vib_len),
+        np.arange(len(thermal_amp)),
+        thermal_amp
+    )
+
+    # downsample to thermal_rate (예: 100Hz)
+    thermal_downsampled = resample(thermal_full, int(actual_duration * thermal_rate))
+
+    return vib_signal, thermal_downsampled, actual_duration

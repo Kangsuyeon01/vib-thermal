@@ -9,7 +9,7 @@ from nidaqmx.constants import AcquisitionType
 import os
 from datetime import datetime
 from scipy.signal import resample
-from play_signal.generate_signal import generate_signal  # 진동 생성 함수 import
+from play_signal.generate_signal import generate_signal_with_thermal
 
 def run_stim_from_json(data):
     SAMPLE_RATE = 10000
@@ -61,18 +61,24 @@ def run_stim_from_json(data):
         return
 
     try:
-        vib_amp = np.array(data['vib_amp'])  # e.g. [0.8, 0.5, 0.2]
-        vib_freq = np.array(data['vib_freq'])  # e.g. [0.3, 0.7, 0.6]
+        vib_amp = np.array(data['vib_amp'])
+        vib_freq = np.array(data['vib_freq'])
+        thermal_amp = np.array(data.get('thermal_signal', [0.0] * len(vib_amp)))
         logscale = data.get('logscale', False)
 
-        vib_signal, duration = generate_signal(vib_amp, vib_freq, TOTAL_DURATION_SEC, logscale=logscale)
+        # 📌 통합 함수 사용
+        vib_signal, thermal_resampled, duration = generate_signal_with_thermal(
+            vib_amp, vib_freq, thermal_amp,
+            TOTAL_DURATION_SEC=TOTAL_DURATION_SEC,
+            duration=data.get("duration", 10),
+            logscale=logscale,
+            thermal_rate=THERMAL_RATE
+        )
+
         vib_signal_result = vib_signal.copy()
+        thermal_resampled = np.append(thermal_resampled, 0.0)  # 복귀용
 
-        thermal_signal = np.array(data.get('thermal_signal', [0.0] * len(vib_signal)))
-        target_len = int(duration * THERMAL_RATE)
-        thermal_resampled = resample(thermal_signal, target_len)
-        thermal_resampled = np.append(thermal_resampled, 0.0)
-
+        # Arduino로 ΔT 전송 리스트
         delta_list = [float(f"{val:.2f}") for val in thermal_resampled]
 
         def send_delta_thermal():
