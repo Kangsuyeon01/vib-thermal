@@ -58,7 +58,7 @@ def generate_signal(vib_amp, vib_freq, TOTAL_DURATION_SEC, duration=None, logsca
     return vib_signal, duration
 
 
-def generate_signal_with_thermal(vib_amp, vib_freq, thermal_amp, TOTAL_DURATION_SEC, duration=None, logscale=False, thermal_rate=100):
+def generate_signal_with_thermal(vib_amp, vib_freq, thermal_amp, TOTAL_DURATION_SEC, duration=None, logscale=False, thermal_rate=10000):
     vib_signal, actual_duration = generate_signal(vib_amp, vib_freq, TOTAL_DURATION_SEC, duration, logscale)
 
     # vib_signal의 길이에 맞춰 thermal_amp를 interpolation

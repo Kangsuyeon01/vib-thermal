@@ -98,13 +98,21 @@ const valence_slider = notnull(document.querySelector("#valence"));
 /** @type {HTMLInputElement} */
 const arousal_slider = notnull(document.querySelector("#arousal"));
 
+// Slider value display spans
+/** @type {HTMLSpanElement} */
+const roughness_value = notnull(document.querySelector("#roughness-value"));
+/** @type {HTMLSpanElement} */
+const valence_value = notnull(document.querySelector("#valence-value"));
+/** @type {HTMLSpanElement} */
+const arousal_value = notnull(document.querySelector("#arousal-value"));
+
 /** @type {NodeListOf<HTMLInputElement>} */
 const referral_radio_buttons = document.querySelectorAll('input[name="referral"]');
 /** @type {NodeListOf<HTMLInputElement>} */
 const masking_radio_buttons = document.querySelectorAll('input[name="masking"]');
 /** Mark sliders as "touched" when adjusted */
 const sliders = [roughness_slider, valence_slider, arousal_slider];
-
+const sliders_valuse = [roughness_value,valence_value,arousal_value]
 // Mark sliders as "touched" when adjusted
 sliders.forEach(slider => {
     slider.addEventListener("pointerdown", () => {
@@ -143,7 +151,7 @@ function on_play_signal() {
     function animate_playhead(current_time) {
         const elapsed = current_time - start_time;
         const progress = Math.min(elapsed / total_duration_ms, 1); // 0~1
-        const x = progress * canvas_width;  // 🔥 duration 무시하고 canvas 전체 채움
+        const x = progress * canvas_width;  // 
     
         canvas.draw_playhead(x);
     
@@ -167,7 +175,6 @@ function on_play_signal() {
     .then(data => {
         console.log("Server response:", data);
         if (data.status === "completed") {
-            // 모든 작업이 끝난 뒤 활성화
             for (const el of input_els) el.disabled = false;
         }
     })
@@ -286,12 +293,14 @@ async function on_submit(event) {
     submitstatus_span.textContent = "";
 
     const { vib_signal, thermal_signal } = generate_signal();
-
+ 
+    // TODO (change data format)
+    // vib signal have to be passed by using flask
     const data = {
-        vib_signal: Array.from(vib_signal),
+        vib_signal: Array.from(vib_signal), /////
         vib_amp: vib_amp_env_dcanvas.samples, /////
         vib_freq: vib_freq_env_dcanvas.samples, ////
-        thermal_signal: Array.from(thermal_signal),
+        thermal_signal: Array.from(thermal_signal), /////
         sample_rate: SAMPLE_RATE,
         duration: parseFloat(duration_input.value),
         body_sites: { vibrationInfo: vibrationInfo.textContent, thermalInfo: thermalInfo.textContent },
@@ -317,8 +326,10 @@ async function on_submit(event) {
             slider.value = "50";  // default value
             delete slider.dataset.touched;  
         });
-
-
+        sliders_valuse.forEach(s_value => {
+            s_value.textContent = "50"; // 또는 슬라이더의 초기값과 동일하게
+        });
+        
         referral_radio_buttons.forEach(radio => {
             radio.checked = false;
         });
