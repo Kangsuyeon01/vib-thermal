@@ -63,15 +63,15 @@ def run_stim_from_json(data):
     try:
         vib_amp = np.array(data['vib_amp'])
         vib_freq = np.array(data['vib_freq'])
-        thermal_amp = np.array(data.get('thermal_signal', [0.0] * len(vib_amp)))
-        logscale = data.get('logscale', False)
+        thermal_amp = np.array(data.get('thermal_signal'))
+        # logscale = data.get('logscale', False)
 
         # 📌 통합 함수 사용
-        vib_signal, thermal_resampled, duration = generate_signal_with_thermal(
+        vib_signal, thermal_resampled = generate_signal_with_thermal(
             vib_amp, vib_freq, thermal_amp,
             TOTAL_DURATION_SEC=TOTAL_DURATION_SEC,
-            duration=data.get("duration", 10),
-            logscale=logscale,
+            duration=data.get("duration", 5),
+            logscale=True,
             thermal_rate=THERMAL_RATE
         )
 

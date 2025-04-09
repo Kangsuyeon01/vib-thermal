@@ -70,6 +70,6 @@ def generate_signal_with_thermal(vib_amp, vib_freq, thermal_amp, TOTAL_DURATION_
     )
 
     # downsample to thermal_rate (예: 100Hz)
-    thermal_downsampled = resample(thermal_full, int(actual_duration * thermal_rate))
+    thermal_sampled = resample(thermal_full, int(actual_duration * thermal_rate))
 
-    return vib_signal, thermal_downsampled, actual_duration
+    return vib_signal, thermal_sampled
