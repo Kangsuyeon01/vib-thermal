@@ -3,10 +3,14 @@ import { DrawCanvasElement, TOTAL_DURATION_SEC } from './drawcanvas.mjs';
 import { generate_signal, SAMPLE_RATE } from './generate-signal.mjs';
 import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
 import { notnull, wait_ms } from './util.mjs';
-
+import { smooth_by_seconds, limit_gradient } from './signal_smoothing.mjs'
 const TARGET_COUNT = 5;
 let hasChanged = false; // Track if Play button has been modifyed
 let hasPlayed = false; // Track if Play button has been pressed
+
+const THERMAL_SMOOTH_SEC = 1.0;     // seconds per smoothing window
+const THERMAL_MAX_DELTA = 0.1;     // max change per sample (normalized)
+
 // trial label
 /** @type {HTMLSpanElement} */
 const trial_current_label = notnull(document.querySelector("#trial_current_label"));
@@ -61,7 +65,13 @@ duration_input.addEventListener("input", () => {
     alert_signal_label.style.color = "red";
 
 
-drawcanvases.forEach(canvas => canvas.addEventListener("input", () => {
+    drawcanvases.forEach(canvas => canvas.addEventListener("input", () => {
+        if (canvas === thr_amp_env_dcanvas) {
+            const smoothed = smooth_by_seconds(canvas.samples, TOTAL_DURATION_SEC / THERMAL_SMOOTH_SEC);
+            const limited = limit_gradient(smoothed, THERMAL_MAX_DELTA);
+            canvas.samples = limited;
+            canvas.draw_samples();
+        }        
     update_vibration_np();
     // if signals are modifyed, user have to press play button at least one
     hasChanged = true;
