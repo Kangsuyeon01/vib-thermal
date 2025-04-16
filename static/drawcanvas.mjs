@@ -1,7 +1,7 @@
 //@ts-check
 import { notnull } from './util.mjs';
 
-export const TOTAL_DURATION_SEC = 10;
+export const DEFAULT_TOTAL_DURATION_SEC = 10;
 export const NUM_SAMPLES = 150;
 
 export class DrawCanvasElement extends HTMLElement {
@@ -155,15 +155,22 @@ export class DrawCanvasElement extends HTMLElement {
         this.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
-    #_total_duration = TOTAL_DURATION_SEC;
-    #_active_duration = TOTAL_DURATION_SEC;
-    // set_total_duration(duration) {
-    //     this.#_total_duration = duration;
-    //     this.draw_samples();
-    // }
+    #_total_duration = DEFAULT_TOTAL_DURATION_SEC;
+    #_active_duration = DEFAULT_TOTAL_DURATION_SEC;
+    set_total_duration(duration) {
+        this.#_total_duration = duration;
+        this.#_active_duration = duration;
+        this.draw_samples();
+    }
+    get_total_duration() {
+        return this.#_total_duration;
+    }
     set_active_duration(duration) {
         this.#_active_duration = duration;
         this.draw_samples();
+    }
+    get_active_duration() {
+        return this.#_active_duration;
     }
 
     #_draw_grid() {
@@ -198,10 +205,10 @@ export class DrawCanvasElement extends HTMLElement {
         this.ctx.stroke();
 
 
-        // // draw gray box for inactive duration
-        // this.ctx.fillStyle = "rgba(0, 0, 0, 0.33)";
-        // const start_x = this.canvas.width * this.#_active_duration / this.#_total_duration;
-        // this.ctx.fillRect(start_x, 0, this.canvas.width - start_x, this.canvas.height);
+        // draw gray box for inactive duration
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.33)";
+        const start_x = this.canvas.width * this.#_active_duration / this.#_total_duration;
+        this.ctx.fillRect(start_x, 0, this.canvas.width - start_x, this.canvas.height);
     }
 
     reset_samples_to(value = 0.5) {

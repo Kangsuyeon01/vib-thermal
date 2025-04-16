@@ -1,5 +1,5 @@
 //@ts-check
-import { DrawCanvasElement, TOTAL_DURATION_SEC } from './drawcanvas.mjs';
+import { DrawCanvasElement } from './drawcanvas.mjs';
 import { generate_signal, map_thermal,SAMPLE_RATE } from './generate-signal.mjs';
 import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
 import { notnull, wait_ms } from './util.mjs';
@@ -58,6 +58,16 @@ const submitstatus_span = notnull(document.querySelector("#submitstatus"));
 /** @type {NpWaveFormCanvas} */
 const vibrationwaveform_np = notnull(document.querySelector("#vibrationwaveform"));
 
+
+function on_duration_input() {
+    const duration = parseFloat(duration_input.value);
+    drawcanvases.forEach(canvas => {
+        canvas.set_total_duration(duration);
+    });
+}
+duration_input.addEventListener("input", on_duration_input);
+on_duration_input();
+
 drawcanvases.forEach(canvas => canvas.addEventListener("input", async () => {
     if (canvas === thr_amp_env_dcanvas) {
         const duration = parseFloat(duration_input.value);
@@ -84,11 +94,11 @@ function update_vibration_np() {
     const vib_signal = generate_signal(true).vib_signal;
     // const vib_amp = vib_amp_env_dcanvas.samples;
     const vib_freq = vib_freq_env_dcanvas.samples;
-    const active_duration = parseFloat(duration_input.value);
-    const perc_active = active_duration / TOTAL_DURATION_SEC; // todo: update vis based on this?
+    const current_active_duration = vib_amp_env_dcanvas.get_active_duration();
+    const current_total_duration = vib_amp_env_dcanvas.get_total_duration();
+    const perc_active = current_active_duration / current_total_duration; // todo: update vis based on this?
     vibrationwaveform_np.draw_waveform(vib_signal,vib_freq);
 }
-// drawcanvases.forEach(canvas => canvas.addEventListener("input", () => update_vibration_np()));
 update_vibration_np();
 
 // body site info
@@ -218,7 +228,7 @@ function getSelectedMasking() {
 function on_reset_signal() {
     const duration = parseFloat(duration_input.value);
     drawcanvases.forEach(canvas => {
-        canvas.set_active_duration(duration);
+        canvas.set_total_duration(duration);
         canvas.reset_samples_to(0.5);
     });
     update_vibration_np();

@@ -1,5 +1,5 @@
 //@ts-check
-import { DrawCanvasElement, TOTAL_DURATION_SEC } from "./drawcanvas.mjs";
+import { DrawCanvasElement } from "./drawcanvas.mjs";
 import { notnull } from "./util.mjs";
 
 export const SAMPLE_RATE = 10000;
@@ -52,8 +52,16 @@ export function generate_signal(force_full_duration = false) {
     const vib_freq = vib_freq_env_dcanvas.samples;
     const thr_amp = thr_amp_env_dcanvas.samples;
 
-    const total_sample_duration = TOTAL_DURATION_SEC;
-    const active_duration = force_full_duration ? TOTAL_DURATION_SEC : parseFloat(duration_input.value);
+    const current_total_duration = vib_amp_env_dcanvas.get_total_duration();
+    if (current_total_duration != vib_freq_env_dcanvas.get_total_duration() || current_total_duration != thr_amp_env_dcanvas.get_total_duration()) {
+        throw new Error("All cavnases must have the same total duration");
+    }
+    const current_active_duration = vib_amp_env_dcanvas.get_active_duration();
+    if (current_active_duration != vib_freq_env_dcanvas.get_active_duration() || current_active_duration != thr_amp_env_dcanvas.get_active_duration()) {
+        throw new Error("All cavnases must have the same active duration");
+    }
+    const total_sample_duration = current_total_duration;
+    const active_duration = force_full_duration ? current_total_duration : current_active_duration;
     const active_perc = active_duration / total_sample_duration;
     const num_output_samples = Math.floor(active_duration * SAMPLE_RATE);
     const vib_signal = new Float32Array(num_output_samples);
