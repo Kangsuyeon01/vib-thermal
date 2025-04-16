@@ -28,7 +28,7 @@ const duration_input = notnull(document.querySelector("#signalduration"));
 function map_frequency(value, minValue, maxValue) {
     return MIN_FREQ + (MAX_FREQ - MIN_FREQ) * ((value - minValue) / (maxValue - minValue));
 }
-function map_thermal(value, minValue, maxValue) {
+export function map_thermal(value, minValue, maxValue) {
     return MIN_THERMAL + (MAX_THERMAL- MIN_THERMAL) * ((value - minValue) / (maxValue - minValue));
 }
 

@@ -1,15 +1,20 @@
 //@ts-check
 import { DrawCanvasElement, TOTAL_DURATION_SEC } from './drawcanvas.mjs';
-import { generate_signal, SAMPLE_RATE } from './generate-signal.mjs';
+import { generate_signal, map_thermal,SAMPLE_RATE } from './generate-signal.mjs';
 import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
 import { notnull, wait_ms } from './util.mjs';
 import { smooth_by_seconds, limit_gradient } from './signal_smoothing.mjs'
+import {
+    loadPolynomialCoefficients,
+    limit_gradient_by_delta
+  } from './adjust_thermal.mjs';
+  
 const TARGET_COUNT = 5;
 let hasChanged = false; // Track if Play button has been modifyed
 let hasPlayed = false; // Track if Play button has been pressed
 
-const THERMAL_SMOOTH_SEC = 1.0;     // seconds per smoothing window
-const THERMAL_MAX_DELTA = 0.1;     // max change per sample (normalized)
+const THERMAL_SAMPLE_RATE = 10;     // seconds per smoothing window
+
 
 // trial label
 /** @type {HTMLSpanElement} */
@@ -53,31 +58,29 @@ const submitstatus_span = notnull(document.querySelector("#submitstatus"));
 /** @type {NpWaveFormCanvas} */
 const vibrationwaveform_np = notnull(document.querySelector("#vibrationwaveform"));
 
-// duration slider handler
-duration_input.addEventListener("input", () => {
-    const duration = parseFloat(duration_input.value);
+drawcanvases.forEach(canvas => canvas.addEventListener("input", async () => {
+    if (canvas === thr_amp_env_dcanvas) {
+        const duration = parseFloat(duration_input.value);
+        const raw_samples = canvas.samples;
+        const thermal_samples = raw_samples.map(x => map_thermal(x, 0, 1));
+        const delta = Math.max(...thermal_samples) - Math.min(...thermal_samples);
 
-    });
+        const { rise, return: returnCoeffs } = await loadPolynomialCoefficients();
 
-    // if signals are modifyed, user have to press play button at least one
-    hasChanged = true;
-    alert_signal_label.textContent = "⚠ Signal changed. Please press PLAY again to apply changes.";
-    alert_signal_label.style.color = "red";
+        const smoothed = smooth_by_seconds(thermal_samples, duration, THERMAL_SAMPLE_RATE);
+        const limited = limit_gradient_by_delta(smoothed, delta, rise, returnCoeffs, duration, THERMAL_SAMPLE_RATE);
+        const remapped = limited.map(x => (x + 6) / 12);
 
+        canvas.samples = remapped;
+        canvas.draw_samples();
+    }
 
-    drawcanvases.forEach(canvas => canvas.addEventListener("input", () => {
-        if (canvas === thr_amp_env_dcanvas) {
-            const smoothed = smooth_by_seconds(canvas.samples, TOTAL_DURATION_SEC / THERMAL_SMOOTH_SEC);
-            const limited = limit_gradient(smoothed, THERMAL_MAX_DELTA);
-            canvas.samples = limited;
-            canvas.draw_samples();
-        }        
     update_vibration_np();
-    // if signals are modifyed, user have to press play button at least one
     hasChanged = true;
     alert_signal_label.textContent = "⚠ Signal changed. Please press PLAY again to apply changes.";
     alert_signal_label.style.color = "red";
 }));
+
 
 function update_vibration_np() {
     const vib_signal = generate_signal(true).vib_signal;
