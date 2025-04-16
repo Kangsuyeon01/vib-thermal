@@ -9,13 +9,13 @@ import {
     limit_gradient_by_delta
   } from './adjust_thermal.mjs';
   
-const TARGET_COUNT = 5;
-let hasChanged = false; // Track if Play button has been modifyed
-let hasPlayed = false; // Track if Play button has been pressed
-
-const THERMAL_SAMPLE_RATE = 10;     // seconds per smoothing window
-
-
+  const TARGET_COUNT = 5;
+  let hasChanged = false; // Track if Play button has been modifyed
+  let hasPlayed = false; // Track if Play button has been pressed
+  let playheadAnimationId = null;
+  let stopRequested = false;
+  const THERMAL_SAMPLE_RATE = 10;
+  
 // trial label
 /** @type {HTMLSpanElement} */
 const trial_current_label = notnull(document.querySelector("#trial_current_label"));
@@ -137,54 +137,52 @@ sliders.forEach(slider => {
  * Generates a waveform signal based on user-defined amplitude and frequency settings.
  * Sends the generated signal to the server for playback.
  */
+
 function on_play_signal() {
-    hasChanged = false;  // signal has been played, so reset change flag
+    hasChanged = false; // signal has been played, so reset change flag
     hasPlayed = true;
+
     const { vib_signal, thermal_signal, duration } = generate_signal();
-    const MAX_DURATION = TOTAL_DURATION_SEC;
-    
+
     const data = {
         vib_signal: Array.from(vib_signal),
-        vib_amp : vib_amp_env_dcanvas.samples,
-        vib_freq : vib_freq_env_dcanvas.samples,
+        vib_amp: vib_amp_env_dcanvas.samples,
+        vib_freq: vib_freq_env_dcanvas.samples,
         thr_amp: Array.from(thermal_signal),
         sample_rate: SAMPLE_RATE,
-        duration : parseFloat(duration_input.value)
+        duration: parseFloat(duration_input.value)
     }; // ~522kB
     console.log(data);
     const input_els = [...drawcanvases, play_button, duration_input];
     input_els.forEach(el => el.disabled = true);
 
-    // animation start
+// animation start
     const canvas = vibrationwaveform_np;
     const canvas_width = canvas.width;
     const delay_ms = 3500;
     const total_duration_ms = duration * 1000;
-
     const start_time = performance.now() + delay_ms;
-    
+
+    stopRequested = false;
+
     function animate_playhead(current_time) {
+        if (stopRequested) {
+            canvas.draw_playhead(0);
+            return;
+        }
         const elapsed = current_time - start_time;
-        const progress = Math.min(Math.max(elapsed / total_duration_ms, 0), 1); // 0~1
+        const progress = Math.min(Math.max(elapsed / total_duration_ms, 0), 1);
         const x = progress * canvas_width;
-    
         canvas.draw_playhead(x);
-    
+
         if (progress < 1) {
-            requestAnimationFrame(animate_playhead);
+            playheadAnimationId = requestAnimationFrame(animate_playhead);
         }
     }
-    
-    // TODO (start -> flask)
+
     setTimeout(() => {
-        requestAnimationFrame(animate_playhead);
+        playheadAnimationId = requestAnimationFrame(animate_playhead);
     }, delay_ms);
-    
-    
-
-
-    for (const el of  input_els) el.disabled = true;
-    wait_ms(duration * 1000).then(() => { for (const el of input_els) el.disabled = false; }); // id rather wait for the duration of fetch, but flask doesn't support async by default?
 
     fetch("/play_signals", {
         method: "POST",
@@ -193,13 +191,18 @@ function on_play_signal() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Server response:", data);
         if (data.status === "completed") {
-            for (const el of input_els) el.disabled = false;
+            input_els.forEach(el => el.disabled = false);
         }
     })
     .catch(error => console.error("Error sending data:", error));
-}    
+
+    wait_ms(duration * 1000 + delay_ms).then(() => {
+        if (!stopRequested) {
+            input_els.forEach(el => el.disabled = false);
+        }
+    });
+}
 /**
  * 
  * @returns {HTMLInputElement | null} - The selected referral radio button, or null if none selected.
@@ -216,26 +219,33 @@ function getSelectedMasking() {
 }
 function on_reset_signal() {
     const duration = parseFloat(duration_input.value);
-
     drawcanvases.forEach(canvas => {
         canvas.set_active_duration(duration);
         canvas.reset_samples_to(0.5);
     });
-
     update_vibration_np();
-
     hasChanged = true;
     alert_signal_label.textContent = "Signal reset.";
     alert_signal_label.style.color = "red";
 }
+
 function on_stop_signal() {
+    stopRequested = true;
+    if (playheadAnimationId !== null) {
+        cancelAnimationFrame(playheadAnimationId);
+        playheadAnimationId = null;
+    }
+    vibrationwaveform_np.draw_playhead(0);
+    const input_els = [...drawcanvases, play_button, duration_input];
+    input_els.forEach(el => el.disabled = false);
+
     fetch("/stop_signal", {
         method: "POST",
     })
     .then(response => response.json())
     .then(result => {
         if (result.status === "stopped") {
-            alert(" Signal stopped and temperature reset to baseline.");
+            alert("Signal stopped and temperature reset to baseline.");
         } else {
             alert("Failed to stop: " + result.message);
         }
@@ -245,6 +255,7 @@ function on_stop_signal() {
         alert("Error occurred while sending stop command.");
     });
 }
+
 
 
 async function on_submit(event) {

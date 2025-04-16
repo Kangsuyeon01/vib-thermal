@@ -79,11 +79,11 @@ export function limit_gradient_by_delta(samples, delta, rise_coeffs, return_coef
     const rise_time = evaluatePolynomial(rise_coeffs, Math.abs(delta));
     const return_time = evaluatePolynomial(return_coeffs, Math.abs(delta));
 
-    const RELAX_FACTOR = 10; 
+    // Relax factor: control how strict the slope limitation is
+    const RELAX_FACTOR = 1.5; 
 
     const slope_rise = (Math.abs(delta) / rise_time) * (duration / rise_time) * RELAX_FACTOR;
     const slope_return = (Math.abs(delta) / return_time) * (duration / return_time) * RELAX_FACTOR;
-    
 
     const max_rise_step = slope_rise / sampleRate;
     const max_return_step = slope_return / sampleRate;

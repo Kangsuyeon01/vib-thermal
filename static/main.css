@@ -63,6 +63,37 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 50%;
     transform: translateY(-0.25em);
 }
+.scale-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    justify-items: center;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+  
+  .scale-grid label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 60px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 500px) {
+    .scale-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+  
+    .scale-grid label {
+      min-width: unset;
+      font-size: 0.85rem;
+    }
+  }
+  
 
 h2.trial-num {
     margin: 0.5ex 0px 0px;

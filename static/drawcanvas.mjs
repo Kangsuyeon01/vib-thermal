@@ -198,10 +198,10 @@ export class DrawCanvasElement extends HTMLElement {
         this.ctx.stroke();
 
 
-        // draw gray box for inactive duration
-        this.ctx.fillStyle = "rgba(0, 0, 0, 0.33)";
-        const start_x = this.canvas.width * this.#_active_duration / this.#_total_duration;
-        this.ctx.fillRect(start_x, 0, this.canvas.width - start_x, this.canvas.height);
+        // // draw gray box for inactive duration
+        // this.ctx.fillStyle = "rgba(0, 0, 0, 0.33)";
+        // const start_x = this.canvas.width * this.#_active_duration / this.#_total_duration;
+        // this.ctx.fillRect(start_x, 0, this.canvas.width - start_x, this.canvas.height);
     }
 
     reset_samples_to(value = 0.5) {
