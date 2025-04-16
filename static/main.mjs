@@ -5,7 +5,7 @@ import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
 import { notnull, wait_ms } from './util.mjs';
 import { smooth_by_seconds, limit_gradient } from './signal_smoothing.mjs'
 import {
-    loadPolynomialCoefficients,
+    RISE_COEFFS, RETURN_COEFFS,
     limit_gradient_by_delta
   } from './adjust_thermal.mjs';
   
@@ -65,10 +65,8 @@ drawcanvases.forEach(canvas => canvas.addEventListener("input", async () => {
         const thermal_samples = raw_samples.map(x => map_thermal(x, 0, 1));
         const delta = Math.max(...thermal_samples) - Math.min(...thermal_samples);
 
-        const { rise, return: returnCoeffs } = await loadPolynomialCoefficients();
-
         const smoothed = smooth_by_seconds(thermal_samples, duration, THERMAL_SAMPLE_RATE);
-        const limited = limit_gradient_by_delta(smoothed, delta, rise, returnCoeffs, duration, THERMAL_SAMPLE_RATE);
+        const limited = limit_gradient_by_delta(smoothed, delta, RISE_COEFFS, RETURN_COEFFS, duration, THERMAL_SAMPLE_RATE);
         const remapped = limited.map(x => (x + 6) / 12);
 
         canvas.samples = remapped;

@@ -1,12 +1,9 @@
-/**
- * Load polynomial coefficients from JSON files
- * @returns {Promise<{rise: number[], return: number[]}>}
- */
-export async function loadPolynomialCoefficients() {
-    const rise = await fetch("/static/src/rise_coeffs.json").then(res => res.json());
-    const ret = await fetch("/static/src/return_coeffs.json").then(res => res.json());
-    return { rise, return: ret };
-}
+//@ts-check
+
+/** @type {[number, number, number]} */
+export const RISE_COEFFS = await fetch("/static/src/rise_coeffs.json").then(res => res.json());
+/** @type {[number, number, number]} */
+export const RETURN_COEFFS = await fetch("/static/src/return_coeffs.json").then(res => res.json());
 
 
 /**

@@ -1,3 +1,4 @@
+//@ts-check
 /**
  * Smooths a sample array by averaging values within each second.
  * @param {number[]} samples - Original sample array
