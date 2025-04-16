@@ -3,10 +3,14 @@ import { DrawCanvasElement, TOTAL_DURATION_SEC } from './drawcanvas.mjs';
 import { generate_signal, SAMPLE_RATE } from './generate-signal.mjs';
 import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
 import { notnull, wait_ms } from './util.mjs';
-
+import { smooth_by_seconds, limit_gradient } from './signal_smoothing.mjs'
 const TARGET_COUNT = 5;
 let hasChanged = false; // Track if Play button has been modifyed
 let hasPlayed = false; // Track if Play button has been pressed
+
+const THERMAL_SMOOTH_SEC = 1.0;     // seconds per smoothing window
+const THERMAL_MAX_DELTA = 0.1;     // max change per sample (normalized)
+
 // trial label
 /** @type {HTMLSpanElement} */
 const trial_current_label = notnull(document.querySelector("#trial_current_label"));
@@ -61,7 +65,13 @@ duration_input.addEventListener("input", () => {
     alert_signal_label.style.color = "red";
 
 
-drawcanvases.forEach(canvas => canvas.addEventListener("input", () => {
+    drawcanvases.forEach(canvas => canvas.addEventListener("input", () => {
+        if (canvas === thr_amp_env_dcanvas) {
+            const smoothed = smooth_by_seconds(canvas.samples, TOTAL_DURATION_SEC / THERMAL_SMOOTH_SEC);
+            const limited = limit_gradient(smoothed, THERMAL_MAX_DELTA);
+            canvas.samples = limited;
+            canvas.draw_samples();
+        }        
     update_vibration_np();
     // if signals are modifyed, user have to press play button at least one
     hasChanged = true;
@@ -98,13 +108,21 @@ const valence_slider = notnull(document.querySelector("#valence"));
 /** @type {HTMLInputElement} */
 const arousal_slider = notnull(document.querySelector("#arousal"));
 
+// Slider value display spans
+/** @type {HTMLSpanElement} */
+const roughness_value = notnull(document.querySelector("#roughness-value"));
+/** @type {HTMLSpanElement} */
+const valence_value = notnull(document.querySelector("#valence-value"));
+/** @type {HTMLSpanElement} */
+const arousal_value = notnull(document.querySelector("#arousal-value"));
+
 /** @type {NodeListOf<HTMLInputElement>} */
 const referral_radio_buttons = document.querySelectorAll('input[name="referral"]');
 /** @type {NodeListOf<HTMLInputElement>} */
 const masking_radio_buttons = document.querySelectorAll('input[name="masking"]');
 /** Mark sliders as "touched" when adjusted */
 const sliders = [roughness_slider, valence_slider, arousal_slider];
-
+const sliders_valuse = [roughness_value,valence_value,arousal_value]
 // Mark sliders as "touched" when adjusted
 sliders.forEach(slider => {
     slider.addEventListener("pointerdown", () => {
@@ -121,13 +139,16 @@ function on_play_signal() {
     hasPlayed = true;
     const { vib_signal, thermal_signal, duration } = generate_signal();
     const MAX_DURATION = TOTAL_DURATION_SEC;
-
+    
     const data = {
         vib_signal: Array.from(vib_signal),
-        thermal_signal: Array.from(thermal_signal),
-        sample_rate: SAMPLE_RATE
+        vib_amp : vib_amp_env_dcanvas.samples,
+        vib_freq : vib_freq_env_dcanvas.samples,
+        thr_amp: Array.from(thermal_signal),
+        sample_rate: SAMPLE_RATE,
+        duration : parseFloat(duration_input.value)
     }; // ~522kB
-
+    console.log(data);
     const input_els = [...drawcanvases, play_button, duration_input];
     input_els.forEach(el => el.disabled = true);
 
@@ -136,20 +157,20 @@ function on_play_signal() {
     const canvas_width = canvas.width;
     const start_time = performance.now();
     const total_duration_ms = duration * 1000;
-
+    
     function animate_playhead(current_time) {
         const elapsed = current_time - start_time;
         const progress = Math.min(elapsed / total_duration_ms, 1); // 0~1
-        const x = progress * (canvas_width * (duration / MAX_DURATION)); 
-
+        const x = progress * canvas_width;  // 
+    
         canvas.draw_playhead(x);
-
+    
         if (progress < 1) {
             requestAnimationFrame(animate_playhead);
         }
     }
-
     requestAnimationFrame(animate_playhead);
+    
 
 
     for (const el of  input_els) el.disabled = true;
@@ -164,7 +185,6 @@ function on_play_signal() {
     .then(data => {
         console.log("Server response:", data);
         if (data.status === "completed") {
-            // 모든 작업이 끝난 뒤 활성화
             for (const el of input_els) el.disabled = false;
         }
     })
@@ -283,18 +303,19 @@ async function on_submit(event) {
     submitstatus_span.textContent = "";
 
     const { vib_signal, thermal_signal } = generate_signal();
-
+ 
+    // TODO (change data format)
+    // vib signal have to be passed by using flask
     const data = {
-        vib_signal: Array.from(vib_signal),
-        vib_amp: Array.from(vib_amp_env_dcanvas.samples), /////
-        vib_freq: Array.from(vib_freq_env_dcanvas.samples), ////
-        thermal_signal: Array.from(thermal_signal),
+        vib_signal: Array.from(vib_signal), /////
+        vib_amp: vib_amp_env_dcanvas.samples, /////
+        vib_freq: vib_freq_env_dcanvas.samples, ////
+        thermal_signal: Array.from(thermal_signal), /////
         sample_rate: SAMPLE_RATE,
         duration: parseFloat(duration_input.value),
         body_sites: { vibrationInfo: vibrationInfo.textContent, thermalInfo: thermalInfo.textContent },
         ratings: { 
-            roughness: roughness_slider.value, 
-            // warmness: warmness_slider.value, 
+            roughness: roughness_slider.value,  
             valence: valence_slider.value, 
             arousal: arousal_slider.value, 
             referral: referralValue?.value,
@@ -315,8 +336,10 @@ async function on_submit(event) {
             slider.value = "50";  // default value
             delete slider.dataset.touched;  
         });
-
-
+        sliders_valuse.forEach(s_value => {
+            s_value.textContent = "50"; // 또는 슬라이더의 초기값과 동일하게
+        });
+        
         referral_radio_buttons.forEach(radio => {
             radio.checked = false;
         });

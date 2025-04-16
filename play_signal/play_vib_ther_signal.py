@@ -9,7 +9,7 @@ from nidaqmx.constants import AcquisitionType
 import os
 from datetime import datetime
 from scipy.signal import resample
-
+from play_signal.generate_signal import generate_signal_with_thermal
 
 def run_stim_from_json(data):
     SAMPLE_RATE = 10000
@@ -61,14 +61,24 @@ def run_stim_from_json(data):
         return
 
     try:
-        vib_signal = np.array(data['vib_signal'])
-        thermal_signal = np.array(data.get('thermal_signal', [0.0] * len(vib_signal)))
+        vib_amp = np.array(data['vib_amp'])
+        vib_freq = np.array(data['vib_freq'])
+        thermal_amp = np.array(data.get('thermal_signal'))
+        # logscale = data.get('logscale', False)
+
+        # 📌 통합 함수 사용
+        vib_signal, thermal_resampled = generate_signal_with_thermal(
+            vib_amp, vib_freq, thermal_amp,
+            TOTAL_DURATION_SEC=TOTAL_DURATION_SEC,
+            duration=data.get("duration", 5),
+            logscale=True,
+            thermal_rate=THERMAL_RATE
+        )
+
         vib_signal_result = vib_signal.copy()
+        thermal_resampled = np.append(thermal_resampled, 0.0)  # 복귀용
 
-        target_len = int(TOTAL_DURATION_SEC * THERMAL_RATE)
-        thermal_resampled = resample(thermal_signal, target_len)
-        thermal_resampled = np.append(thermal_resampled, 0.0)  # 마지막은 복귀용 0
-
+        # Arduino로 ΔT 전송 리스트
         delta_list = [float(f"{val:.2f}") for val in thermal_resampled]
 
         def send_delta_thermal():
@@ -101,7 +111,6 @@ def run_stim_from_json(data):
                     except Exception:
                         continue
 
-            # Run threads
             log_thread = threading.Thread(target=read_arduino_logs)
             daq_thread = threading.Thread(target=Run_DAQ, args=(out_chan, vib_signal_result))
             thermal_thread = threading.Thread(target=send_delta_thermal)
@@ -115,7 +124,7 @@ def run_stim_from_json(data):
 
             print("[Arduino] Waiting briefly for Arduino to finish...")
             time.sleep(TOTAL_DURATION_SEC + 1)
-
             print("[Arduino] Done. Returning to baseline.")
+
     except Exception as e:
         print("[ERROR]", e)

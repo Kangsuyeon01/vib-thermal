@@ -6,7 +6,8 @@ static/save_data/*
 __pycache__/
 *.py[cod]
 *$py.class
-
+collected_data_*.json
+*_collected_data.json
 # C extensions
 *.so
 
