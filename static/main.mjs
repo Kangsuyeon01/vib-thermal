@@ -158,13 +158,15 @@ function on_play_signal() {
     // animation start
     const canvas = vibrationwaveform_np;
     const canvas_width = canvas.width;
-    const start_time = performance.now();
+    const delay_ms = 3500;
     const total_duration_ms = duration * 1000;
+
+    const start_time = performance.now() + delay_ms;
     
     function animate_playhead(current_time) {
         const elapsed = current_time - start_time;
-        const progress = Math.min(elapsed / total_duration_ms, 1); // 0~1
-        const x = progress * canvas_width;  // 
+        const progress = Math.min(Math.max(elapsed / total_duration_ms, 0), 1); // 0~1
+        const x = progress * canvas_width;
     
         canvas.draw_playhead(x);
     
@@ -172,7 +174,12 @@ function on_play_signal() {
             requestAnimationFrame(animate_playhead);
         }
     }
-    requestAnimationFrame(animate_playhead);
+    
+    // TODO (start -> flask)
+    setTimeout(() => {
+        requestAnimationFrame(animate_playhead);
+    }, delay_ms);
+    
     
 
 
