@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 
-BASE_LOG_PATH = "logs/20250416"  # <-- 여기를 실제 경로로 바꾸세요
+BASE_LOG_PATH = "logs/20250416" 
 SAVE_PATH = os.path.join(BASE_LOG_PATH, "delta_summary_rise_return_times.csv")
 BASELINE_TEMP = 32.5
 TOLERANCE = 0.2  # 허용 오차 범위 (°C)
