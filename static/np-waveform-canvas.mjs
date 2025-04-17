@@ -1,3 +1,4 @@
+//@ts-check
 import { notnull } from "./util.mjs";
 
 export class NpWaveFormCanvas extends HTMLElement {
@@ -106,9 +107,7 @@ export class NpWaveFormCanvas extends HTMLElement {
 		const last_step = pcm.length / width;
 
 		// Downsample and normalize freqs if provided
-		let colorFreqs = null;
-
-		colorFreqs = downsampleArray(freqs, width);
+		let colorFreqs = freqs ? downsampleArray(freqs, width) : null;
 
 		wf_ctx.beginPath();
 		wf_ctx.moveTo(0, height / 2);
@@ -156,7 +155,7 @@ function colormapGreen(norm) {
 
 /**
  * Downsamples an array to target length using averaging.
- * @param {number[]} arr
+ * @param {number[] | Float32Array} arr
  * @param {number} targetLength
  * @returns {number[]}
  */
@@ -167,6 +166,7 @@ function downsampleArray(arr, targetLength) {
 		const start = Math.floor(i * chunkSize);
 		const end = Math.floor((i + 1) * chunkSize);
 		const segment = arr.slice(start, end);
+		// @ts-ignore
 		const avg = segment.length > 0 ? segment.reduce((sum, v) => sum + v, 0) / segment.length : 0;
 		result.push(avg);
 	}

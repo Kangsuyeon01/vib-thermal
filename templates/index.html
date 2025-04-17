@@ -13,14 +13,14 @@
 </head>
     <body>
       <h2 class="trial-num">
-        trial: <span id="trial_current_label">{{ trial }}</span>/ 
+        trial: <span id="trial_current_label">{{ trial }}</span>/
         <span id="trial_end_label"></span>
-      </h2>      
+      </h2>
         <div class="main-container">
           <div class="signal-container card">
             <div class="vibration">
               <h1>Vibrotactile Feedback</h1>
-      
+
               <div class="envelope">
                 <h2>Amplitude Envelope:</h2>
                 <div class="canvas-with-axis">
@@ -32,7 +32,7 @@
                   <draw-canvas id="drawvibaenv" height="100" stroke-color="blue"></draw-canvas>
                 </div>
               </div>
-      
+
               <div class="envelope">
                 <h2>Frequency Envelope:</h2>
                 <div class="canvas-with-axis">
@@ -44,7 +44,7 @@
                   <draw-canvas id="drawvibfenv" height="100" stroke-color="green"></draw-canvas>
                 </div>
               </div>
-      
+
               <div class="envelope">
                 <h2>Final Waveform:</h2>
                 <div class="canvas-with-axis">
@@ -59,10 +59,10 @@
                 </div>
               </div>
             </div>
-      
+
             <div class="thermal">
               <h1>Thermal Feedback</h1>
-      
+
               <div class="envelope">
                 <h2><label for="tempamp">Amplitude Envelope:</label></h2>
                 <div class="canvas-with-axis">
@@ -71,7 +71,7 @@
                     <span>0</span>
                     <span>-6</span>
                   </div>
-                  <draw-canvas id="drawthraenv" height="100" stroke-color="red"></draw-canvas>
+                  <draw-canvas id="drawthraenv" height="100" stroke-color="red" no-fill-random initial-y-value="0.5"></draw-canvas>
                 </div>
               </div>
             </div>
@@ -79,13 +79,13 @@
               <div class="envelope">
                 <h2><label for="signalduration">Duration:</label></h2>
                 <div class="slider-wrapper">
-                  <span class="slider-value" id="duration-value">5</span>
-                  <input type="range" min="0" max="5" value="5" id="signalduration"
+                  <span class="slider-value" id="duration-value">2.5</span>
+                  <input type="range" min="0.5" max="5.0" step="0.1" value="2.5" id="signalduration"
                     oninput="document.getElementById('duration-value').textContent = this.value" />
                 </div>
               </div>
-            </div>
-      
+
+
             <span id="alert_signal_label" class="alertlabel"></span>
             <span>
               <div class="button-group">
@@ -93,13 +93,12 @@
                 <button class="play" id="playsignal">PLAY</button>
                 <button class="stop" id="stopsignal">STOP</button>
               </div>
-                
             </span>
+          </div>
           </div>
         <div class="posrate-container">
             <div class="bodysite">
                 {% include 'body_point_load.html' %}
-                
             </div>
             <div class="card ratingcard">
               <form class="ratings six-grid">
@@ -107,12 +106,12 @@
                 <div class="cell" style="grid-area: alert-slider;">
                   <span id="alert_slider_label" class="alertlabel">⚠ Please adjust all sliders at least once.</span>
                 </div>
-              
+
                 <!-- 라디오 경고 -->
                 <div class="cell" style="grid-area: alert-radio;">
                   <span id="alert_referral_label" class="alertlabel">⚠ Please select a referral option</span>
                 </div>
-              
+
                 <!-- Roughness -->
                 <div class="cell" style="grid-area: roughness;">
                   <h2>Roughness</h2>
@@ -126,29 +125,20 @@
                     <label class="side-label">100<br>rough</label>
                   </div>
                 </div>
-              
-                <!-- Thermal Referral -->
-            <div class="cell" style="grid-area: referral;">
-              <h2>Thermal Referral</h2>
-              <div class="scale-block">
-                <div class="scale-numbers">
-                  <span><br>No referral</span>
-                  <span><br>Slight referral</span>
-                  <span><br>Moderate referral</span>
-                  <span><br>Strong referral</span>
-                  <span><br>Fully referred</span>
-                </div>
-                <div class="scale-inputs">
-                  <input type="radio" name="referral" value="0">
-                  <input type="radio" name="referral" value="1">
-                  <input type="radio" name="referral" value="2">
-                  <input type="radio" name="referral" value="3">
-                  <input type="radio" name="referral" value="4">
-                </div>
-              </div>
-            </div>
 
-              
+                <!-- Referral -->
+                <div class="cell" style="grid-area: referral;">
+                  <h2>Thermal Referral</h2>
+                  <div class="scale-grid">
+                    <label>None<br><input type="radio" name="referral" value="0"></label>
+                    <label>Slight<br><input type="radio" name="referral" value="1"></label>
+                    <label>Moderate<br><input type="radio" name="referral" value="2"></label>
+                    <label>Strong<br><input type="radio" name="referral" value="3"></label>
+                    <label>Very Strong<br><input type="radio" name="referral" value="4"></label>
+                  </div>
+                </div>
+
+
                 <!-- Arousal -->
                 <div class="cell" style="grid-area: arousal;">
                   <h2>Arousal</h2>
@@ -162,28 +152,19 @@
                     <label class="side-label">100<br>excited</label>
                   </div>
                 </div>
-              
-       <!-- Thermal Masking -->
-      <div class="cell" style="grid-area: masking;">
-        <h2>Thermal Masking</h2>
-        <div class="scale-block">
-          <div class="scale-numbers">
-            <span><br>Not masked at all</span>
-            <span><br>Slightly masked</span>
-            <span><br>Moderately masked</span>
-            <span><br>Strongly masked</span>
-            <span><br>Completely masked</span>
-          </div>
-          <div class="scale-inputs">
-            <input type="radio" name="masking" value="0">
-            <input type="radio" name="masking" value="1">
-            <input type="radio" name="masking" value="2">
-            <input type="radio" name="masking" value="3">
-            <input type="radio" name="masking" value="4">
-          </div>
-        </div>
-      </div>
-       
+
+                <!-- Masking -->
+                <div class="cell" style="grid-area: masking;">
+                  <h2>Masking</h2>
+                  <div class="scale-grid">
+                    <label>None<br><input type="radio" name="masking" value="0"></label>
+                    <label>Slight<br><input type="radio" name="masking" value="1"></label>
+                    <label>Moderate<br><input type="radio" name="masking" value="2"></label>
+                    <label>Strong<br><input type="radio" name="masking" value="3"></label>
+                    <label>Very Strong<br><input type="radio" name="masking" value="4"></label>
+                  </div>
+                </div>
+
                 <!-- Valence -->
                 <div class="cell" style="grid-area: valence;">
                   <h2>Valence</h2>
@@ -197,7 +178,7 @@
                     <label class="side-label">100<br>pleasant</label>
                   </div>
                 </div>
-              
+
                 <!-- Submit -->
                 <div class="cell" style="grid-area: submit;">
                   <button id="submit">Submit</button>
@@ -208,5 +189,11 @@
             </div>
         </div>
     </div>
+    <div class="bottom-nav">
+      <h3></h3>
+      </a>
+    </div>
 </body>
+
+
 </html>

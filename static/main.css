@@ -63,6 +63,37 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 50%;
     transform: translateY(-0.25em);
 }
+.scale-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    justify-items: center;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+  
+  .scale-grid label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 60px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 500px) {
+    .scale-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+  
+    .scale-grid label {
+      min-width: unset;
+      font-size: 0.85rem;
+    }
+  }
+  
 
 h2.trial-num {
     margin: 0.5ex 0px 0px;
@@ -161,13 +192,15 @@ body {
     display: grid;
     background-color: #f4f4f4;
     margin: 0;
-}
+  }
 .main-container {
+    width: 80%;
+    height: 80%;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3ex;
+    gap: 5ex;
     /* padding: 3ex; */
-    margin: 1ex;
+    margin: 0 auto;
 }
 
 @media (max-width: 1000px) {
@@ -180,8 +213,9 @@ div.signal-container {
     display: flex;
     flex-direction: column;
     gap: 3ex;
+    width: 90%;
     justify-content: space-between;
-    /* padding-right: 10ex; */
+    padding-right: 10ex;
 }
 div.signal-container > div {
     display: grid;
@@ -253,6 +287,7 @@ button.reset:active {
 .card {
     background: white;
     padding: 1ex;
+    width: 90%;
     /* padding-right: 10ex; */
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -268,7 +303,7 @@ button.reset:active {
 .ratings {
     display: flex;
     flex-wrap: wrap;
-    gap: 2ex;
+    gap: 1ex;
 }
 .ratings .envelope {
     flex: 1 1 45%;
@@ -287,6 +322,7 @@ button.reset:active {
       "valence submit";
     gap: 0ex;
     justify-content: center;
+    height: 90%;
   }
   
   .six-grid .cell {
@@ -463,14 +499,6 @@ div.referral-container {
     transform: scale(0);
     transition: transform 0.1s ease-in-out;
   }
-  .scale-numbers span {
-    display: inline-block;
-    width: 90px;
-    text-align: center;
-    font-size: 0.9em;
-    white-space: nowrap;
-  }
-  
   
   .scale-inputs input[type="radio"]:checked::before {
     transform: scale(0.6);
