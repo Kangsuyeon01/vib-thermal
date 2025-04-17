@@ -1,4 +1,6 @@
 //@ts-check
+import { compute_max_thermal_change_at_temp_for_time } from './adjust_thermal.mjs';
+import { inv_map_thermal, map_thermal, MAX_THERMAL, MIN_THERMAL } from './generate-signal.mjs';
 import { notnull } from './util.mjs';
 
 export const DEFAULT_TOTAL_DURATION_SEC = 10;
@@ -54,6 +56,13 @@ export class DrawCanvasElement extends HTMLElement {
 
     #_internals = this.attachInternals();
 
+
+    /** @type {number[]} */
+    #_input_samples = new Array(NUM_SAMPLES);
+    get_samples() {
+        return this.#_compute_output_samples();
+    }
+
     constructor() {
         super();
         this.attachShadow({mode: 'open'});
@@ -73,9 +82,10 @@ export class DrawCanvasElement extends HTMLElement {
 
         this.mouse_down = false;
 
-        /** @type {number[]} */
-        this.samples = new Array(NUM_SAMPLES).fill(0.5);
-        this.#_fill_random_samples();
+
+        this.initial_y_value = 0.5;
+        /** @type {((prev_samp: number, desired_samp: number, seconds_per_sample: number) => number) | null} */
+        this.max_slope_callback = null;
 
         this.on_mouse_down = this.on_mouse_down.bind(this);
         this.on_mouse_up = this.on_mouse_up.bind(this);
@@ -93,7 +103,7 @@ export class DrawCanvasElement extends HTMLElement {
         const high = Math.max(r1, r2);
         const value = Math.random() * 0.8 + 0.2;
         for (let i = NUM_SAMPLES*low; i < NUM_SAMPLES*high; i++) {
-            this.samples[Math.floor(i)] = value;
+            this.#_input_samples[Math.floor(i)] = value;
         }
     }
 
@@ -103,6 +113,12 @@ export class DrawCanvasElement extends HTMLElement {
         document.addEventListener("mousemove", this.on_mouse_move, { passive: true });
 
         this.stroke_color = this.getAttribute("stroke-color") || "black";
+
+        const iyv = this.getAttribute("initial-y-value");
+        this.initial_y_value = iyv ? parseFloat(iyv) : this.initial_y_value;
+        this.#_input_samples.fill(this.initial_y_value);
+
+        if (!this.getAttribute("no-fill-random")) this.#_fill_random_samples();
 
         this.#_resize_observer.observe(this);
         this.#_on_self_resize();
@@ -137,18 +153,36 @@ export class DrawCanvasElement extends HTMLElement {
             const y1 = y_perc;
             const [xlow, ylow, xhigh, yhigh] = x0 < x1 ? [x0, y0, x1, y1] : [x1, y1, x0, y0];
             // console.log(xlow, ylow, xhigh, yhigh);
+
             for (let i = xlow; i <= xhigh; i++) {
                 const perc = (i - xlow) / (xhigh - xlow + 1e-6);
-                this.samples[i] = ylow + perc * (yhigh - ylow);
+                const desired_samp = ylow + perc * (yhigh - ylow);
+                this.#_input_samples[i] = desired_samp;
             }
+
             this.last_x_perc = x_perc;
             this.last_y_perc = y_perc;
 
-            // const sample = Math.floor(x_perc * NUM_SAMPLES);
-            // this.samples[sample] = y_perc;
             this.draw_samples();
             this.#_emit_input_event();
         }
+    }
+    #_compute_output_samples() {
+        if (this.max_slope_callback == null) return this.#_input_samples.slice();
+
+        const seconds_per_sample = this.#_total_duration / NUM_SAMPLES;
+        const output_samples = this.#_input_samples.slice();
+        let prev_samp = this.initial_y_value;
+        for (let i = 0; i < NUM_SAMPLES; i++) {
+            const desired_samp = this.#_input_samples[i];
+
+            const curr_samp = this.max_slope_callback(prev_samp, desired_samp, seconds_per_sample);
+
+            output_samples[i] = curr_samp;
+            prev_samp = curr_samp;
+        }
+
+        return output_samples;
     }
 
     #_emit_input_event() {
@@ -193,27 +227,31 @@ export class DrawCanvasElement extends HTMLElement {
     draw_samples() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.#_draw_grid();
-        this.ctx.beginPath();
-        this.ctx.moveTo(0, this.canvas.height * (1 - this.samples[0]));
-        this.ctx.lineWidth = 8;
-        this.ctx.lineJoin = "round";
-        this.ctx.strokeStyle = this.stroke_color;
-        for (let i = 1; i < NUM_SAMPLES; i++) {
-            const samp = this.samples[i];
-            this.ctx.lineTo(i * this.canvas.width / NUM_SAMPLES, this.canvas.height * (1 - samp));
-        }
-        this.ctx.stroke();
 
+        this.#_draw_samples(this.#_input_samples, "#aeaeae"); // draw input samples in gray
+        const output_samples = this.#_compute_output_samples();
+        this.#_draw_samples(output_samples);
 
         // draw gray box for inactive duration
         this.ctx.fillStyle = "rgba(0, 0, 0, 0.33)";
         const start_x = this.canvas.width * this.#_active_duration / this.#_total_duration;
         this.ctx.fillRect(start_x, 0, this.canvas.width - start_x, this.canvas.height);
     }
+    #_draw_samples(samples, stroke_color = this.stroke_color) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, this.canvas.height * (1 - samples[0]));
+        this.ctx.lineWidth = 8;
+        this.ctx.lineJoin = "round";
+        this.ctx.strokeStyle = stroke_color;
+        for (let i = 1; i < NUM_SAMPLES; i++) {
+            const samp = samples[i];
+            this.ctx.lineTo(i * this.canvas.width / NUM_SAMPLES, this.canvas.height * (1 - samp));
+        }
+        this.ctx.stroke();
+    }
 
     reset_samples_to(value = 0.5) {
-        this.samples.fill(value);
-        // this.samples = new Float32Array(this.samples.length).fill(value);
+        this.#_input_samples.fill(value);
         this.draw_samples();
     }
 

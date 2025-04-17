@@ -1,21 +1,16 @@
 //@ts-check
 import { DrawCanvasElement } from './drawcanvas.mjs';
-import { generate_signal, map_thermal,SAMPLE_RATE } from './generate-signal.mjs';
+import { generate_signal, inv_map_thermal, map_thermal, SAMPLE_RATE } from './generate-signal.mjs';
 import { NpWaveFormCanvas } from './np-waveform-canvas.mjs';
 import { notnull, wait_ms } from './util.mjs';
-import { smooth_by_seconds, limit_gradient } from './signal_smoothing.mjs'
-import {
-    RISE_COEFFS, RETURN_COEFFS,
-    limit_gradient_by_delta
-  } from './adjust_thermal.mjs';
-  
-  const TARGET_COUNT = 5;
-  let hasChanged = false; // Track if Play button has been modifyed
-  let hasPlayed = false; // Track if Play button has been pressed
-  let playheadAnimationId = null;
-  let stopRequested = false;
-  const THERMAL_SAMPLE_RATE = 10;
-  
+import { compute_max_thermal_change_at_temp_for_time } from './adjust_thermal.mjs';
+
+const TARGET_COUNT = 5;
+let hasChanged = false; // Track if Play button has been modifyed
+let hasPlayed = false; // Track if Play button has been pressed
+let playheadAnimationId = null;
+let stopRequested = false;
+
 // trial label
 /** @type {HTMLSpanElement} */
 const trial_current_label = notnull(document.querySelector("#trial_current_label"));
@@ -59,6 +54,19 @@ const submitstatus_span = notnull(document.querySelector("#submitstatus"));
 const vibrationwaveform_np = notnull(document.querySelector("#vibrationwaveform"));
 
 
+thr_amp_env_dcanvas.max_slope_callback = (prev_samp, desired_samp, seconds_per_sample) => {
+    const prev_samp_degrees = map_thermal(prev_samp, 0, 1);
+    const temp_delta_degrees = map_thermal(desired_samp, 0, 1) - prev_samp_degrees;
+    // [0.00, 0.944676, -0.0563504] no constant term (rise)
+    // [0.00, 0.961138, -0.0809152] no constant term (return)
+    const max_positive_rise_temp_change = compute_max_thermal_change_at_temp_for_time([0.00, 0.944676, -0.0563504], prev_samp_degrees, seconds_per_sample, false);
+    const max_negative_rise_temp_change = compute_max_thermal_change_at_temp_for_time([0.00, 0.944676, -0.0563504], prev_samp_degrees, seconds_per_sample, true);
+    const clamped_temp_delta = Math.max(Math.min(temp_delta_degrees, max_positive_rise_temp_change), max_negative_rise_temp_change);
+
+    const cur_samp_degrees = prev_samp_degrees + clamped_temp_delta;
+    const cur_samp = inv_map_thermal(cur_samp_degrees, 0, 1);
+    return cur_samp;
+}
 function on_duration_input() {
     const duration = parseFloat(duration_input.value);
     drawcanvases.forEach(canvas => {
@@ -69,20 +77,6 @@ duration_input.addEventListener("input", on_duration_input);
 on_duration_input();
 
 drawcanvases.forEach(canvas => canvas.addEventListener("input", async () => {
-    if (canvas === thr_amp_env_dcanvas) {
-        const duration = parseFloat(duration_input.value);
-        const raw_samples = canvas.samples;
-        const thermal_samples = raw_samples.map(x => map_thermal(x, 0, 1));
-        const delta = Math.max(...thermal_samples) - Math.min(...thermal_samples);
-
-        const smoothed = smooth_by_seconds(thermal_samples, duration, THERMAL_SAMPLE_RATE);
-        const limited = limit_gradient_by_delta(smoothed, delta, RISE_COEFFS, RETURN_COEFFS, duration, THERMAL_SAMPLE_RATE);
-        const remapped = limited.map(x => (x + 6) / 12);
-
-        canvas.samples = remapped;
-        canvas.draw_samples();
-    }
-
     update_vibration_np();
     hasChanged = true;
     alert_signal_label.textContent = "⚠ Signal changed. Please press PLAY again to apply changes.";
@@ -93,7 +87,7 @@ drawcanvases.forEach(canvas => canvas.addEventListener("input", async () => {
 function update_vibration_np() {
     const vib_signal = generate_signal(true).vib_signal;
     // const vib_amp = vib_amp_env_dcanvas.samples;
-    const vib_freq = vib_freq_env_dcanvas.samples;
+    const vib_freq = vib_freq_env_dcanvas.get_samples();
     const current_active_duration = vib_amp_env_dcanvas.get_active_duration();
     const current_total_duration = vib_amp_env_dcanvas.get_total_duration();
     const perc_active = current_active_duration / current_total_duration; // todo: update vis based on this?
@@ -154,8 +148,8 @@ function on_play_signal() {
 
     const data = {
         vib_signal: Array.from(vib_signal),
-        vib_amp: vib_amp_env_dcanvas.samples,
-        vib_freq: vib_freq_env_dcanvas.samples,
+        vib_amp: vib_amp_env_dcanvas.get_samples(),
+        vib_freq: vib_freq_env_dcanvas.get_samples(),
         thr_amp: Array.from(thermal_signal),
         sample_rate: SAMPLE_RATE,
         duration: parseFloat(duration_input.value)
@@ -212,7 +206,7 @@ function on_play_signal() {
     });
 }
 /**
- * 
+ *
  * @returns {HTMLInputElement | null} - The selected referral radio button, or null if none selected.
  */
 function getSelectedReferral() {
@@ -267,7 +261,7 @@ function on_stop_signal() {
 
 
 async function on_submit(event) {
-    event.preventDefault();  
+    event.preventDefault();
 
     // Validate that all sliders have been used
     const allSlidersUsed = sliders.every(slider => slider.dataset.touched);
@@ -332,21 +326,21 @@ async function on_submit(event) {
     submitstatus_span.textContent = "";
 
     const { vib_signal, thermal_signal } = generate_signal();
- 
+
     // TODO (change data format)
     // vib signal have to be passed by using flask
     const data = {
         vib_signal: Array.from(vib_signal), /////
-        vib_amp: vib_amp_env_dcanvas.samples, /////
-        vib_freq: vib_freq_env_dcanvas.samples, ////
+        vib_amp: vib_amp_env_dcanvas.get_samples(), /////
+        vib_freq: vib_freq_env_dcanvas.get_samples(), ////
         thermal_signal: Array.from(thermal_signal), /////
         sample_rate: SAMPLE_RATE,
         duration: parseFloat(duration_input.value),
         body_sites: { vibrationInfo: vibrationInfo.textContent, thermalInfo: thermalInfo.textContent },
-        ratings: { 
-            roughness: roughness_slider.value,  
-            valence: valence_slider.value, 
-            arousal: arousal_slider.value, 
+        ratings: {
+            roughness: roughness_slider.value,
+            valence: valence_slider.value,
+            arousal: arousal_slider.value,
             referral: referralValue?.value,
             masking: maskingValue?.value,
         }
@@ -359,29 +353,29 @@ async function on_submit(event) {
     })
     .then(response => response.json())
     .then(result => {
-        alert("Submission successful!");  
+        alert("Submission successful!");
 
         sliders.forEach(slider => {
             slider.value = "50";  // default value
-            delete slider.dataset.touched;  
+            delete slider.dataset.touched;
         });
         sliders_valuse.forEach(s_value => {
             s_value.textContent = "50"; // 또는 슬라이더의 초기값과 동일하게
         });
-        
+
         referral_radio_buttons.forEach(radio => {
             radio.checked = false;
         });
         masking_radio_buttons.forEach(radio => {
             radio.checked = false;
         });
-                
+
 
         // update Trial count
         let trialCurrent = parseInt(trial_current_label.textContent || "0", 10) + 1;
         trial_current_label.textContent = trialCurrent.toString();
         trial_end_label.textContent = TARGET_COUNT.toString();
-        
+
         if (trialCurrent >= TARGET_COUNT) {
             alert("All trials completed!");
             trial_current_label.textContent = "0";

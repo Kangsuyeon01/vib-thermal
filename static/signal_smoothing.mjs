@@ -6,7 +6,7 @@
  * @param {number} samples_per_sec - Samples per second (default: samples.length / duration)
  * @returns {number[]} - Smoothed sample array
  */
-export function smooth_by_seconds(samples, duration_sec, samples_per_sec = samples.length / duration_sec) {
+function smooth_by_seconds(samples, duration_sec, samples_per_sec = samples.length / duration_sec) {
     const new_samples = [...samples];
     const samples_per_sec_int = Math.floor(samples_per_sec);
     const total_sec = Math.floor(samples.length / samples_per_sec_int);
@@ -30,7 +30,7 @@ export function smooth_by_seconds(samples, duration_sec, samples_per_sec = sampl
  * @param {number} max_delta_per_sample - Maximum allowed change per sample (e.g., 0.02)
  * @returns {number[]} - Gradient-limited sample array
  */
-export function limit_gradient(samples, max_delta_per_sample = 0.03) {
+function limit_gradient(samples, max_delta_per_sample = 0.03) {
     const new_samples = [...samples];
     for (let i = 1; i < new_samples.length; i++) {
         const delta = new_samples[i] - new_samples[i - 1];
