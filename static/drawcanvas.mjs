@@ -211,7 +211,7 @@ export class DrawCanvasElement extends HTMLElement {
         // draw 1 second grid lines, and 0.25 amplitude lines
         this.ctx.beginPath();
         this.ctx.lineWidth = 1;
-        this.ctx.strokeStyle = "lightgray";
+        this.ctx.strokeStyle = "#BDBDBD";
         const line_dist = this.canvas.width / this.#_total_duration;
         for (let i = 1; i < this.#_total_duration; i++) {
             this.ctx.moveTo(i * line_dist, 0);
@@ -222,6 +222,25 @@ export class DrawCanvasElement extends HTMLElement {
             this.ctx.lineTo(this.canvas.width, i * this.canvas.height / 4);
         }
         this.ctx.stroke();
+
+        // 0.5 second minor grid lines
+        this.ctx.beginPath();
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeStyle = "#EFEFEF";
+        for (let i = 0; i < this.#_total_duration; i++) {
+            this.ctx.moveTo(i * line_dist + line_dist/2, 0);
+            this.ctx.lineTo(i * line_dist + line_dist/2, this.canvas.height);
+        }
+        this.ctx.stroke();
+
+        // render text labels for 1 second grid lines
+        this.ctx.fillStyle = "#909090";
+        this.ctx.font = "12px Arial";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        for (let i = 1; i < this.#_total_duration; i++) {
+            this.ctx.fillText(i.toString()+"s", i * line_dist, this.canvas.height - 5);
+        }
     }
 
     draw_samples() {
