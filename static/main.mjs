@@ -199,7 +199,7 @@ function on_play_signal() {
         eventSource.close();
     };
 
-    // fetch는 끝에 위치
+
     fetch("/play_signals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

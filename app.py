@@ -64,7 +64,7 @@ def play_signals():
     data["user_id"] = user_id
 
     def run_and_notify():
-        event_queue.put("start")
+        # event_queue.put("start")
         run_stim_from_json(data, event_queue)
         event_queue.put("end")
 
