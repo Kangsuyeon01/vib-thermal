@@ -14,7 +14,7 @@ float c3 = -9.653138374e-07;
 double input = 0, output = 0;
 double init_setpoint = 32.5;
 double setpoint = init_setpoint;
-double Kp = 128, Ki = 2, Kd = 32;
+double Kp = 32, Ki = 2, Kd = 16; // 기본 Kp를 32로 설정
 
 PID myPID(&input, &output, &setpoint, Kp, Ki, Kd, DIRECT);
 
@@ -42,7 +42,13 @@ void loop() {
       if (serialBuffer.equalsIgnoreCase("start")) {
         startTime = millis();
         started = true;
-        Serial.println("Start received. Time reset.");
+        Kp = 128;  // 시작 시 Kp 변경
+        myPID.SetTunings(Kp, Ki, Kd);
+        Serial.println("Start received. Kp set to 128.");
+      } else if (serialBuffer.equalsIgnoreCase("end")) {
+        Kp = 32;  // 종료 시 Kp 복원
+        myPID.SetTunings(Kp, Ki, Kd);
+        Serial.println("End received. Kp reset to 32.");
       } else if (serialBuffer.length() > 0) {
         double delta = serialBuffer.toFloat();
         setpoint = init_setpoint + delta;
