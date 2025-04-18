@@ -4,8 +4,8 @@ draw-canvas {
     outline: 1px solid lightgray;
     cursor: crosshair;
     display: block;
-    flex-shrink: 0; 
-    width: 100%;    
+    flex-shrink: 0;
+    width: 100%;
 }
 draw-canvas:state(disabled) {
     /* pointer-events: none; */
@@ -16,7 +16,7 @@ draw-canvas:state(disabled) {
 
 .canvas-with-axis {
     display: grid;
-    grid-template-columns: 6ex auto;
+    grid-template-columns: 6ex minmax(0px, auto);
 }
 
 .y-axis-labels {
