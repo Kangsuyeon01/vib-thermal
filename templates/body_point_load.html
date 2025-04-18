@@ -48,7 +48,7 @@
         background: black;
         color: white;
         padding: 5px;
-        
+
         font-size: 12px;
         z-index: 10;
         }
@@ -155,7 +155,7 @@
     <span> <span id="thermalInfo">None</span></span>
     <button id="clearMode" onclick="setMode('none')">Clear</button>
   </div>
-  
+
   <span id="alert_body_label" class="alertlabel"></span>
 <div class="hands-wrapper">
     <!-- Left Hand -->
@@ -167,7 +167,7 @@
       </div>
       <div class="hand-label">Left Hand</div>
     </div>
-  
+
     <!-- Right Hand -->
     <div class="container-hands" id="rightContainer">
       <img id="rightHandImage" class="handImage" src="static/src/right_hand.jpg" alt="Right Hand">
@@ -265,7 +265,7 @@
             // Clear selection
             currentVibrationIndex = null;
             currentThermalIndex = null;
-            
+
             //Update UI to reflect cleared points
             updateAllPointColors();
             updateInfo();
@@ -282,13 +282,15 @@
             }
             point.mode = "thermal";
             currentThermalIndex = index;
-        } 
+            if (currentVibrationIndex == index) currentVibrationIndex = null; // Clear vibration if same point is selected
+        }
         else if (currentMode === "vibration") {
             if (currentVibrationIndex !== null) {
                 fixedPoints[currentVibrationIndex].mode = "none"; // Reset previous vibration selection
             }
             point.mode = "vibration";
             currentVibrationIndex = index;
+            if (currentThermalIndex == index) currentThermalIndex = null; // Clear thermal if same point is selected
         }
         else if (currentMode === "none") {
             //  Clear the previously selected points only if they exist
