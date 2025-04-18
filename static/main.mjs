@@ -160,6 +160,30 @@ function stopPlayhead() {
     if (playheadAnimationId) cancelAnimationFrame(playheadAnimationId);
     vibrationwaveform_np.draw_playhead(0);
 }
+if (!eventSource) {
+    eventSource = new EventSource("/sse_signal_status");
+
+    eventSource.onmessage = (e) => {
+        const s = JSON.parse(e.data);
+        if (s.status === "start") {
+            console.log("[SSE] Received START");
+            startPlayhead();
+        } else if (s.status === "end") {
+            console.log("[SSE] Received END");
+            stopPlayhead();
+            const input_els = [...drawcanvases, play_button, duration_input];
+            input_els.forEach(el => el.disabled = false);
+        }
+    };
+
+    eventSource.onerror = () => {
+        stopPlayhead();
+        const input_els = [...drawcanvases, play_button, duration_input];
+        input_els.forEach(el => el.disabled = false);
+        console.error("[SSE] Connection error.");
+    };
+}
+
 function on_play_signal() {
     hasChanged = false;
     hasPlayed = true;
@@ -177,36 +201,12 @@ function on_play_signal() {
     const input_els = [...drawcanvases, play_button, duration_input];
     input_els.forEach(el => el.disabled = true);
 
-    if (eventSource) eventSource.close();
-    eventSource = new EventSource("/sse_signal_status");
-
-    eventSource.onmessage = (e) => {
-        const s = JSON.parse(e.data);
-        if (s.status === "start") {
-            console.log("[SSE] Received START");
-            startPlayhead(); // ✨ 오직 여기서만 실행
-        } else if (s.status === "end") {
-            console.log("[SSE] Received END");
-            stopPlayhead();
-            input_els.forEach(el => el.disabled = false);
-            eventSource.close();
-        }
-    };
-
-    eventSource.onerror = () => {
-        stopPlayhead();
-        input_els.forEach(el => el.disabled = false);
-        eventSource.close();
-    };
-
-
     fetch("/play_signals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
     });
 }
-
 
 /**
  *

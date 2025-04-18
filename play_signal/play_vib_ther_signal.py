@@ -138,7 +138,10 @@ def run_stim_from_json(data, event_queue=None):
                     except: continue
 
         def send_delta_thermal():
-            ser.write(b"start\n")
+            ser.write(b"start\n") #
+            if event_queue:
+                event_queue.put("start")  # 
+                print("start")
             time.sleep(0.05)
             for i, delta in enumerate(delta_list):
                 if stop_flag.is_set(): break
@@ -148,6 +151,7 @@ def run_stim_from_json(data, event_queue=None):
             ser.write(b"0.0\n")
             ser.write(b"end\n")
 
+
         threads = {
             "log": threading.Thread(target=log_receiver),
             "thermal": threading.Thread(target=send_delta_thermal),
@@ -155,7 +159,7 @@ def run_stim_from_json(data, event_queue=None):
             "accel": threading.Thread(target=record_accelerometer_data, args=(accel_log_path, stop_flag))
         }
 
-        if event_queue: event_queue.put("start")
+        # if event_queue: event_queue.put("start")
 
         for name, thread in threads.items():
             active_threads[name] = thread

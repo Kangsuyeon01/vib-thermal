@@ -75,8 +75,11 @@ def play_signals():
 def sse_signal_status():
     def event_stream():
         while True:
-            event = event_queue.get()
-            yield f"data: {json.dumps({'status': event})}\n\n"
+            try:
+                event = event_queue.get(timeout=0.5)
+                yield f"data: {json.dumps({'status': event})}\n\n"
+            except queue.Empty:
+                yield ": keep-alive\n\n"
     return Response(event_stream(), mimetype='text/event-stream')
 
 @app.route("/stop_signal", methods=["POST"])
