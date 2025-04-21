@@ -42,7 +42,7 @@ void loop() {
       if (serialBuffer.equalsIgnoreCase("start")) {
         startTime = millis();
         started = true;
-        Kp = 128;  // 시작 시 Kp 변경
+        Kp = 82;  // 시작 시 Kp 변경
         myPID.SetTunings(Kp, Ki, Kd);
         Serial.println("Start received. Kp set to 128.");
       } else if (serialBuffer.equalsIgnoreCase("end")) {

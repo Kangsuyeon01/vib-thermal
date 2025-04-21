@@ -138,10 +138,10 @@ def run_stim_from_json(data, event_queue=None):
                     except: continue
 
         def send_delta_thermal():
-            ser.write(b"start\n") #
+            ser.write(b"start\n")
             if event_queue:
-                event_queue.put("start")  # 
-                print("start")
+                event_queue.put("start")  # 활성화 (주석 해제 필수!)
+                print("[EVENT] start sent to queue.")
             time.sleep(0.05)
             for i, delta in enumerate(delta_list):
                 if stop_flag.is_set(): break
@@ -150,6 +150,7 @@ def run_stim_from_json(data, event_queue=None):
                 time.sleep(1.0 / THERMAL_RATE)
             ser.write(b"0.0\n")
             ser.write(b"end\n")
+
 
 
         threads = {
