@@ -12,32 +12,36 @@ def save_user_info(name, experiment_id, gender):
 
     # 사용자 정보 확인
     if os.path.exists(file_path):
-        with open(file_path, "r", newline='') as f:
+        with open(file_path, "r", newline='',encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                if row["experiment_id"] == experiment_id:
+                if row["user_id"] == experiment_id:
                     if row["name"] != name:
                         return False, None  # 이름-ID 불일치 시 오류
                     existing_user = True
                     break
 
-    # 사용자 디렉토리에서 trial 개수 확인
+    # 사용자 디렉토리에서 trial 개수 확인 (폴더 기준)
     user_dir = f"static/save_data/{experiment_id}"
     if os.path.exists(user_dir):
-        trial_number = len([f for f in os.listdir(user_dir) if f.endswith("_collected_data.json")]) + 1
+        trial_number = len([
+            d for d in os.listdir(user_dir)
+            if os.path.isdir(os.path.join(user_dir, d)) and d.isdigit()
+        ]) + 1
     else:
         os.makedirs(user_dir + "/logs", exist_ok=True)
 
+
     # 새 사용자라면 csv에 추가
     if not existing_user:
-        with open(file_path, "a", newline='') as f:
-            writer = csv.DictWriter(f, fieldnames=["name", "experiment_id", "gender"])
+        with open(file_path, "a", newline='',encoding='utf-8-sig') as f:
+            writer = csv.DictWriter(f, fieldnames=["name", "user_id", "gender"])
             if f.tell() == 0:
                 writer.writeheader()
             writer.writerow({
                 "name": name,
-                "experiment_id": experiment_id,
+                "user_id": experiment_id,
                 "gender": gender
             })
 
-    return True, trial_number
+    return True, trial_number 
