@@ -10,7 +10,8 @@ collected_data_*.json
 *_collected_data.json
 # C extensions
 *.so
-
+**/total_data.csv
+**/total_data.json
 # Distribution / packaging
 .Python
 build/

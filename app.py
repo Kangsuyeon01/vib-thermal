@@ -92,6 +92,7 @@ def stop_signal():
 def save_result():
     global last_unix_time
     user_id = session.get("user_id")
+    gender = session.get("gender")  
     if not user_id:
         return jsonify({"status": "error", "message": "User not logged in"}), 403
 
@@ -144,12 +145,13 @@ def save_result():
 
     # === Write to dataset.csv ===
     with open(dataset_path, "a", newline='') as f:
-        fieldnames = ["user_id", "trial", "json_path", "arduino_path", "accel_path"]
+        fieldnames = ["user_id", "gender", "trial", "json_path", "arduino_path", "accel_path"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         if f.tell() == 0:
             writer.writeheader()
         writer.writerow({
             "user_id": user_id,
+            "gender": gender,
             "trial": trial,
             "json_path": json_path,
             "arduino_path": arduino_dst,
