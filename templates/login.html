@@ -63,6 +63,9 @@
   </style>
 </head>
 <body>
+  {% if warning_msg %}
+  <script>alert("{{ warning_msg }}");</script>
+{% endif %}
   <div class="login-box">
     <h2>Experiment Login</h2>
     <form action="/" method="POST">

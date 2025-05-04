@@ -8,6 +8,7 @@ import time
 import shutil
 import threading
 import queue
+from functools import wraps
 from user_info import save_user_info
 from play_signal.play_vib_ther_signal import run_stim_from_json  # 내부에 timestamp 처리 있음
 import csv
@@ -19,34 +20,71 @@ app.secret_key = "1234"
 last_unix_time = 0
 event_queue = queue.Queue()
 
+# === 로그인 체크 데코레이터 ===
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user_id" not in session:
+            return redirect("/")
+        return f(*args, **kwargs)
+    return decorated_function
+
+from flask import flash  # 위에 import 필요
+
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         name = request.form["name"]
         experiment_id = request.form["experiment_id"]
         gender = request.form["gender"]
+        gender_num = 0 if gender == 'female' else 1 if gender == 'male' else -1
 
-        success, trial_number = save_user_info(name, experiment_id, gender)
+        success, trial_number, previous_gender = save_user_info(name, experiment_id, gender)
+
         if not success:
-            return "Experiment ID exists with a different name. Please check your input."
+            return render_template(
+                "login.html",
+                warning_msg="Experiment ID exists with a different name. Please check your input."
+            )
+
+        if previous_gender and previous_gender != gender:
+            return render_template(
+                "login.html",
+                warning_msg=f"기존에 등록된 성별은 '{previous_gender}'입니다. 다시 확인해주세요."
+            )
 
         session["user_id"] = experiment_id
+        session["name"] = name
         session["trial"] = trial_number
+        session["gender"] = gender_num
         return redirect("/main")
+
     return render_template("login.html")
 
+
 @app.route("/main")
+@login_required
 def main():
-    if "user_id" not in session:
-        return redirect("/")
     trial = session.get("trial", 1)
-    return render_template("index.html", load_content=render_template("body_point_load.html"), trial=trial)
+    user_id = session.get("user_id", "")
+    name = session.get("name", "")
+    gender = session.get("gender", "")
+    return render_template(
+        "index.html",
+        load_content=render_template("body_point_load.html"),
+        trial=trial,
+        name=name,
+        user_id=user_id,
+        gender="female" if gender == 0 else "male"
+    )
 
 @app.route("/body_point_maker")
+@login_required
 def body_site_point_maker():
     return render_template("body_point_maker.html")
 
 @app.route("/body_point_load", methods=["GET", "POST"])
+@login_required
 def body_site_point_loader():
     if request.method == "POST":
         data = request.get_json()
@@ -55,6 +93,7 @@ def body_site_point_loader():
     return render_template("body_point_load.html")
 
 @app.route("/play_signals", methods=["POST"])
+@login_required
 def play_signals():
     global last_unix_time
     data = request.get_json()
@@ -64,7 +103,6 @@ def play_signals():
     data["user_id"] = user_id
 
     def run_and_notify():
-        # event_queue.put("start")
         run_stim_from_json(data, event_queue)
         event_queue.put("end")
 
@@ -72,6 +110,7 @@ def play_signals():
     return jsonify({"status": "started"})
 
 @app.route("/sse_signal_status")
+@login_required
 def sse_signal_status():
     def event_stream():
         while True:
@@ -83,12 +122,14 @@ def sse_signal_status():
     return Response(event_stream(), mimetype='text/event-stream')
 
 @app.route("/stop_signal", methods=["POST"])
+@login_required
 def stop_signal():
     from play_signal.play_vib_ther_signal import stop_all_threads
     stop_all_threads()
     return jsonify({"status": "stopped"})
 
 @app.route("/save_result", methods=["POST"])
+@login_required
 def save_result():
     global last_unix_time
     user_id = session.get("user_id")
