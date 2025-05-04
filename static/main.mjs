@@ -383,7 +383,8 @@ async function on_submit(event) {
             alert("All trials completed!");
             trial_current_label.textContent = "0";
             submit_button.disabled = true;
-            // TODO: redirect to end page
+
+            window.location.href = "/end";
         }
     })
     .catch(error => {

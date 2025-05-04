@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, Response, session
+from flask import Flask, render_template, request, jsonify, redirect, Response, session, url_for
 import mimetypes
 import json, os
 import numpy as np
@@ -19,6 +19,7 @@ app = Flask(__name__)
 app.secret_key = "1234"
 last_unix_time = 0
 event_queue = queue.Queue()
+MAX_TRIALS = 5  # You can adjust this limit as needed
 
 # === Login required decorator ===
 def login_required(f):
@@ -66,6 +67,9 @@ def login():
 @login_required
 def main():
     trial = session.get("trial", 1)
+    if trial > MAX_TRIALS:
+        return redirect("/end")
+
     user_id = session.get("user_id", "")
     name = session.get("name", "")
     gender = session.get("gender", "")
@@ -85,6 +89,16 @@ def main():
         session_elapsed_str=format_seconds(session_elapsed_sec),
         total_elapsed_str=format_seconds(total_elapsed_sec)
     )
+
+@app.route("/end")
+@login_required
+def end_page():
+    return render_template("end_page.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
 @app.route("/body_point_maker")
 @login_required
@@ -153,11 +167,7 @@ def save_result():
         return jsonify({"status": "error", "message": "Missing required data"}), 400
 
     dataset_path = "static/save_data/dataset.csv"
-    trial = 1
-    if os.path.exists(dataset_path):
-        with open(dataset_path, "r", newline='') as f:
-            reader = csv.DictReader(f)
-            trial = sum(1 for row in reader if row["user_id"] == user_id) + 1
+    trial = session.get("trial", 1)
 
     user_dir = f"static/save_data/{user_id}/{trial}"
     os.makedirs(user_dir, exist_ok=True)
