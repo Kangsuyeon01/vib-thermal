@@ -9,8 +9,8 @@ import shutil
 import threading
 import queue
 from functools import wraps
-from user_info import save_user_info
-from play_signal.play_vib_ther_signal import run_stim_from_json  # 내부에 timestamp 처리 있음
+from user_info import save_user_info, update_total_elapsed_time, get_total_elapsed_time, format_seconds
+from play_signal.play_vib_ther_signal import run_stim_from_json  # Contains internal timestamp logic
 import csv
 
 mimetypes.add_type('application/javascript', '.mjs')
@@ -20,7 +20,7 @@ app.secret_key = "1234"
 last_unix_time = 0
 event_queue = queue.Queue()
 
-# === 로그인 체크 데코레이터 ===
+# === Login required decorator ===
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -28,8 +28,6 @@ def login_required(f):
             return redirect("/")
         return f(*args, **kwargs)
     return decorated_function
-
-from flask import flash  # 위에 import 필요
 
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -50,17 +48,19 @@ def login():
         if previous_gender and previous_gender != gender:
             return render_template(
                 "login.html",
-                warning_msg=f"기존에 등록된 성별은 '{previous_gender}'입니다. 다시 확인해주세요."
+                warning_msg=f"Previously registered gender is '{previous_gender}'. Please check again."
             )
 
         session["user_id"] = experiment_id
         session["name"] = name
         session["trial"] = trial_number
         session["gender"] = gender_num
+        session["start_time"] = time.time()  # Record session start time
+        session["trial_start"] = time.time()  # Record trial start time
+
         return redirect("/main")
 
     return render_template("login.html")
-
 
 @app.route("/main")
 @login_required
@@ -69,13 +69,21 @@ def main():
     user_id = session.get("user_id", "")
     name = session.get("name", "")
     gender = session.get("gender", "")
+    start_time = session.get("start_time", time.time())
+
+    # Calculate times
+    session_elapsed_sec = int(time.time() - start_time)
+    total_elapsed_sec = get_total_elapsed_time(user_id)
+
     return render_template(
         "index.html",
         load_content=render_template("body_point_load.html"),
         trial=trial,
         name=name,
         user_id=user_id,
-        gender="female" if gender == 0 else "male"
+        gender="female" if gender == 0 else "male",
+        session_elapsed_str=format_seconds(session_elapsed_sec),
+        total_elapsed_str=format_seconds(total_elapsed_sec)
     )
 
 @app.route("/body_point_maker")
@@ -133,7 +141,9 @@ def stop_signal():
 def save_result():
     global last_unix_time
     user_id = session.get("user_id")
-    gender = session.get("gender")  
+    gender = session.get("gender")
+    trial_start = session.get("trial_start")
+
     if not user_id:
         return jsonify({"status": "error", "message": "User not logged in"}), 403
 
@@ -165,15 +175,16 @@ def save_result():
     else:
         print(f"[WARNING] Arduino log not found: {arduino_src}")
 
-    # === Move Accel log ===
+    # === Move Accelerometer log ===
     accel_src = f"static/save_data/{user_id}/logs/accel_log_{last_unix_time}.csv"
     accel_dst = f"{user_dir}/{trial}_accel_log.csv"
+    trial_elapsed = round(time.time() - trial_start, 2) if trial_start else 0
     if os.path.exists(accel_src):
         shutil.move(accel_src, accel_dst)
     else:
         print(f"[WARNING] Accel log not found: {accel_src}")
 
-    # === Delete old collected_data_<timestamp>.json from logs
+    # === Clean up old temporary JSON logs ===
     logs_dir = f"static/save_data/{user_id}/logs"
     if os.path.exists(logs_dir):
         for fname in os.listdir(logs_dir):
@@ -184,9 +195,9 @@ def save_result():
                 except Exception as e:
                     print(f"[CLEANUP ERROR] Could not remove {fname}: {e}")
 
-    # === Write to dataset.csv ===
+    # === Append to dataset.csv ===
     with open(dataset_path, "a", newline='') as f:
-        fieldnames = ["user_id", "gender", "trial", "json_path", "arduino_path", "accel_path"]
+        fieldnames = ["user_id", "gender", "trial", "json_path", "arduino_path", "accel_path", "trial_elapsed_sec"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         if f.tell() == 0:
             writer.writeheader()
@@ -196,8 +207,13 @@ def save_result():
             "trial": trial,
             "json_path": json_path,
             "arduino_path": arduino_dst,
-            "accel_path": accel_dst
+            "accel_path": accel_dst,
+            "trial_elapsed_sec": trial_elapsed
         })
+
+    update_total_elapsed_time(user_id, trial_elapsed)
+    session["trial"] = trial + 1
+    session["trial_start"] = time.time()
 
     return jsonify({"status": "success", "message": "Data saved successfully"})
 

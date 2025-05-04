@@ -12,13 +12,16 @@
     <script src="static/main.mjs" type="module"></script>
 </head>
 <body>
-  <div style="position: absolute; top: 10px; right: 20px; text-align: right;">
-    <div style="position: absolute; top: 10px; right: 20px; text-align: right;">
+  <div class="navbar-container">
+    <button class="toggle-button" onclick="toggleNavbar()">☰</button>
+    <div id="navbar-content" class="navbar-content">
       <p><strong>Name:</strong> {{ name }}</p>
       <p><strong>User ID:</strong> {{ user_id }}</p>
-      <p><strong>Trial:</strong> {{ trial }}</p>
       <p><strong>Gender:</strong> {{ gender }}</p>
-    </div>    
+      <!-- <p><strong>Trial:</strong> {{ trial }}</p> -->
+      <p><strong>Session Time:</strong> <span id="session-time">{{ session_elapsed_str }}</span></p>
+      <p><strong>Total Time:</strong> <span id="total-time">{{ total_elapsed_str }}</span></p>
+    </div>
   </div>
     <h2 class="trial-num">
       trial: <span id="trial_current_label">{{ trial }}</span>/
@@ -205,3 +208,31 @@
 
 
 </html>
+
+<script>
+  function toggleNavbar() {
+    const content = document.getElementById("navbar-content");
+    content.classList.toggle("open");
+  }
+
+  // Initial time from Jinja template
+  const [sMin, sSec] = {{ session_elapsed_str|tojson }}.split(":").map(Number);
+  const [tMin, tSec] = {{ total_elapsed_str|tojson }}.split(":").map(Number);
+  let sessionSeconds = sMin * 60 + sSec;
+  let totalSeconds = tMin * 60 + tSec;
+
+  function formatTime(seconds) {
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  function updateTimers() {
+    sessionSeconds += 1;
+    totalSeconds += 1;
+    document.getElementById("session-time").textContent = formatTime(sessionSeconds);
+    document.getElementById("total-time").textContent = formatTime(totalSeconds);
+  }
+
+  setInterval(updateTimers, 1000);
+</script>

@@ -1,7 +1,7 @@
 import csv
 import os
-import csv
-import os
+import time
+
 def save_user_info(name, experiment_id, gender):
     os.makedirs("static/save_data", exist_ok=True)
     file_path = "static/save_data/users.csv"
@@ -35,13 +35,50 @@ def save_user_info(name, experiment_id, gender):
     # 새 사용자면 users.csv에 추가
     if not existing_user:
         with open(file_path, "a", newline='', encoding='utf-8-sig') as f:
-            writer = csv.DictWriter(f, fieldnames=["name", "user_id", "gender"])
+            writer = csv.DictWriter(f, fieldnames=["name", "user_id", "gender", "total_elapsed_sec"])
             if f.tell() == 0:
                 writer.writeheader()
             writer.writerow({
                 "name": name,
                 "user_id": experiment_id,
-                "gender": gender
+                "gender": gender,
+                "total_elapsed_sec": 0
             })
 
     return True, trial_number, previous_gender
+
+def update_total_elapsed_time(user_id, additional_sec):
+    file_path = "static/save_data/users.csv"
+    if not os.path.exists(file_path):
+        return
+
+    updated_rows = []
+    with open(file_path, "r", newline='', encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row["user_id"] == user_id:
+                current_total = float(row.get("total_elapsed_sec", 0))
+                row["total_elapsed_sec"] = str(current_total + additional_sec)
+            updated_rows.append(row)
+
+    with open(file_path, "w", newline='', encoding='utf-8-sig') as f:
+        writer = csv.DictWriter(f, fieldnames=["name", "user_id", "gender", "total_elapsed_sec"])
+        writer.writeheader()
+        writer.writerows(updated_rows)
+
+def get_total_elapsed_time(user_id):
+    file_path = "static/save_data/users.csv"
+    if not os.path.exists(file_path):
+        return 0
+
+    with open(file_path, "r", newline='', encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row["user_id"] == user_id:
+                return float(row.get("total_elapsed_sec", 0))
+    return 0
+
+def format_seconds(sec):
+    minutes = int(sec) // 60
+    seconds = int(sec) % 60
+    return f"{minutes:02}:{seconds:02}"
