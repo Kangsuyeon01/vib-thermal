@@ -12,11 +12,21 @@ float c2 = 5.505203063e-04;
 float c3 = -9.653138374e-07;
 
 double input = 0, output = 0;
+double prevInput = 0;
 double init_setpoint = 32.5;
 double setpoint = init_setpoint;
-double Kp = 32, Ki = 2, Kd = 16; // 기본 Kp를 32로 설정
 
-PID myPID(&input, &output, &setpoint, Kp, Ki, Kd, DIRECT);
+// PID Parameters (Active Mode)
+double Kp = 60;
+double Ki = 0.6;
+double Kd = 0.5;
+
+// Idle Mode Parameters (Before start or after end)
+double Kp_idle = 32;
+double Ki_idle = 0;
+double Kd_idle = 0;
+
+PID myPID(&input, &output, &setpoint, Kp_idle, Ki_idle, Kd_idle, DIRECT);
 
 String serialBuffer = "";
 unsigned long startTime = 0;
@@ -35,6 +45,7 @@ void setup() {
 }
 
 void loop() {
+  // Serial Command Handling
   while (Serial.available() > 0) {
     char c = Serial.read();
     if (c == '\n') {
@@ -42,13 +53,12 @@ void loop() {
       if (serialBuffer.equalsIgnoreCase("start")) {
         startTime = millis();
         started = true;
-        Kp = 82;  // 시작 시 Kp 변경
         myPID.SetTunings(Kp, Ki, Kd);
-        Serial.println("Start received. Kp set to 128.");
+        Serial.println("Start received. PID activated.");
       } else if (serialBuffer.equalsIgnoreCase("end")) {
-        Kp = 32;  // 종료 시 Kp 복원
-        myPID.SetTunings(Kp, Ki, Kd);
-        Serial.println("End received. Kp reset to 32.");
+        started = false;
+        myPID.SetTunings(Kp_idle, Ki_idle, Kd_idle);
+        Serial.println("End received. PID set to idle.");
       } else if (serialBuffer.length() > 0) {
         double delta = serialBuffer.toFloat();
         setpoint = init_setpoint + delta;
@@ -61,14 +71,23 @@ void loop() {
     }
   }
 
-  input = ReadTemperature();
+  // Input filtering
+  double rawInput = ReadTemperature();
+  if (!started) {
+    prevInput = rawInput;  // Reset filter at idle
+  }
+  input = 0.4 * prevInput + 0.6 * rawInput;
+  prevInput = input;
+
   myPID.Compute();
 
+  // Direction Control
   double pwmValue = abs(output);
   digitalWrite(PHASE1, input < setpoint ? LOW : HIGH);
   digitalWrite(PHASE2, input < setpoint ? HIGH : LOW);
   analogWrite(PWM, pwmValue);
 
+  // Logging
   if (started) {
     LogData(pwmValue);
   }

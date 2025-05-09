@@ -379,10 +379,12 @@ async function on_submit(event) {
         trial_current_label.textContent = trialCurrent.toString();
         trial_end_label.textContent = TARGET_COUNT.toString();
 
-        if (trialCurrent >= TARGET_COUNT) {
+        if (trialCurrent > TARGET_COUNT) {
             alert("All trials completed!");
             trial_current_label.textContent = "0";
             submit_button.disabled = true;
+
+            window.location.href = "/end";
         }
     })
     .catch(error => {
