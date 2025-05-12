@@ -7,7 +7,7 @@ export const MIN_FREQ = 50;
 export const MAX_FREQ = 500;
 export const MIN_THERMAL = -6;
 export const MAX_THERMAL = 6;
-
+export const amp_weight = 8;
 
 /** @type {DrawCanvasElement} */
 const vib_amp_env_dcanvas = notnull(document.querySelector("#drawvibaenv"));
@@ -80,7 +80,8 @@ function linterp_index(arr, perc) {
 export function generate_signal(force_full_duration = false) {
     const vib_amp = vib_amp_env_dcanvas.get_samples();
     const vib_freq = vib_freq_env_dcanvas.get_samples();
-    const thr_amp = thr_amp_env_dcanvas.get_samples();
+    const thr_amp = thr_amp_env_dcanvas.get_input_samples();
+    // const thr_amp = thr_amp_env_dcanvas.get_samples();
 
     const current_total_duration = vib_amp_env_dcanvas.get_total_duration();
     if (current_total_duration != vib_freq_env_dcanvas.get_total_duration() || current_total_duration != thr_amp_env_dcanvas.get_total_duration()) {
@@ -108,7 +109,8 @@ export function generate_signal(force_full_duration = false) {
         const phase_delta = 2 * Math.PI * current_freq / SAMPLE_RATE;
 
         phase_acc += phase_delta;
-        vib_signal[i] = s_amp * Math.sin(phase_acc);
+        vib_signal[i] = amp_weight * s_amp * Math.sin(phase_acc);
+
     }
 
     const thermal_signal = new Float32Array(num_output_samples);

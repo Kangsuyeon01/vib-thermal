@@ -268,6 +268,14 @@ export class DrawCanvasElement extends HTMLElement {
         }
         this.ctx.stroke();
     }
+    get_input_samples() {
+        return this.#_input_samples.slice();
+    }
+    
+    get_output_samples() {
+        return this.#_compute_output_samples();
+    }
+    
 
     reset_samples_to(value = 0.5) {
         this.#_input_samples.fill(value);
