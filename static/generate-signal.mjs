@@ -112,6 +112,8 @@ export function generate_signal(force_full_duration = false) {
         vib_signal[i] = amp_weight * s_amp * Math.sin(phase_acc);
 
     }
+    vib_signal[num_output_samples - 1] = 0;
+
 
     const thermal_signal = new Float32Array(num_output_samples);
     for (let i = 0; i < num_output_samples; i++) {

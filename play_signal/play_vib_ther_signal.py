@@ -152,7 +152,6 @@ def run_stim_from_json(data, event_queue=None):
             ser.write(b"end\n")
 
 
-
         threads = {
             "log": threading.Thread(target=log_receiver),
             "thermal": threading.Thread(target=send_delta_thermal),
