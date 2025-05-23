@@ -63,6 +63,8 @@ def generate_signal_with_thermal(vib_amp, vib_freq, thermal_amp, TOTAL_DURATION_
 
     # vib_signal의 길이에 맞춰 thermal_amp를 interpolation
     vib_len = len(vib_signal)
+    # vib_signal[-1] = 0
+
     thermal_full = np.interp(
         np.linspace(0, len(thermal_amp) - 1, vib_len),
         np.arange(len(thermal_amp)),

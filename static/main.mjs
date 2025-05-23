@@ -36,6 +36,8 @@ const vib_amp_env_dcanvas = notnull(document.querySelector("#drawvibaenv"));
 const vib_freq_env_dcanvas = notnull(document.querySelector("#drawvibfenv"));
 /** @type {DrawCanvasElement} */
 const thr_amp_env_dcanvas = notnull(document.querySelector("#drawthraenv"));
+
+
 const drawcanvases = [vib_amp_env_dcanvas, vib_freq_env_dcanvas, thr_amp_env_dcanvas];
 /** @type {HTMLInputElement} */
 const duration_input = notnull(document.querySelector("#signalduration"));
