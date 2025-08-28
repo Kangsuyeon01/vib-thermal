@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mark a point as Vibration or Thermal.</title>
     <style>
     div.body-point-load {
@@ -38,6 +39,7 @@
         border-radius: 5px;
         cursor: pointer;
         }
+
         .active {
         outline: 3px solid yellow;
         }
@@ -58,6 +60,7 @@
         font-size: 14px;
         color: #333;
         }
+
         .hand-label {
         margin-top: 10px;
         font-weight: 600;
@@ -70,6 +73,7 @@
         justify-content: center;
         gap: 60px;
         margin-top: 20px;
+        position: relative;
         }
 
         .container-hands {
@@ -112,7 +116,7 @@
         font-size: 15px;
         border: 0.1px solid #222;
         }
-    }
+
     .status-button-bar {
     display: flex;
     align-items: center;
@@ -141,8 +145,32 @@
     color: #222;
     }
 
+        .handle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            position: absolute;
+            cursor: grab;
+            z-index: 1000;
+            transform: translate(-50%, -50%);
+            opacity: 0.8;
+        }
+
+        .handle:active {
+            cursor: grabbing;
+        }
+
+        .handle.vibration {
+            background-color: blue;
+        }
+
+        .handle.thermal {
+            background-color: red;
+        }
+    }
     </style>
 </head>
+
 <body>
 <div class="body-point-load">
 
@@ -160,7 +188,7 @@
 <div class="hands-wrapper">
     <!-- Left Hand -->
     <div class="container-hands" id="leftContainer">
-      <img id="leftHandImage" class="handImage" src="static/src/left_hand.jpg" alt="Left Hand">
+      <img id="leftHandImage" class="handImage" src="static/src/left_hand.jpg" alt="Left Hand" draggable="false" ondragstart="return false;">
       <div class="label-container">
         <div class="front-label">Front</div>
         <div class="back-label">Back</div>
@@ -170,13 +198,16 @@
 
     <!-- Right Hand -->
     <div class="container-hands" id="rightContainer">
-      <img id="rightHandImage" class="handImage" src="static/src/right_hand.jpg" alt="Right Hand">
+      <img id="rightHandImage" class="handImage" src="static/src/right_hand.jpg" alt="Right Hand" draggable="false" ondragstart="return false;">
       <div class="label-container">
         <div class="back-label">Back</div>
         <div class="front-label">Front</div>
       </div>
       <div class="hand-label">Right Hand</div>
     </div>
+
+    <div id="vibrationHandle" class="handle vibration" style="left:320px; top:-10px;"></div>
+    <div id="thermalHandle" class="handle thermal" style="left:470px; top:-10px;"></div>
   </div>
 <br>
 <!-- <button onclick="sendData()">Save</button> -->
@@ -206,7 +237,7 @@
     function loadPoints() {
         document.querySelectorAll(".point").forEach(el => el.remove());
         fixedPoints.forEach((point, index) => createPointElement(point, index));
-        updateInfo();
+        updateInfo(); // also will position handles
     }
 
     function createPointElement(point, index) {
@@ -225,7 +256,6 @@
                 applyMode(clickedIndex);
             }
         });
-
         div.addEventListener("mouseover", function(event) {
             tooltip.style.display = "block";
             tooltip.style.left = `${event.clientX + 10}px`;
@@ -331,7 +361,95 @@
     function updateInfo() {
         document.getElementById("thermalInfo").textContent = currentThermalIndex !== null ? fixedPoints[currentThermalIndex].code : "None";
         document.getElementById("vibrationInfo").textContent = currentVibrationIndex !== null ? fixedPoints[currentVibrationIndex].code : "None";
+        updateHandlePositions();
     }
+
+
+    const vibrationHandle = document.getElementById("vibrationHandle");
+    const thermalHandle = document.getElementById("thermalHandle");
+
+    const drag_wrapper_el   = document.querySelector(".hands-wrapper");
+    function updateHandlePositions() {
+        const parentRect = drag_wrapper_el.getBoundingClientRect();
+
+        if (currentVibrationIndex !== null) {
+            const pt = fixedPoints[currentVibrationIndex];
+            const c = (pt.code[0] === "1" ? leftContainer : rightContainer).getBoundingClientRect();
+            vibrationHandle.style.left = `${pt.x + c.left - parentRect.left}px`;
+            vibrationHandle.style.top = `${pt.y + c.top - parentRect.top}px`;
+        }
+        if (currentThermalIndex !== null) {
+            const pt = fixedPoints[currentThermalIndex];
+            const c = (pt.code[0] === "1" ? leftContainer : rightContainer).getBoundingClientRect();
+            thermalHandle.style.left = `${pt.x + c.left - parentRect.left}px`;
+            thermalHandle.style.top = `${pt.y + c.top - parentRect.top}px`;
+        }
+    }
+
+    function makeDraggable(handleEl, modeName) {
+        let dragging = false, offsetX = 0, offsetY = 0;
+
+        handleEl.addEventListener("pointercancel", e => {
+            dragging = false;
+            document.body.style.userSelect = "";
+            updateHandlePositions();
+        });
+
+        handleEl.addEventListener("pointerdown", e => {
+            e.preventDefault();
+            dragging = true;
+            setMode(modeName);  // highlight the correct button and set mode for clicking anyway
+            const r = handleEl.getBoundingClientRect();
+            offsetX = e.clientX - r.left;
+            offsetY = e.clientY - r.top;
+            handleEl.setPointerCapture(e.pointerId);
+            document.body.style.userSelect = "none";
+        });
+
+        handleEl.addEventListener("pointermove", e => {
+            if (!dragging) return;
+            const p = drag_wrapper_el.getBoundingClientRect();
+            const x = e.clientX - p.left - offsetX + handleEl.clientWidth / 2;
+            const y = e.clientY - p.top - offsetY + handleEl.clientHeight / 2;
+            handleEl.style.left = `${x}px`;
+            handleEl.style.top = `${y}px`;
+        });
+
+        handleEl.addEventListener("pointerup", e => {
+            if (!dragging) return;
+            dragging = false;
+            document.body.style.userSelect = "";
+
+            // find closest free point
+            let nearest = null, best = Infinity;
+            fixedPoints.forEach((pt, i) => {
+                // skip occupied by the other mode
+                const occupied = pt.mode !== "none" && pt.mode !== modeName;
+                if (occupied) return;
+                const c = (pt.code[0] === "1" ? leftContainer : rightContainer).getBoundingClientRect();
+                const px = c.left + pt.x, py = c.top + pt.y;
+                const d = Math.hypot(e.clientX - px, e.clientY - py);
+                if (d < best) { best = d; nearest = i; }
+            });
+
+            if (nearest !== null && best < 100) {
+                // snap & assign
+                const pt = fixedPoints[nearest];
+                const c = (pt.code[0] === "1" ? leftContainer : rightContainer).getBoundingClientRect();
+                const p = drag_wrapper_el.getBoundingClientRect();
+                handleEl.style.left = `${pt.x + c.left - p.left}px`;
+                handleEl.style.top = `${pt.y + c.top - p.top}px`;
+                applyMode(nearest);
+            } else {
+                // revert if drop was invalid
+                updateHandlePositions();
+            }
+
+            handleEl.releasePointerCapture(e.pointerId);
+        });
+    }
+    makeDraggable(vibrationHandle, "vibration");
+    makeDraggable(thermalHandle, "thermal");
 
     function sendData() {
         const filteredData = fixedPoints
@@ -353,4 +471,5 @@
 
 </div>
 </body>
+
 </html>
